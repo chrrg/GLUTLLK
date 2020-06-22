@@ -7,8 +7,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.widget.ImageView;
+class GameObject{
 
-public class CHCanvasGame {
+}
+class CHCanvasGame {
 //    private static CHCanvasGame self=null;
 //    public static CHCanvasGame getInstance(){//得到单一实例
 //        if(self==null)self=new CHCanvasGame();

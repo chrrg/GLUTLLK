@@ -19,5 +19,6 @@ public class MainActivity extends Activity {
         ///////////////////////////////////////////////////////
         CHCanvasGame game = new CHCanvasGame();//初始化游戏引擎
         game.init(this, R.id.canvas);//设置参数
+
     }
 }

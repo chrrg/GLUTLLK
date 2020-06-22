@@ -14,19 +14,23 @@ import java.util.TimerTask;
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
     private GameObject box;
+    private GameCamera camera;
+    private GameObject fps;
     LLKGame(CHCanvasGame game){
         this.game=game;
     }
     @Override
     public void onInit() {
-        game.setCamera(new GameCamera());//设置2d摄像机
-        game.setMaxFPS(120);//高帧率模式 设置最大帧率 测试最高60
+        game.setBackGroundColor(Color.BLACK);
+        camera=new GameCamera(-100,200);
+        game.setCamera(camera);//设置2d摄像机
+        game.setMaxFPS(50);//高帧率模式 设置最大帧率 测试最高60
         GameObject backGround = new GameObject();//新建一个背景
         backGround.set(0, 0, game.getWidth(), game.getHeight());
         backGround.setBackColor(Color.WHITE);
         game.addGameObject(backGround);
 //
-        GameObject fps = new GameObject();//新建一个背景
+        fps = new GameObject();//新建一个背景
         fps.set(0,200,game.getWidth(),80);
         fps.setBackColor(Color.GREEN);
         Paint fpsPaint=new Paint(                                                                                                                                                                                                                                                                                                                                                                                                                                                           );
@@ -56,6 +60,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         box.y += 1;
+        fps.y=box.y;
+        camera.moveCameraY(box.y-500);
     }
 }
 public class MainActivity extends Activity {

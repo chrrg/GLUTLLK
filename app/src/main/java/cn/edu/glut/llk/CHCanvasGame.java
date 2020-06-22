@@ -1,13 +1,17 @@
 package cn.edu.glut.llk;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+
 import java.util.Vector;
 
 interface GameObjectDraw{
@@ -49,6 +53,9 @@ class GameObject{
     void setBackColor(int backColor) {
         baseBitmap=null;
         this.backColor=backColor;
+    }
+    void removeFromGame(CHCanvasGame game){
+        game.remove(this);
     }
     void draw(Canvas c,Paint paint2,GameCamera camera){
         if(textChange !=null){
@@ -106,6 +113,16 @@ class GameCamera{
     void moveY(int y){
         this.y+=y;
     }
+    void moveCameraX(int x){
+        cameraX=x;
+    }
+    void moveCameraY(int y){
+        cameraY=y;
+    }
+    void fixCamera(){//平滑相机
+        x=(int)(x+(cameraX-x)*0.15);
+        y=(int)(y+(cameraY-y)*0.15);
+    }
     GameCamera(int x,int y){
         this.x=x;
         this.y=y;
@@ -124,8 +141,16 @@ class CHCanvasGame {
     private long curfpsTime=0;
     private int fps=0;
     private int curfps=0;
+    private int backGroundColor=0;
+    private long startTime=System.currentTimeMillis();
+    long getTime(){
+        return System.currentTimeMillis()-startTime;
+    }
     CHCanvasGame(){
 
+    }
+    void setBackGroundColor(int color){
+        backGroundColor=color;
     }
     void setMaxFPS(int fps){
         maxFps=fps;
@@ -146,15 +171,29 @@ class CHCanvasGame {
         obj.add(o);
     }
     private void drawOnce(Canvas c,Paint paint){
+        camera.fixCamera();
         for(GameObject ob:obj){
             ob.draw(c,paint,camera);
         }
     }
+    @SuppressLint("ClickableViewAccessibility")
     void init(Activity activity, int id, final GameInit init){
         paint = new Paint();
         paint.setStrokeWidth(5);
         paint.setColor(Color.RED);
         surfaceview = activity.findViewById(id);
+        surfaceview.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                int x = (int)event.getX();
+                int y = (int)event.getY();
+//                Log.e("action", String.valueOf(event.getAction())+"|"+x+"|"+y);
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {//ACTION_MOVE ACTION_UP
+
+                }
+                return true;
+            }
+        });
         surfaceholder = surfaceview.getHolder();
         surfaceholder.addCallback(new SurfaceHolder.Callback(){
             @Override
@@ -176,6 +215,7 @@ class CHCanvasGame {
                             }
                             try {
                                 canvas = surfaceholder.lockCanvas();
+                                if(backGroundColor!=0)canvas.drawColor(backGroundColor);
                                 if(canvas!=null) {
                                     drawOnce(canvas, paint);
                                 }
@@ -220,5 +260,7 @@ class CHCanvasGame {
             }
         });
     }
-
+    void remove(GameObject gameObject) {
+        obj.remove(gameObject);
+    }
 }

@@ -19,6 +19,7 @@ interface GameObjectDraw{
 }
 interface GameInit{
     void onInit();
+    void onSetGame(CHCanvasGame game);
 }
 interface ObjectStringChange{
     String onListener();
@@ -80,7 +81,7 @@ class GameObject{
                 canvas.drawText(text, 0,this.h,paint);
             }
         }
-        c.drawBitmap(baseBitmap,this.x-camera.x,this.y-camera.y,paint);
+        c.drawBitmap(baseBitmap,this.x-camera.getX(),this.y-camera.getY(),paint);
     }
     void set(int x, int y, int w, int h) {
         this.x=x;
@@ -94,29 +95,42 @@ class GameObject{
 }
 
 class GameCamera{
-    int x=0;
-    int y=0;
-    int cameraX;
-    int cameraY;
-    GameCamera(){
-
-    }
+    private int x=0;
+    private int y=0;
+    private int cameraX;
+    private int cameraY;
     void setX(int x){
         this.x=x;
+        cameraX=x;
     }
     void setY(int y){
         this.y=y;
+        cameraY=y;
+    }
+    int getCameraX(){
+        return cameraX;
+    }
+    int getCameraY(){
+        return cameraY;
+    }
+    int getX(){
+        return x;
+    }
+    int getY(){
+        return y;
     }
     void moveX(int x){
         this.x+=x;
+        cameraX=x;
     }
     void moveY(int y){
         this.y+=y;
+        cameraY=y;
     }
-    void moveCameraX(int x){
+    void setCameraX(int x){
         cameraX=x;
     }
-    void moveCameraY(int y){
+    void setCameraY(int y){
         cameraY=y;
     }
     void fixCamera(){//平滑相机
@@ -124,8 +138,8 @@ class GameCamera{
         y=(int)(y+(cameraY-y)*0.15);
     }
     GameCamera(int x,int y){
-        this.x=x;
-        this.y=y;
+        setX(x);
+        setY(y);
     }
 }
 class CHCanvasGame {
@@ -177,7 +191,8 @@ class CHCanvasGame {
         }
     }
     @SuppressLint("ClickableViewAccessibility")
-    void init(Activity activity, int id, final GameInit init){
+    CHCanvasGame init(Activity activity, int id, final GameInit init){
+        init.onSetGame(this);
         paint = new Paint();
         paint.setStrokeWidth(5);
         paint.setColor(Color.RED);
@@ -216,7 +231,7 @@ class CHCanvasGame {
                             try {
                                 canvas = surfaceholder.lockCanvas();
                                 if(backGroundColor!=0)canvas.drawColor(backGroundColor);
-                                if(canvas!=null) {
+                                if(canvas!=null&&camera!=null) {
                                     drawOnce(canvas, paint);
                                 }
                             } catch (Exception e) {
@@ -259,6 +274,7 @@ class CHCanvasGame {
                 init.onInit();
             }
         });
+        return this;
     }
     void remove(GameObject gameObject) {
         obj.remove(gameObject);

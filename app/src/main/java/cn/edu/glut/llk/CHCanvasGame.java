@@ -8,16 +8,30 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.widget.ImageView;
 class GameObject{
+    public void setPic(){
 
+    }
+}
+class GameCamera{
+    int x;
+    int y;
+    int cameraX;
+    int cameraY;
+    GameCamera(){
+
+    }
+    GameCamera(int x,int y){
+        this.x=x;
+        this.y=y;
+    }
 }
 class CHCanvasGame {
-//    private static CHCanvasGame self=null;
-//    public static CHCanvasGame getInstance(){//得到单一实例
-//        if(self==null)self=new CHCanvasGame();
-//        return self;
-//    }
+    private GameCamera camera;
     CHCanvasGame(){
 
+    }
+    void setCamera(GameCamera c){
+        this.camera=c;
     }
     void init(Activity self, int id){
         Paint paint = new Paint();

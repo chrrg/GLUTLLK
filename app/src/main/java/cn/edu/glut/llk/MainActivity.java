@@ -29,6 +29,9 @@ public class MainActivity extends Activity {
                 ///////////////////////////////////////////////////////
                 CHCanvasGame game = new CHCanvasGame();//初始化游戏引擎
                 game.init(this, R.id.canvas);//设置参数
+                GameCamera camera = new GameCamera();
+                game.setCamera(camera);//设置2d摄像机
+
                 Log.d("onWindowFocusChanged", "width : not return 0" );
             }
     }

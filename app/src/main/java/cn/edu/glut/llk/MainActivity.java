@@ -23,17 +23,4 @@ public class MainActivity extends Activity {
         GameCamera camera = new GameCamera();
         game.setCamera(camera);//设置2d摄像机
     }
-
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//            // activity 可视化 onCreate 之后执行
-//            super.onWindowFocusChanged(hasFocus);
-//            if (hasFocus) {
-//                ///////////////////////////////////////////////////////
-//
-//
-//                Log.d("onWindowFocusChanged", "width : not return 0" );
-//            }
-//    }
-
 }

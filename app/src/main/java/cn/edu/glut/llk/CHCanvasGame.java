@@ -45,6 +45,7 @@ class CHCanvasGame {
                 Bitmap baseBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(baseBitmap);
                 canvas.drawRect(r, paint);
+                image.setImageBitmap(baseBitmap);
             }
         });
     }

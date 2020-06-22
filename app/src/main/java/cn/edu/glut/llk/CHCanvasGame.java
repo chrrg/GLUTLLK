@@ -74,34 +74,13 @@ class GameCamera{
         this.y=y;
     }
 }
-class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-    public GameSurfaceView(Context context) {
-        super(context);
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
-    }
-}
 class CHCanvasGame {
-    private Vector<GameObject> obj=new Vector<GameObject>();
+    private Vector<GameObject> obj=new Vector<>();
     private GameCamera camera;
-    private Bitmap baseBitmap;
     private Canvas canvas;
     private Paint paint;
-    SurfaceView surfaceview;
-    SurfaceHolder surfaceholder;
+    private SurfaceView surfaceview;
+    private SurfaceHolder surfaceholder;
     private int w,h;
     CHCanvasGame(){
 
@@ -150,45 +129,19 @@ class CHCanvasGame {
                     }
                 }).start();
             }
-
             @Override
-            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-            }
-
+            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {}
             @Override
-            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
-            }
+            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {}
         });
-//        canvas = surfaceholder.lockCanvas();
-//        Log.e("www", String.valueOf(surfaceview.getWidth()));
-//        return;
         surfaceview.post(new Runnable() {
             @Override
             public void run() {
                 w=surfaceview.getWidth();
                 h=surfaceview.getHeight();
-//                baseBitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
-//                canvas = new Canvas(baseBitmap);
                 init.onInit();
             }
         });
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//
-//                if(canvas==null||baseBitmap==null)return;
-//                drawOnce(canvas,paint);
-//                image.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        image.setImageBitmap(baseBitmap);
-//                    }
-//                });
-//            }
-//        },0,10);
-
     }
 
 }

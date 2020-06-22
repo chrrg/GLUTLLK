@@ -12,6 +12,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 interface GameObjectDraw{
@@ -32,10 +34,17 @@ class GameObject{
     private String text=null;
     private ObjectStringChange textChange=null;
     private Paint selfPaint;
+    private int index=100;
     private int pic=0;
     public void setPic(int pic){
         baseBitmap=null;
         this.pic=pic;
+    }
+    public void setIndex(int i){
+        index=i;
+    }
+    public int getIndex(){
+        return index;
     }
     public void clear(){
         baseBitmap=null;
@@ -186,6 +195,13 @@ class CHCanvasGame {
     }
     private void drawOnce(Canvas c,Paint paint){
         camera.fixCamera();
+        Collections.sort(obj, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject o1, GameObject o2) {
+                if (o1 != null && o2 != null)return Integer.compare(o1.getIndex(), o2.getIndex());
+                return 0;
+            }
+        });
         for(GameObject ob:obj){
             ob.draw(c,paint,camera);
         }

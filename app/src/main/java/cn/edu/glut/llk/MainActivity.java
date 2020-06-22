@@ -62,7 +62,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         box.y += 1;
         fps.y= (int) (box.y+game.getTime()/10);
         if(fps.y+fps.h>game.getHeight())fps.y=game.getHeight()-fps.h;
-        if(fps.y<0)fps.y=0;
+        if(fps.y<camera.y)fps.y=box.y-500;
         camera.moveCameraY(box.y-500);
     }
 }

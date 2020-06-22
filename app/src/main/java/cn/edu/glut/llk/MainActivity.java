@@ -23,7 +23,6 @@ public class MainActivity extends Activity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-
             // activity 可视化 onCreate 之后执行
             super.onWindowFocusChanged(hasFocus);
             if (hasFocus) {
@@ -32,7 +31,6 @@ public class MainActivity extends Activity {
                 game.init(this, R.id.canvas);//设置参数
                 Log.d("onWindowFocusChanged", "width : not return 0" );
             }
-
-        }
+    }
 
 }

@@ -39,7 +39,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         fps.setString(new ObjectStringChange(){
             @Override
             public String onListener() {
-                return "FPS: "+game.getFPS();
+                return "FPS: "+game.getFPS()+" Time:"+(float)game.getTime()/1000;
             }
         });
         game.addGameObject(fps);
@@ -60,7 +60,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         box.y += 1;
-        fps.y=box.y;
+        fps.y= (int) (box.y+game.getTime()/10);
+        if(fps.y+fps.h>game.getHeight())fps.y=game.getHeight()-fps.h;
         camera.moveCameraY(box.y-500);
     }
 }

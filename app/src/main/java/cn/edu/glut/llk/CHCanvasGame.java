@@ -13,8 +13,8 @@ class GameObject{
     }
 }
 class GameCamera{
-    int x;
-    int y;
+    private int x;
+    private int y;
     int cameraX;
     int cameraY;
     GameCamera(){
@@ -34,14 +34,19 @@ class CHCanvasGame {
         this.camera=c;
     }
     void init(Activity self, int id){
-        Paint paint = new Paint();
+        final Paint paint = new Paint();
         paint.setStrokeWidth(5);
         paint.setColor(Color.RED);
-        ImageView image = self.findViewById(id);
-        RectF r = new RectF(200, 200, 400, 500);
-        Bitmap baseBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(baseBitmap);
-        canvas.drawRect(r, paint);
+        final ImageView image = self.findViewById(id);
+        image.post(new Runnable() {
+            @Override
+            public void run() {
+                RectF r = new RectF(200, 200, 400, 500);
+                Bitmap baseBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(baseBitmap);
+                canvas.drawRect(r, paint);
+            }
+        });
     }
 
 }

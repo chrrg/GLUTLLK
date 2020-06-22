@@ -18,22 +18,22 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_main);
-
+        CHCanvasGame game = new CHCanvasGame();//初始化游戏引擎
+        game.init(this, R.id.canvas);//设置参数
+        GameCamera camera = new GameCamera();
+        game.setCamera(camera);//设置2d摄像机
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-            // activity 可视化 onCreate 之后执行
-            super.onWindowFocusChanged(hasFocus);
-            if (hasFocus) {
-                ///////////////////////////////////////////////////////
-                CHCanvasGame game = new CHCanvasGame();//初始化游戏引擎
-                game.init(this, R.id.canvas);//设置参数
-                GameCamera camera = new GameCamera();
-                game.setCamera(camera);//设置2d摄像机
-
-                Log.d("onWindowFocusChanged", "width : not return 0" );
-            }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//            // activity 可视化 onCreate 之后执行
+//            super.onWindowFocusChanged(hasFocus);
+//            if (hasFocus) {
+//                ///////////////////////////////////////////////////////
+//
+//
+//                Log.d("onWindowFocusChanged", "width : not return 0" );
+//            }
+//    }
 
 }

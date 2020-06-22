@@ -20,11 +20,25 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setCamera(new GameCamera());//设置2d摄像机
-
+        game.setMaxFPS(999);//高帧率模式 设置最大帧率
         GameObject backGround = new GameObject();//新建一个背景
         backGround.set(0, 0, game.getWidth(), game.getHeight());
         backGround.setBackColor(Color.WHITE);
         game.addGameObject(backGround);
+//
+        GameObject fps = new GameObject();//新建一个背景
+        fps.set(0,200,game.getWidth(),200);
+        fps.setBackColor(Color.GREEN);
+        Paint fpsPaint=new Paint();
+        fpsPaint.setTextSize(80);
+        fps.setPaint(fpsPaint);
+        fps.setString(new ObjectStringChange(){
+            @Override
+            public String onListener() {
+                return "FPS: "+game.getFPS();
+            }
+        });
+        game.addGameObject(fps);
         box = new GameObject();//新建一个游戏内对象
         box.set(50, 50, 100, 100);//设置对象X
         box.setDraw(new GameObjectDraw() {

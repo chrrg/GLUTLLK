@@ -120,7 +120,7 @@ class CHCanvasGame {
     private SurfaceHolder surfaceholder;
     private int w,h;
     private boolean isRunning;
-    private int maxFps = 30;//设置帧率
+    private int maxFps = 50;//设置帧率
     private long curfpsTime=0;
     private int fps=0;
     private int curfps=0;

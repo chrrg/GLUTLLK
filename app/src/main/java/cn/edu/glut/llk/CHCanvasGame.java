@@ -2,7 +2,9 @@ package cn.edu.glut.llk;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +14,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
@@ -35,8 +39,8 @@ class GameObject{
     private ObjectStringChange textChange=null;
     private Paint selfPaint;
     private int index=100;
-    private int pic=0;
-    public void setPic(int pic){
+    private Bitmap pic=null;
+    public void setPic(Bitmap pic){
         baseBitmap=null;
         this.pic=pic;
     }
@@ -82,6 +86,10 @@ class GameObject{
             Canvas canvas = new Canvas(baseBitmap);
             if(backColor!=0){
                 canvas.drawColor(backColor);
+            }
+            if (this.pic != null){
+                this.pic=Bitmap.createScaledBitmap(this.pic, this.w, this.h, true);
+                canvas.drawBitmap(this.pic,0,0,paint);
             }
             if (this.od != null){
                 this.od.onDraw(canvas, paint);
@@ -166,11 +174,24 @@ class CHCanvasGame {
     private int curfps=0;
     private int backGroundColor=0;
     private long startTime=System.currentTimeMillis();
+    private Activity activity;
     long getTime(){
         return System.currentTimeMillis()-startTime;
     }
     CHCanvasGame(){
 
+    }
+    Activity getActivity(){
+        return activity;
+    }
+    Bitmap getImage(String filename){
+        AssetManager am=activity.getAssets();
+        try {
+            return BitmapFactory.decodeStream(am.open("1.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     void setBackGroundColor(int color){
         backGroundColor=color;
@@ -209,6 +230,7 @@ class CHCanvasGame {
     @SuppressLint("ClickableViewAccessibility")
     CHCanvasGame init(Activity activity, int id, final GameInit init){
         init.onSetGame(this);
+        this.activity=activity;
         paint = new Paint();
         paint.setStrokeWidth(5);
         paint.setColor(Color.RED);

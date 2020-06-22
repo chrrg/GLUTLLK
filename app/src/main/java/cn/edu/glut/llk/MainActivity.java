@@ -63,7 +63,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         GameObject box2 = new GameObject();//新建一个游戏内对象
         box2.set(110, 100, 150, 100);//设置对象X
         box2.setBackColor(Color.BLUE);
-        box2.setPic(game.getImage("1.jpg"));
+//        box2.setPic(game.getImage("1.jpg"));
+        box2.setGif(game.getGif("1.gif"));
         game.addGameObject(box2);
         new Timer().schedule(this, 0, 5);
     }

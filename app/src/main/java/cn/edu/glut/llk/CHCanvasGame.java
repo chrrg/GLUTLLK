@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Movie;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -40,20 +41,27 @@ class GameObject{
     private Paint selfPaint;
     private int index=100;
     private Bitmap pic=null;
-    public void setPic(Bitmap pic){
+    private Movie gif;
+    private long gifStart;
+    void setPic(Bitmap pic){
         baseBitmap=null;
         this.pic=pic;
+    }
+    void setGif(Movie gif){
+        baseBitmap=null;
+        gifStart=android.os.SystemClock.uptimeMillis();
+        this.gif=gif;
     }
     public void setIndex(int i){
         index=i;
     }
-    public int getIndex(){
+    int getIndex(){
         return index;
     }
     public void clear(){
         baseBitmap=null;
     }
-    public void setPaint(Paint paint){
+    void setPaint(Paint paint){
         selfPaint=paint;
     }
     void setString(String text){
@@ -79,6 +87,9 @@ class GameObject{
                 baseBitmap=null;
             }
         }
+        if(gif !=null){
+            baseBitmap=null;
+        }
         Paint paint;
         if(selfPaint!=null)paint=selfPaint;else paint=paint2;
         if(baseBitmap==null) {
@@ -87,9 +98,15 @@ class GameObject{
             if(backColor!=0){
                 canvas.drawColor(backColor);
             }
-            if (this.pic != null){
-                this.pic=Bitmap.createScaledBitmap(this.pic, this.w, this.h, true);
-                canvas.drawBitmap(this.pic,0,0,paint);
+            if (pic != null){
+                pic=Bitmap.createScaledBitmap(pic, this.w, this.h, true);
+                canvas.drawBitmap(pic,0,0,paint);
+            }
+            if (gif != null){
+                gif.setTime((int) ((android.os.SystemClock.uptimeMillis() - gifStart) % gif.duration()));
+                gif.draw(canvas,0,0);
+//                this.pic=Bitmap.createScaledBitmap(this.pic, this.w, this.h, true);
+//                canvas.drawBitmap(this.pic,0,0,paint);
             }
             if (this.od != null){
                 this.od.onDraw(canvas, paint);
@@ -187,7 +204,16 @@ class CHCanvasGame {
     Bitmap getImage(String filename){
         AssetManager am=activity.getAssets();
         try {
-            return BitmapFactory.decodeStream(am.open("1.jpg"));
+            return BitmapFactory.decodeStream(am.open(filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    Movie getGif(String filename){
+        AssetManager am=activity.getAssets();
+        try {
+            return Movie.decodeStream(am.open(filename));
         } catch (IOException e) {
             e.printStackTrace();
         }

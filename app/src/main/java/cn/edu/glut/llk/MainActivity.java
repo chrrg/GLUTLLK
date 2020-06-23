@@ -26,80 +26,81 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         camera=new GameCamera(-200,200);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(50);//高帧率模式 设置最大帧率 测试最高60
-        GameObject backGround = new GameObject();//新建一个背景
-        backGround.set(0, 0, game.getWidth(), game.getHeight());//相等于屏幕的宽高
-        backGround.setBackColor(Color.WHITE);//白色
-        game.addGameObject(backGround);//将这个新建的对象放入游戏中
-        //----------------------------------
-        fps = new GameObject();//新建一个背景
-        fps.setIndex(101);//层级设置更高 默认100
-        fps.set(0,200,game.getWidth(),80);
-        fps.setBackColor(Color.GREEN);
-        Paint fpsPaint=new Paint();
-        fpsPaint.setTextSize(80);
-        fps.setPaint(fpsPaint);
-        fps.setString(new ObjectStringChange(){
-            @Override
-            public String onListener(){
-                return "FPS: "+game.getFPS()+" Time:"+(float)game.getTime()/1000;
-            }
-        });
-        fps.onTouch(new OnTouchListener(){
-            @Override
-            public boolean onTouchStart(MotionEvent event) {
-                Log.i("onTouchStartfps","2");
-                return false;
-            }
-            @Override
-            public boolean onTouchMove(MotionEvent event) {
-                Log.i("onTouchMovefps","2");
-                box.y += 10;
-                camera.moveY(10);
-                return true;
-            }
-            @Override
-            public boolean onTouchEnd(MotionEvent event) {
-                Log.i("onTouchEndfps","2");
-                camera.setCameraY(-500);
-                return false;
-            }
-        });
-        game.addGameObject(fps);
-        //---------------------------------------
-        box = new GameObject();//新建一个游戏内对象
-        box.setBackColor(Color.YELLOW);
-        box.set(50, 50, 100, 100);//设置对象X
-        box.setDraw(new GameObjectDraw() {
-            @Override
-            public void onDraw(Canvas c, Paint paint) {
-                c.drawCircle(20, 20, 15, paint);
-            }
-        });
-        game.addGameObject(box);
-        //----------------------------------------
-        GameObject box2 = new GameObject();//新建一个游戏内对象
-        box2.set(110, 100, 500, 500);//设置对象X
-//        box2.setBackColor(Color.BLUE);
-        box2.setPic(game.getImage("1.png"));
-        box2.onTouch(new OnTouchListener(){
-            @Override
-            public boolean onTouchStart(MotionEvent event) {
-                Log.i("touchbox2","1");
-                return false;
-            }
-            @Override
-            public boolean onTouchMove(MotionEvent event) {
-                Log.i("onTouchMovebox2","1");
-                return false;
-            }
-            @Override
-            public boolean onTouchEnd(MotionEvent event) {
-                Log.i("onTouchEndbox2","1");
-                return false;
-            }
-        });
-        box2.setGif(game.getGif("1.gif"));
-        game.addGameObject(box2);
+        game.setLayout("1.xml");
+//        GameObject backGround = new GameObject();//新建一个背景
+//        backGround.set(0, 0, game.getWidth(), game.getHeight());//相等于屏幕的宽高
+//        backGround.setBackColor(Color.WHITE);//白色
+//        game.addGameObject(backGround);//将这个新建的对象放入游戏中
+//        //----------------------------------
+//        fps = new GameObject();//新建一个背景
+//        fps.setIndex(101);//层级设置更高 默认100
+//        fps.set(0,200,game.getWidth(),80);
+//        fps.setBackColor(Color.GREEN);
+//        Paint fpsPaint=new Paint();
+//        fpsPaint.setTextSize(80);
+//        fps.setPaint(fpsPaint);
+//        fps.setString(new ObjectStringChange(){
+//            @Override
+//            public String onListener(){
+//                return "FPS: "+game.getFPS()+" Time:"+(float)game.getTime()/1000;
+//            }
+//        });
+//        fps.onTouch(new OnTouchListener(){
+//            @Override
+//            public boolean onTouchStart(MotionEvent event) {
+//                Log.i("onTouchStartfps","2");
+//                return false;
+//            }
+//            @Override
+//            public boolean onTouchMove(MotionEvent event) {
+//                Log.i("onTouchMovefps","2");
+//                box.y += 10;
+//                camera.moveY(10);
+//                return true;
+//            }
+//            @Override
+//            public boolean onTouchEnd(MotionEvent event) {
+//                Log.i("onTouchEndfps","2");
+//                camera.setCameraY(-500);
+//                return false;
+//            }
+//        });
+//        game.addGameObject(fps);
+//        //---------------------------------------
+//        box = new GameObject();//新建一个游戏内对象
+//        box.setBackColor(Color.YELLOW);
+//        box.set(50, 50, 100, 100);//设置对象X
+//        box.setDraw(new GameObjectDraw() {
+//            @Override
+//            public void onDraw(Canvas c, Paint paint) {
+//                c.drawCircle(20, 20, 15, paint);
+//            }
+//        });
+//        game.addGameObject(box);
+//        //----------------------------------------
+//        GameObject box2 = new GameObject();//新建一个游戏内对象
+//        box2.set(110, 100, 500, 500);//设置对象X
+////        box2.setBackColor(Color.BLUE);
+//        box2.setPic(game.getImage("1.png"));
+//        box2.onTouch(new OnTouchListener(){
+//            @Override
+//            public boolean onTouchStart(MotionEvent event) {
+//                Log.i("touchbox2","1");
+//                return false;
+//            }
+//            @Override
+//            public boolean onTouchMove(MotionEvent event) {
+//                Log.i("onTouchMovebox2","1");
+//                return false;
+//            }
+//            @Override
+//            public boolean onTouchEnd(MotionEvent event) {
+//                Log.i("onTouchEndbox2","1");
+//                return false;
+//            }
+//        });
+//        box2.setGif(game.getGif("1.gif"));
+//        game.addGameObject(box2);
 //        new Timer().schedule(this, 0, 5);
     }
     @Override

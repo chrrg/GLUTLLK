@@ -9,19 +9,27 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Movie;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import org.w3c.dom.Document;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 interface GameObjectDraw{
     void onDraw(Canvas c,Paint paint);
@@ -50,6 +58,7 @@ class GameObject{
     private Bitmap pic=null;
     private Movie gif;
     private long gifStart;
+    private Vector<GameObject> children;
     OnTouchListener touch;
     private boolean display=true;
     void onTouch(OnTouchListener touch){
@@ -263,6 +272,17 @@ class CHCanvasGame {
     void addGameObject(GameObject o){
         obj.add(o);
     }
+    void setLayout(String filename){
+        DocumentBuilderFactory xml = DocumentBuilderFactory.newInstance();
+        try {
+            AssetManager am=activity.getAssets();
+            DocumentBuilder db = xml.newDocumentBuilder();
+            Document doc = db.parse(am.open(filename));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void sort(){
         Collections.sort(obj, new Comparator<GameObject>() {
             @Override
@@ -274,6 +294,7 @@ class CHCanvasGame {
     }
     private void drawOnce(Canvas c,Paint paint){
         camera.fixCamera();
+        if(backGroundColor!=0)canvas.drawColor(backGroundColor);
         sort();
         for(GameObject ob:obj){
             ob.draw(c,paint,camera);
@@ -370,8 +391,12 @@ class CHCanvasGame {
                                 curfps=0;
                             }
                             try {
-                                canvas = surfaceholder.lockCanvas();
-                                if(backGroundColor!=0)canvas.drawColor(backGroundColor);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    canvas = surfaceholder.lockHardwareCanvas();
+                                }else{
+                                    canvas = surfaceholder.lockCanvas();
+                                }
                                 if(canvas!=null&&camera!=null) {
                                     drawOnce(canvas, paint);
                                 }

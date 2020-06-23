@@ -22,14 +22,15 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void onInit() {
-        game.setBackGroundColor(Color.GRAY);
-        camera=new GameCamera(-200,200);
+        game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
+        camera=new GameCamera(-200,200);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(50);//高帧率模式 设置最大帧率 测试最高60
         GameObject backGround = new GameObject();//新建一个背景
-        backGround.set(0, 0, game.getWidth(), game.getHeight());
-        backGround.setBackColor(Color.WHITE);
-        game.addGameObject(backGround);
+        backGround.set(0, 0, game.getWidth(), game.getHeight());//相等于屏幕的宽高
+        backGround.setBackColor(Color.WHITE);//白色
+        game.addGameObject(backGround);//将这个新建的对象放入游戏中
+        //----------------------------------
         fps = new GameObject();//新建一个背景
         fps.setIndex(101);//层级设置更高 默认100
         fps.set(0,200,game.getWidth(),80);
@@ -64,6 +65,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
             }
         });
         game.addGameObject(fps);
+        //---------------------------------------
         box = new GameObject();//新建一个游戏内对象
         box.setBackColor(Color.YELLOW);
         box.set(50, 50, 100, 100);//设置对象X
@@ -73,8 +75,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
                 c.drawCircle(20, 20, 15, paint);
             }
         });
-
         game.addGameObject(box);
+        //----------------------------------------
         GameObject box2 = new GameObject();//新建一个游戏内对象
         box2.set(110, 100, 500, 500);//设置对象X
 //        box2.setBackColor(Color.BLUE);
@@ -96,7 +98,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
                 return false;
             }
         });
-//        box2.setGif(game.getGif("1.gif"));
+        box2.setGif(game.getGif("1.gif"));
         game.addGameObject(box2);
 //        new Timer().schedule(this, 0, 5);
     }
@@ -108,6 +110,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         if(fps.y+fps.h>game.getHeight())fps.y=game.getHeight()-fps.h;
         if(fps.y<camera.getY())fps.y=box.y-500;
         camera.setCameraY(box.y-500);
+        if(game.getTime()>2000)fps.setDisplay(false);
     }
 }
 public class MainActivity extends Activity {

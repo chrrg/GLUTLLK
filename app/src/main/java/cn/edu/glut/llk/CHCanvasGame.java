@@ -98,6 +98,7 @@ class GameObject{
         game.remove(this);
     }
     void draw(Canvas c,Paint paint2,GameCamera camera){
+        if(!display)return;//不显示的不渲染
         if(textChange !=null){
             String temp=textChange.onListener();
             if(text==null||!text.equals(temp)){
@@ -295,37 +296,57 @@ class CHCanvasGame {
                 int x = (int)event.getX()+camera.getX();
                 int y = (int)event.getY()+camera.getY();
                 boolean result=false;
-                Log.i("event.getAction()", String.valueOf(event.getAction()));
-                synchronized(obj) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {//ACTION_MOVE ACTION_UP
-                        //                    sort();
-                        for (GameObject ob : obj) {
-                            if (ob.isIn(x, y)) {
-                                kv.add(ob);
-                                Log.i("event.getActionIndex()", String.valueOf(event.getActionIndex()));
-//                                kv.put(event.getActionIndex(),ob);
-                                if (ob.touch != null) result = ob.touch.onTouchStart(event);
-                                if (result) return true;//处理完成
-                            }
-                        }
-                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                        //                    sort();
-                        for (GameObject ob : obj) {
-                            if (ob.isIn(x, y)) {
-                                if (ob.touch != null) result = ob.touch.onTouchMove(event);
-                                if (result) return true;//处理完成
-                            }
-                        }
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        //                    sort();
-                        for (GameObject ob : obj) {
-                            if (ob.isIn(x, y)) {
-                                if (ob.touch != null) result = ob.touch.onTouchEnd(event);
-                                if (result) return true;//处理完成
-                            }
-                        }
-                    }
+//                Log.i("event.getAction()", String.valueOf(event.getActionIndex())+"|"+String.valueOf(event.getActionMasked()));
+                int action=event.getActionMasked();
+                switch(action){
+                    case MotionEvent.ACTION_DOWN://一个点按下
+                        Log.i("一个点按下","一个点按下");
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN://多个点按下
+                        Log.i("多个点按下","多个点按下");
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        Log.i("移动","移动");
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                        Log.i("松开了某一个","松开了某一个");
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        Log.i("全部松开了","全部松开了");
+                        break;
                 }
+//                return true;
+//                synchronized(obj) {
+//                    if (event.getAction() == MotionEvent.ACTION_DOWN) {//ACTION_MOVE ACTION_UP
+//                        //                    sort();
+//                        for (GameObject ob : obj) {
+//                            if (ob.isIn(x, y)) {
+//                                kv.add(ob);
+//                                Log.i("event.getActionIndex()", String.valueOf(event.getActionIndex()));
+////                                kv.put(event.getActionIndex(),ob);
+//                                if (ob.touch != null) result = ob.touch.onTouchStart(event);
+//                                if (result) return true;//处理完成
+//                            }
+//                        }
+//                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//                        //                    sort();
+//                        for (GameObject ob : obj) {
+//                            if (ob.isIn(x, y)) {
+//                                if (ob.touch != null) result = ob.touch.onTouchMove(event);
+//                                if (result) return true;//处理完成
+//                            }
+//                        }
+//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                        //                    sort();
+//                        for (GameObject ob : obj) {
+//                            if (ob.isIn(x, y)) {
+//                                if (ob.touch != null) result = ob.touch.onTouchEnd(event);
+//                                if (result) return true;//处理完成
+//                            }
+//                        }
+//                    }
+//                }
                 return true;
             }
         });

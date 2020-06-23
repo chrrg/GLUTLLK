@@ -16,9 +16,11 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 interface GameObjectDraw{
@@ -30,6 +32,11 @@ interface GameInit{
 }
 interface ObjectStringChange{
     String onListener();
+}
+interface OnTouchListener{
+    boolean onTouchStart(MotionEvent event);
+    boolean onTouchMove(MotionEvent event);
+    boolean onTouchEnd(MotionEvent event);
 }
 class GameObject{
     int x,y,w,h;
@@ -43,6 +50,17 @@ class GameObject{
     private Bitmap pic=null;
     private Movie gif;
     private long gifStart;
+    OnTouchListener touch;
+    private boolean display=true;
+    void onTouch(OnTouchListener touch){
+        this.touch=touch;
+    }
+    void setDisplay(boolean display){
+        this.display=display;
+    }
+    boolean isIn(int touchX,int touchY){
+        return touchX>x&&touchX<x+w&&touchY>y&&touchY<y+h;
+    }
     void setPic(Bitmap pic){
         baseBitmap=null;
         this.pic=pic;
@@ -52,7 +70,7 @@ class GameObject{
         gifStart=android.os.SystemClock.uptimeMillis();
         this.gif=gif;
     }
-    public void setIndex(int i){
+    void setIndex(int i){
         index=i;
     }
     int getIndex(){
@@ -103,10 +121,14 @@ class GameObject{
                 canvas.drawBitmap(pic,0,0,paint);
             }
             if (gif != null){
-                gif.setTime((int) ((android.os.SystemClock.uptimeMillis() - gifStart) % gif.duration()));
-                gif.draw(canvas,0,0);
-//                this.pic=Bitmap.createScaledBitmap(this.pic, this.w, this.h, true);
-//                canvas.drawBitmap(this.pic,0,0,paint);
+                Bitmap tempBitmap = Bitmap.createBitmap(gif.width(),gif.height(), Bitmap.Config.ARGB_8888);
+                Canvas temp=new Canvas(tempBitmap);
+                int duration=gif.duration();
+                if(duration==0)duration=1000;
+                gif.setTime((int) ((android.os.SystemClock.uptimeMillis() - gifStart) % duration));
+                gif.draw(temp,0,0);
+                tempBitmap=Bitmap.createScaledBitmap(tempBitmap, this.w, this.h, true);
+                canvas.drawBitmap(tempBitmap,0,0,paint);
             }
             if (this.od != null){
                 this.od.onDraw(canvas, paint);
@@ -129,15 +151,15 @@ class GameObject{
 }
 
 class GameCamera{
-    private int x=0;
+    private int x=0;//当前摄像机位置
     private int y=0;
-    private int cameraX;
+    private int cameraX;//平滑摄像机预计到达的位置
     private int cameraY;
-    void setX(int x){
+    private void setX(int x){
         this.x=x;
         cameraX=x;
     }
-    void setY(int y){
+    private void setY(int y){
         this.y=y;
         cameraY=y;
     }
@@ -155,11 +177,11 @@ class GameCamera{
     }
     void moveX(int x){
         this.x+=x;
-        cameraX=x;
+        cameraX=this.x;
     }
     void moveY(int y){
         this.y+=y;
-        cameraY=y;
+        cameraY=this.y;
     }
     void setCameraX(int x){
         cameraX=x;
@@ -240,8 +262,7 @@ class CHCanvasGame {
     void addGameObject(GameObject o){
         obj.add(o);
     }
-    private void drawOnce(Canvas c,Paint paint){
-        camera.fixCamera();
+    private void sort(){
         Collections.sort(obj, new Comparator<GameObject>() {
             @Override
             public int compare(GameObject o1, GameObject o2) {
@@ -249,6 +270,10 @@ class CHCanvasGame {
                 return 0;
             }
         });
+    }
+    private void drawOnce(Canvas c,Paint paint){
+        camera.fixCamera();
+        sort();
         for(GameObject ob:obj){
             ob.draw(c,paint,camera);
         }
@@ -260,15 +285,46 @@ class CHCanvasGame {
         paint = new Paint();
         paint.setStrokeWidth(5);
         paint.setColor(Color.RED);
+        paint.setAntiAlias(true);
+        paint.setDither(true);
         surfaceview = activity.findViewById(id);
+        final ArrayList<GameObject> kv = new ArrayList<>();
         surfaceview.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                int x = (int)event.getX();
-                int y = (int)event.getY();
-//                Log.e("action", String.valueOf(event.getAction())+"|"+x+"|"+y);
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {//ACTION_MOVE ACTION_UP
-
+                int x = (int)event.getX()+camera.getX();
+                int y = (int)event.getY()+camera.getY();
+                boolean result=false;
+                Log.i("event.getAction()", String.valueOf(event.getAction()));
+                synchronized(obj) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {//ACTION_MOVE ACTION_UP
+                        //                    sort();
+                        for (GameObject ob : obj) {
+                            if (ob.isIn(x, y)) {
+                                kv.add(ob);
+                                Log.i("event.getActionIndex()", String.valueOf(event.getActionIndex()));
+//                                kv.put(event.getActionIndex(),ob);
+                                if (ob.touch != null) result = ob.touch.onTouchStart(event);
+                                if (result) return true;//处理完成
+                            }
+                        }
+                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                        //                    sort();
+                        for (GameObject ob : obj) {
+                            if (ob.isIn(x, y)) {
+                                if (ob.touch != null) result = ob.touch.onTouchMove(event);
+                                if (result) return true;//处理完成
+                            }
+                        }
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        //                    sort();
+                        for (GameObject ob : obj) {
+                            if (ob.isIn(x, y)) {
+                                if (ob.touch != null) result = ob.touch.onTouchEnd(event);
+                                if (result) return true;//处理完成
+                            }
+                        }
+                    }
                 }
                 return true;
             }

@@ -1,19 +1,13 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
+import android.util.Log;
+import android.view.MotionEvent;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,7 +23,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);
-        camera=new GameCamera(-100,200);
+        camera=new GameCamera(-200,200);
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(50);//高帧率模式 设置最大帧率 测试最高60
         GameObject backGround = new GameObject();//新建一个背景
@@ -37,15 +31,36 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         backGround.setBackColor(Color.WHITE);
         game.addGameObject(backGround);
         fps = new GameObject();//新建一个背景
+        fps.setIndex(101);//层级设置更高 默认100
         fps.set(0,200,game.getWidth(),80);
         fps.setBackColor(Color.GREEN);
-        Paint fpsPaint=new Paint(                                                                                                                                                                                                                                                                                                                                                                                                                                                           );
+        Paint fpsPaint=new Paint();
         fpsPaint.setTextSize(80);
         fps.setPaint(fpsPaint);
         fps.setString(new ObjectStringChange(){
             @Override
             public String onListener(){
                 return "FPS: "+game.getFPS()+" Time:"+(float)game.getTime()/1000;
+            }
+        });
+        fps.onTouch(new OnTouchListener(){
+            @Override
+            public boolean onTouchStart(MotionEvent event) {
+                Log.i("onTouchStartfps","2");
+                return false;
+            }
+            @Override
+            public boolean onTouchMove(MotionEvent event) {
+                Log.i("onTouchMovefps","2");
+                box.y += 10;
+                camera.moveY(10);
+                return true;
+            }
+            @Override
+            public boolean onTouchEnd(MotionEvent event) {
+                Log.i("onTouchEndfps","2");
+                camera.setCameraY(-500);
+                return false;
             }
         });
         game.addGameObject(fps);
@@ -61,15 +76,33 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 
         game.addGameObject(box);
         GameObject box2 = new GameObject();//新建一个游戏内对象
-        box2.set(110, 100, 150, 100);//设置对象X
-        box2.setBackColor(Color.BLUE);
-//        box2.setPic(game.getImage("1.jpg"));
-        box2.setGif(game.getGif("1.gif"));
+        box2.set(110, 100, 500, 500);//设置对象X
+//        box2.setBackColor(Color.BLUE);
+        box2.setPic(game.getImage("1.png"));
+        box2.onTouch(new OnTouchListener(){
+            @Override
+            public boolean onTouchStart(MotionEvent event) {
+                Log.i("touchbox2","1");
+                return false;
+            }
+            @Override
+            public boolean onTouchMove(MotionEvent event) {
+                Log.i("onTouchMovebox2","1");
+                return false;
+            }
+            @Override
+            public boolean onTouchEnd(MotionEvent event) {
+                Log.i("onTouchEndbox2","1");
+                return false;
+            }
+        });
+//        box2.setGif(game.getGif("1.gif"));
         game.addGameObject(box2);
-        new Timer().schedule(this, 0, 5);
+//        new Timer().schedule(this, 0, 5);
     }
     @Override
     public void run() {//定时器 对象向下移动
+        Log.e("run","run");
         box.y += 1;
         fps.y= (int) (box.y+game.getTime()/10);
         if(fps.y+fps.h>game.getHeight())fps.y=game.getHeight()-fps.h;
@@ -86,6 +119,6 @@ public class MainActivity extends Activity {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_main);
-        if(game==null) game = new CHCanvasGame().init(this, R.id.canvas, new LLKGame());;//初始化游戏引擎
+        if(game==null) game = new CHCanvasGame().init(this, R.id.canvas, new LLKGame());//初始化游戏引擎
     }
 }

@@ -25,7 +25,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
         camera=new GameCamera(game,-200,200);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
-        game.setMaxFPS(50);//高帧率模式 设置最大帧率 测试最高60
+        game.setMaxFPS(90);//高帧率模式 设置最大帧率 测试最高60
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
 //        GameObject backGround = new GameObject();//新建一个背景
 //        backGround.set(0, 0, game.getWidth(), game.getHeight());//相等于屏幕的宽高

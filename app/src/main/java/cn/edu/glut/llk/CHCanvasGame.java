@@ -421,6 +421,31 @@ class CHOpenGL implements GLSurfaceView.Renderer{
     private float[] mMVPMatrix = new float[16];
     Bitmap b;
     ByteBuffer mBuf;
+    private static String VERTEX_SHADER = "" +
+            "precision mediump float;\n" +
+            "attribute vec4 position;\n" +               // 顶点着色器的顶点坐标,由外部程序传入
+            "attribute vec2 inputTextureCoordinate;\n" + // 传入的纹理坐标
+            "attribute vec4 aColor;\n" +
+            "varying vec4 mColor;\n" +                    // 传入的纹理坐标
+            "uniform mat4 transform;" +                   // 变换矩阵
+            "varying vec2 textureCoordinate;\n" +
+            " \n" +
+            "void main()\n" +
+            "{\n" +
+            "    gl_Position = transform*position;\n" +
+            "    mColor = aColor;\n" +
+            "    textureCoordinate = inputTextureCoordinate;\n" + // 最终顶点位置
+            "}";
+    // 光栅化后产生了多少个片段，就会插值计算出多少个varying变量，同时渲染管线就会调用多少次片段着色器
+    private static String FRAGMENT_SHADER =
+            "precision mediump float;\n" +
+                    "varying vec2 textureCoordinate;\n" + // 最终顶点位置，上面顶点着色器的varying变量会传递到这里
+                    "uniform sampler2D vTexture;\n" + // 外部传入的图片纹理 即代表整张图片的数据
+                    "varying vec4 mColor;\n" + // 传入的纹理坐标
+                    "void main()\n" +
+                    "{" +
+                    "gl_FragColor =mix ( texture2D(vTexture,vec2(1.0-textureCoordinate.x,textureCoordinate.y)) , mColor,0.2);" + // 增加1.0 - ，为了使图像反转
+                    "}";
     private int assembleProgram(int vertexShader, int fragmentShader) {
         int program = GLES20.glCreateProgram();
         if (program == 0) throw new RuntimeException("Cannot create GL program: " + GLES20.glGetError());
@@ -437,35 +462,10 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         return program;
     }
     @Override
-    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {//创建时
 //                surfaceview.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        String VERTEX_SHADER = "" +
-                "precision mediump float;\n" +
-                "attribute vec4 position;\n" +               // 顶点着色器的顶点坐标,由外部程序传入
-                "attribute vec2 inputTextureCoordinate;\n" + // 传入的纹理坐标
-                "attribute vec4 aColor;\n" +
-                "varying vec4 mColor;\n" +                    // 传入的纹理坐标
-                "uniform mat4 transform;" +                   // 变换矩阵
-                "varying vec2 textureCoordinate;\n" +
-                " \n" +
-                "void main()\n" +
-                "{\n" +
-                "    gl_Position = transform*position;\n" +
-                "    mColor = aColor;\n" +
-                "    textureCoordinate = inputTextureCoordinate;\n" + // 最终顶点位置
-                "}";
-        // 光栅化后产生了多少个片段，就会插值计算出多少个varying变量，同时渲染管线就会调用多少次片段着色器
-        String FRAGMENT_SHADER =
-                "precision mediump float;\n" +
-                        "varying vec2 textureCoordinate;\n" + // 最终顶点位置，上面顶点着色器的varying变量会传递到这里
-                        "uniform sampler2D vTexture;\n" + // 外部传入的图片纹理 即代表整张图片的数据
-                        "varying vec4 mColor;\n" + // 传入的纹理坐标
-                        "void main()\n" +
-                        "{" +
-                        "gl_FragColor =mix ( texture2D(vTexture,vec2(1.0-textureCoordinate.x,textureCoordinate.y)) , mColor,0.2);" + // 增加1.0 - ，为了使图像反转
-                        "}";
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER);//加载顶点
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER);//加载
+        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER);//加载顶点着色器
+        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER);//加载片元着色器
         int mProgram=assembleProgram(vertexShader,fragmentShader);
         GLES20.glUseProgram(mProgram);//必须 使用
 
@@ -509,7 +509,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //                GLES20.glGenTextures(1,);
     }
     @Override
-    public void onSurfaceChanged(GL10 gl10, int width, int height) {
+    public void onSurfaceChanged(GL10 gl10, int width, int height) {//改变时
         GLES20.glViewport(0, 0, width, height); // 设置窗口大小
         Log.e("TAG", "onSurfaceChanged: width=" + width + " height=" + height);
         int w = b.getWidth();
@@ -536,23 +536,9 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectMatrix, 0, mViewMatrix, 0);
         loadBuffer();
     }
-    @Override
-    public void onDrawFrame(GL10 gl10) {
-
-//                GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-//                GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        long startMs = System.currentTimeMillis();
-        curfps++;
-        if(curfpsTime==0){
-            curfpsTime=System.currentTimeMillis();
-        }
-        if(startMs>curfpsTime+1000){
-            Log.e("当前FPS:", String.valueOf(curfps));
-            curfpsTime=startMs;
-            fps=curfps;
-            curfps=0;
-        }
-
+    private void doDraw(){
+//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);//清空画布
+//        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         // 顶点
         GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 12, mCubeBuffer);
         GLES20.glEnableVertexAttribArray(mPositionHandle);
@@ -602,12 +588,20 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //                        surfaceholder.unlockCanvasAndPost(canvas);
 //                    }
 //                }
-        long endMs = System.currentTimeMillis();
-        long needTime = 1000 / maxFps;
-        long usedTime = endMs - startMs;
-        if (usedTime < needTime) {
+    }
+    @Override
+    public void onDrawFrame(GL10 gl10) {
+        long startMs = System.currentTimeMillis();
+        if(startMs>curfpsTime+1000){
+            Log.e("当前FPS:", String.valueOf(curfps));
+            curfpsTime=startMs;fps=curfps;curfps=0;
+        }
+        doDraw();
+        curfps++;
+        long time = 1000 / maxFps  + startMs - System.currentTimeMillis();
+        if (time>0) {
             try {
-                Thread.sleep(needTime - usedTime);
+                Thread.sleep(time);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

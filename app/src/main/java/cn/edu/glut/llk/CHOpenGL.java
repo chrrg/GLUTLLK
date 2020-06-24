@@ -86,11 +86,13 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //    int mMvpMatrixHandle;
 
 //    int mGLTextureId;  // 纹理ID
-//    private float[] mViewMatrix = new float[16];
+
 //    private float[] mProjectMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
-    private final float[] mCameraMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
+    private float[] mViewMatrix = new float[16];
+    private final float[] mProjectionMatrix = new float[16];
+//    private final float[] mCameraMatrix = new float[16];
+
     private Bitmap b;
 //    ByteBuffer mBuf;
     private FloatBuffer textureBuffer;
@@ -127,17 +129,10 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         tt1=genImage(b);
         tt2=genImage(b2);
 
-        vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(vertexData);
-        vertexBuffer.position(0);
-
-        textureBuffer = ByteBuffer.allocateDirect(textureData.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(textureData);
-        textureBuffer.position(0);
+        vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertexData);
+        vertexBuffer.flip();
+        textureBuffer = ByteBuffer.allocateDirect(textureData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(textureData);
+        textureBuffer.flip();
 //                surfaceview.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 //        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, game.getAsset("OpenGL/1.vert"));//加载顶点着色器
 //        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, game.getAsset("OpenGL/1.frag"));//加载片元着色器
@@ -190,6 +185,8 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //    private final float[] mVMatrix= new float[16];
     //透视矩阵与视图矩阵变换后的总矩阵
 //    private final float[] mMVPMatrix= new float[16];
+//    private float[] modelMatrix = new float[16];
+//    private float[] modelViewProjectionMatrix = new float[16];
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {//改变时
         GLES20.glViewport(0, 0, width, height); // 设置窗口大小
@@ -219,6 +216,22 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //        //计算变换矩阵
 //        Matrix.multiplyMM(mMVPMatrix, 0, mProjectMatrix, 0, mViewMatrix, 0);
 //        loadBuffer();
+//        Matrix.perspectiveM(mProjectionMatrix, 0, 70f, 0, 1, 1000f);
+
+        // 创建透视投影
+//        Matrix.frustumM(mProjectionMatrix, 0, -12, 12, -1, 1, 3, 7);
+        float ratio = (float) width / height;
+        Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, 1, 10);
+        // 移动视角，等同于模型矩阵沿z轴移动2.8
+
+// 定义模型矩阵
+//        Matrix.setIdentityM(modelMatrix, 0);
+//        Matrix.rotateM(modelMatrix, 0, -60, 1f, 0f, 0f);
+//        Matrix.multiplyMM(modelViewProjectionMatrix, 0, mMVPMatrix,0, modelMatrix, 0);
+//        Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 2.8f, 0f, 0f, 0f, 0f, 1f, 0f);
+//        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+// 生成新的视图工程模型
+//        Matrix.multiplyMM(viewProjectMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
     }
 //    public FloatBuffer setupTriangle(float[] verticesPosition) {
 //        short[] indices = new short[]{0, 1, 2, 0, 2, 3}; // The order of vertexrendering.
@@ -262,20 +275,15 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
         return textures[0];
     }
-    void draw(int id){
+    private void draw(int id){
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,id);
-        //顶点坐标
         GLES20.glEnableVertexAttribArray(mPositionHandle);
-        GLES20.glVertexAttribPointer(mPositionHandle, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        //纹理坐标
         GLES20.glEnableVertexAttribArray(mTextureHandle);
+        GLES20.glVertexAttribPointer(mPositionHandle, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer);
         GLES20.glVertexAttribPointer(mTextureHandle, 2, GLES20.GL_FLOAT, false, 8, textureBuffer);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mTextureHandle);
-
     }
 //    public FloatBuffer setupImage(Bitmap bmp) {
 //        float[] uvs = new float[]{
@@ -326,22 +334,28 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //        GLES20.glDisableVertexAttribArray(mTexCoordLoc);
 //    }
     private void doDraw(){
-
-        Matrix.setLookAtM(mCameraMatrix, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mCameraMatrix, 0);
-
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);//清屏缓冲区
-        GLES20.glClearColor(1.0f,1.0f,1.0f,1.0f);//利用颜色清屏
-
         GLES20.glUseProgram(mProgram);
+        //Set the camera position (View matrix)
+        Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 2.8f, 0f, 0f, 0f, 0f, 1f, 0f);
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+//        Matrix.setLookAtM(mCameraMatrix, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+//        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mCameraMatrix, 0);
+//        int mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mMVPMatrix, 0);
+
+//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);//清屏缓冲区
+//        GLES20.glClearColor(1.0f,1.0f,1.0f,1.0f);//利用颜色清屏
+
+
 
 //        GLES20.glEnableVertexAttribArray(mPositionHandle);
 //        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false,12, verticalsBuffer);
 //        if(Math.random()<0.5)draw(tt2);
 //        if(Math.random()<0.5)draw(tt1);
         draw(tt2);draw(tt1);
-        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mMVPMatrix, 0);
-        GLES20.glUniform1i(mGLUniformTexture, 0);
+//        GLES20.glUniformMatrix4fv(mMatrixHandle, 1, false, mMVPMatrix, 0);
+//        GLES20.glUniform1i(mGLUniformTexture, 0);
 //        GLES20.glDisableVertexAttribArray(mPositionHandle);
 
 //        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);//清空画布

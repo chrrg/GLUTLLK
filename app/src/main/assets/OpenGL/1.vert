@@ -15,5 +15,5 @@ void main(){
 //    textureCoordinate = inputTextureCoordinate;
     v_texCoord = mTexture;
 //    gl_Position=mPosition;
-    gl_Position=uMVPMatrix * mPosition;
+    gl_Position=uMVPMatrix  * mPosition;
 }

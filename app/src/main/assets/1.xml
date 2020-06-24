@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<obj>
-
-
-</obj>
+<box overflow="hidden">
+    <box x="" y="" w="" h="">
+        <text text="文本1"/>
+        <img src="1.gif"/>
+    </box>
+    <box>
+        <text text="文本2"/>
+    </box>
+</box>

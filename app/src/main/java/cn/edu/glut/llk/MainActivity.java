@@ -23,10 +23,10 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        camera=new GameCamera(-200,200);//新建摄像机
+        camera=new GameCamera(game,-200,200);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(50);//高帧率模式 设置最大帧率 测试最高60
-        game.setLayout("1.xml");
+        game.setGameObject(game.getGameObjectFromXML("1.xml"));
 //        GameObject backGround = new GameObject();//新建一个背景
 //        backGround.set(0, 0, game.getWidth(), game.getHeight());//相等于屏幕的宽高
 //        backGround.setBackColor(Color.WHITE);//白色
@@ -105,13 +105,13 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
-        Log.e("run","run");
-        box.y += 1;
-        fps.y= (int) (box.y+game.getTime()/10);
-        if(fps.y+fps.h>game.getHeight())fps.y=game.getHeight()-fps.h;
-        if(fps.y<camera.getY())fps.y=box.y-500;
-        camera.setCameraY(box.y-500);
-        if(game.getTime()>2000)fps.setDisplay(false);
+//        Log.e("run","run");
+//        box.y += 1;
+//        fps.y= (int) (box.y+game.getTime()/10);
+//        if(fps.y+fps.h>game.getHeight())fps.y=game.getHeight()-fps.h;
+//        if(fps.y<camera.getY())fps.y=box.y-500;
+//        camera.setCameraY(box.y-500);
+//        if(game.getTime()>2000)fps.setDisplay(false);
     }
 }
 public class MainActivity extends Activity {
@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        setContentView(R.layout.activity_main);
-        if(game==null) game = new CHCanvasGame().init(this, R.id.canvas, new LLKGame());//初始化游戏引擎
+        if(game==null) game = new CHCanvasGame(this, R.id.canvas, new LLKGame());//初始化游戏引擎
+        setContentView(game.getContentView());
     }
 }

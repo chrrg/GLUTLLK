@@ -28,7 +28,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -341,273 +343,6 @@ class GameCamera{
         setY(y);
     }
 }
-class CHOpenGL implements GLSurfaceView.Renderer{
-    private int maxFps = 50;//设置帧率
-    private long curfpsTime=0;
-    private int fps=0;
-    private int curfps=0;
-    CHCanvasGame game=null;
-    CHOpenGL(CHCanvasGame game){
-        this.game=game;
-    }
-    void setMaxFps(int maxFps){
-        this.maxFps=maxFps;
-    }
-    int getMaxFps(){
-        return maxFps;
-    }
-    public int getFps() {
-        return fps;
-    }
-    // 原始的矩形区域的顶点坐标
-    private static final float CUBE[] = {
-            -1.0f, -1.0f,0.0f, // v1
-            1.0f, -1.0f, 0.0f, // v2
-            -1.0f, 1.0f,0.0f,  // v3
-            1.0f, 1.0f,  0.0f, // v4
-    };
-    // 纹理坐标，每个坐标的纹理采样对应上面顶点坐标。
-    // 纹理为0 ~ 2，会有四分屏
-    private static final float TEXTURE_NO_ROTATION[] = {
-            0.0f, 1.0f, // v1
-            1.0f, 1.0f, // v2
-            0.0f, 0.0f, // v3
-            1.0f, 0.0f, // v4
-    };
-    //设置颜色
-    private static final float COLORS[] = {
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f
-    };
-    private int loadShader(int type, String shaderCode) {
-        //根据type创建顶点着色器或者片元着色器
-        int shader = GLES20.glCreateShader(type);
-        //将资源加入到着色器中，并编译
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        return shader;
-    }
-    // 初始化buffer
-    private static FloatBuffer initBuffer(float[] buffers) {
-        // 先初始化buffer,数组的长度*4,因为一个float占4个字节
-        ByteBuffer mbb = ByteBuffer.allocateDirect(buffers.length * 4);
-        // 数组排列用nativeOrder
-        mbb.order(ByteOrder.nativeOrder());
-        FloatBuffer floatBuffer = mbb.asFloatBuffer();
-        floatBuffer.put(buffers);
-        floatBuffer.flip();
-        return floatBuffer;
-    }
-    private FloatBuffer mCubeBuffer;
-    private FloatBuffer mTextureBuffer;
-    private FloatBuffer mColorBuffer;
-    private FloatBuffer mMatrixBuffer;
-    // 加载Buffer
-    private void loadBuffer() {
-        mCubeBuffer = initBuffer(CUBE);
-        mTextureBuffer = initBuffer(TEXTURE_NO_ROTATION);
-        mColorBuffer = initBuffer(COLORS);
-        mMatrixBuffer = initBuffer(mMVPMatrix);
-    }
-    int mPositionHandle;
-    int mColorHandle;
-    int mTextureHandle;
-    int mMvpMatrixHandle;
-    int mGLUniformTexture;
-    int mGLTextureId;  // 纹理ID
-    private float[] mViewMatrix = new float[16];
-    private float[] mProjectMatrix = new float[16];
-    private float[] mMVPMatrix = new float[16];
-    Bitmap b;
-    ByteBuffer mBuf;
-    private static String VERTEX_SHADER = "" +
-            "precision mediump float;\n" +
-            "attribute vec4 position;\n" +               // 顶点着色器的顶点坐标,由外部程序传入
-            "attribute vec2 inputTextureCoordinate;\n" + // 传入的纹理坐标
-            "attribute vec4 aColor;\n" +
-            "varying vec4 mColor;\n" +                    // 传入的纹理坐标
-            "uniform mat4 transform;" +                   // 变换矩阵
-            "varying vec2 textureCoordinate;\n" +
-            " \n" +
-            "void main()\n" +
-            "{\n" +
-            "    gl_Position = transform*position;\n" +
-            "    mColor = aColor;\n" +
-            "    textureCoordinate = inputTextureCoordinate;\n" + // 最终顶点位置
-            "}";
-    // 光栅化后产生了多少个片段，就会插值计算出多少个varying变量，同时渲染管线就会调用多少次片段着色器
-    private static String FRAGMENT_SHADER =
-            "precision mediump float;\n" +
-                    "varying vec2 textureCoordinate;\n" + // 最终顶点位置，上面顶点着色器的varying变量会传递到这里
-                    "uniform sampler2D vTexture;\n" + // 外部传入的图片纹理 即代表整张图片的数据
-                    "varying vec4 mColor;\n" + // 传入的纹理坐标
-                    "void main()\n" +
-                    "{" +
-                    "gl_FragColor =mix ( texture2D(vTexture,vec2(1.0-textureCoordinate.x,textureCoordinate.y)) , mColor,0.2);" + // 增加1.0 - ，为了使图像反转
-                    "}";
-    private int assembleProgram(int vertexShader, int fragmentShader) {
-        int program = GLES20.glCreateProgram();
-        if (program == 0) throw new RuntimeException("Cannot create GL program: " + GLES20.glGetError());
-        GLES20.glAttachShader(program, vertexShader);//将顶点着色器加入到程序
-        GLES20.glAttachShader(program, fragmentShader);//将片元着色器加入到程序中
-        GLES20.glLinkProgram(program);//连接到着色器程序
-        int[] mLinkStatus = new int[1];
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, mLinkStatus, 0);
-        if (mLinkStatus[0] != GLES20.GL_TRUE) {// 获取program的链接情况
-            Log.e("Linking Failed", "Could not link program: " + GLES20.glGetProgramInfoLog(program));
-            GLES20.glDeleteProgram(program);
-            program = 0;
-        }
-        return program;
-    }
-    @Override
-    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {//创建时
-//                surfaceview.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER);//加载顶点着色器
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER);//加载片元着色器
-        int mProgram=assembleProgram(vertexShader,fragmentShader);
-        GLES20.glUseProgram(mProgram);//必须 使用
-
-        mPositionHandle = GLES20.glGetAttribLocation(mProgram, "position");
-        mColorHandle = GLES20.glGetAttribLocation(mProgram, "aColor");
-        mTextureHandle = GLES20.glGetAttribLocation(mProgram, "inputTextureCoordinate");
-        mMvpMatrixHandle = GLES20.glGetUniformLocation(mProgram, "transform");
-        mGLUniformTexture = GLES20.glGetUniformLocation(mProgram, "vTexture");
-        mGLTextureId = -1;
-        int[] textures = new int[1];
-        // 加载纹理
-        GLES20.glGenTextures(1, textures, 0);
-        GLES20.glBindTexture(GL_TEXTURE_2D, textures[0]);
-        GLES20.glTexParameterf(GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameterf(GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        //纹理也有坐标系，称UV坐标，或者ST坐标
-        GLES20.glTexParameterf(GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-        GLES20.glTexParameterf(GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
-//        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
-        b = game.getImage("1.png");
-        mBuf = ByteBuffer.allocate(b.getWidth()*b.getHeight()*4);
-        b.copyPixelsToBuffer(mBuf);
-        GLES20.glTexImage2D(GL_TEXTURE_2D,0,GLES20.GL_RGBA,b.getWidth(),b.getHeight(),0,GLES20.GL_RGBA,GLES20.GL_UNSIGNED_BYTE, null);
-//                GLES20.glUniform1i(mGLUniformTexture, 1); // 设置第一层纹理
-//                GLES20.glActiveTexture(GLES20.GL_TEXTURE0+1);
-//                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mGLTextureId);
-
-        if (GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) != GLES20.GL_FRAMEBUFFER_COMPLETE) {
-            Log.e("TAG", "glCheckFramebufferStatus error");
-        } else {
-            mGLTextureId = textures[0];
-            GLES20.glUniform1i(mGLUniformTexture, 1); // 设置第一层纹理
-        }
-//                GLUtils.texSubImage2D(GLES20.GL_TEXTURE_2D, 0,0,0,b);
-
-//                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-//                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-//
-//                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);// S轴的拉伸方式为重复，决定采样值的坐标超出图片范围时的采样方式
-//                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);// T轴的拉伸方式为重复
-//                GLES20.glGenTextures(1,);
-    }
-    @Override
-    public void onSurfaceChanged(GL10 gl10, int width, int height) {//改变时
-        GLES20.glViewport(0, 0, width, height); // 设置窗口大小
-        Log.e("TAG", "onSurfaceChanged: width=" + width + " height=" + height);
-        int w = b.getWidth();
-        int h = b.getHeight();
-
-        float sWH = w / (float) h;
-        float sWidthHeight = width / (float) height;
-        if (width > height) {
-            if (sWH > sWidthHeight) {
-                Matrix.orthoM(mProjectMatrix, 0, -sWidthHeight * sWH, sWidthHeight * sWH, -1, 1, 3, 7);
-            } else {
-                Matrix.orthoM(mProjectMatrix, 0, -sWidthHeight / sWH, sWidthHeight / sWH, -1, 1, 3, 7);
-            }
-        } else {
-            if (sWH > sWidthHeight) {
-                Matrix.orthoM(mProjectMatrix, 0, -1, 1, -1 / sWidthHeight * sWH, 1 / sWidthHeight * sWH, 3, 7);
-            } else {
-                Matrix.orthoM(mProjectMatrix, 0, -1, 1, -sWH / sWidthHeight, sWH / sWidthHeight, 3, 7);
-            }
-        }
-        //设置相机位置
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 7.0f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        //计算变换矩阵
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectMatrix, 0, mViewMatrix, 0);
-        loadBuffer();
-    }
-    private void doDraw(){
-//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);//清空画布
-//        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        // 顶点
-        GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 12, mCubeBuffer);
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-        // 顶点着色器的纹理坐标
-        GLES20.glVertexAttribPointer(mTextureHandle, 2, GLES20.GL_FLOAT, false, 8, mTextureBuffer);
-        GLES20.glEnableVertexAttribArray(mTextureHandle);
-        // 传入的图片纹理
-        if (mGLTextureId != -1) {
-//                    Log.e("TAG", "onDrawFrame: mGLTextureId=" + mGLTextureId);
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + 1);
-            GLES20.glBindTexture(GL_TEXTURE_2D, mGLTextureId);
-//            GLES20.glTexSubImage2D();
-//            Log.i("allocate", String.valueOf(b.getWidth()*b.getHeight()*4));
-
-//            GLES11Ext.glEGLImageTargetTexture2DOES(GL_TEXTURE_2D,mBuf);
-            GLUtils.texSubImage2D(GL_TEXTURE_2D, 0, 0,0, b);
-        }
-        // 变换矩阵
-        GLES20.glUniformMatrix4fv(mMvpMatrixHandle, 1, false, mMatrixBuffer);
-        //获取片元着色器的vColor成员的句柄
-
-        //设置绘制三角形的颜色
-//        GLES20.glEnableVertexAttribArray(mColorHandle);
-//        GLES20.glVertexAttribPointer(mColorHandle, 4,
-//                GLES20.GL_FLOAT, false,
-//                4, mColorBuffer);
-        // 绘制顶点 ，方式有顶点法和索引法
-        // GLES20.GL_TRIANGLE_STRIP即每相邻三个顶点组成一个三角形，为一系列相接三角形构成
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4); // 顶点法，按照传入渲染管线的顶点顺序及采用的绘制方式将顶点组成图元进行绘制
-//        GLES20.glDisableVertexAttribArray(mPositionHandle);
-//        GLES20.glDisableVertexAttribArray(mTextureHandle);
-//        GLES20.glDisableVertexAttribArray(mColorHandle);
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-//                try {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                        canvas = surfaceholder.lockHardwareCanvas();
-//                    }else{
-//                        canvas = surfaceholder.lockCanvas();
-//                    }
-//                    if(canvas!=null&&camera!=null) {
-//                        drawOnce(canvas, paint);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    if (canvas != null) {
-//                        surfaceholder.unlockCanvasAndPost(canvas);
-//                    }
-//                }
-    }
-    @Override
-    public void onDrawFrame(GL10 gl10) {
-        long startMs = System.currentTimeMillis();
-        if(startMs>curfpsTime+1000){
-            Log.e("当前FPS:", String.valueOf(curfps));
-            curfpsTime=startMs;fps=curfps;curfps=0;
-        }
-        doDraw();
-        curfps++;
-        long time = 1000 / maxFps  + startMs - System.currentTimeMillis();
-        if (time>0) {
-            try {
-                Thread.sleep(time);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
 class CHCanvasGame {
     private GameObject root=null;
 //    private Vector<GameObject> obj=new Vector<>();
@@ -664,13 +399,10 @@ class CHCanvasGame {
         }
         return null;
     }
-
     void setBackGroundColor(int color){
         backGroundColor=color;
     }
-    void setMaxFPS(int fps){
-        openGL.setMaxFps(fps);
-    }
+    void setMaxFPS(int fps){ openGL.setMaxFps(fps); }
     int getFPS(){
         return openGL.getFps();
     }
@@ -921,7 +653,23 @@ class CHCanvasGame {
     GLSurfaceView getContentView(){
         return surfaceview;
     }
-//    void remove(GameObject gameObject) {
-//        obj.remove(gameObject);
-//    }
+
+    public String getAsset(String filename) {
+        AssetManager am=activity.getAssets();
+        try {
+            ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
+            InputStream is = am.open(filename);
+            int i;while ((i = is.read()) != -1)byteArr.write(i);
+            return byteArr.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    void pause() {
+        surfaceview.onPause();
+    }
+    void resume() {
+        surfaceview.onResume();
+    }
 }

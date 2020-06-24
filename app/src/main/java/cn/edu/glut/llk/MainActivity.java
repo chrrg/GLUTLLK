@@ -125,4 +125,14 @@ public class MainActivity extends Activity {
         if(game==null) game = new CHCanvasGame(this, R.id.canvas, new LLKGame());//初始化游戏引擎
         setContentView(game.getContentView());
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        game.pause();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        game.resume();
+    }
 }

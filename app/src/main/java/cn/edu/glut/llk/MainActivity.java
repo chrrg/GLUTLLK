@@ -3,19 +3,21 @@ package cn.edu.glut.llk;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
-    private GameObject box;
+//    private GameObject box;
     private GameCamera camera;
-    private GameObject fps;
+//    private GameObject fps;
     @Override
     public void onSetGame(CHCanvasGame game) {
         this.game=game;
@@ -27,6 +29,9 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(90);//高帧率模式 设置最大帧率 测试最高60
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
+        android.opengl.Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0f,-10f);//z越小越远
+//        game.getGameObject().getElementById("root").getPaint().setTextSize(80);
+//        game.getGameObject().getElementById("root").setGif(game.getGif("1.gif"));
 //        GameObject backGround = new GameObject();//新建一个背景
 //        backGround.set(0, 0, game.getWidth(), game.getHeight());//相等于屏幕的宽高
 //        backGround.setBackColor(Color.WHITE);//白色
@@ -103,8 +108,30 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        game.addGameObject(box2);
 //        new Timer().schedule(this, 0, 5);
     }
+    public static int getRandomColor(){
+        Random random=new Random();
+        int r=0;
+        int g=0;
+        int b=0;
+        for(int i=0;i<2;i++){
+            //       result=result*10+random.nextInt(10);
+            int temp=random.nextInt(16);
+            r=r*16+temp;
+            temp=random.nextInt(16);
+            g=g*16+temp;
+            temp=random.nextInt(16);
+            b=b*16+temp;
+        }
+        return Color.rgb(r,g,b);
+    }
     @Override
     public void run() {//定时器 对象向下移动
+//        game.getGameObject().getElementById("root").setBackColor(getRandomColor());
+//        if(game.getTime()%2<1)
+//            game.getGameObject().getElementById("root").setBackColor(Color.BLUE);
+//        else
+//            game.getGameObject().getElementById("root").setBackColor(Color.YELLOW);
+//        game.getGameObject().getElementById("box1").setBackColor(Color.YELLOW);
 //        Log.e("run","run");
 //        box.y += 1;
 //        fps.y= (int) (box.y+game.getTime()/10);

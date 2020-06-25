@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<box overflow="hidden">
-    <box x="" y="" w="" h="">
-        <text text="文本1"/>
-        <img src="1.gif"/>
-    </box>
-    <box>
-        <text text="文本2"/>
-    </box>
+<box w="100" h="100" gif="1.gif" src="1.png" id="root" fontSize="80" image="stretch">
+    <!--backColor="#00FF00"-->
+    <!--<box x="20" y="20" w="100" h="50" text="测试" backColor="#0000FF" id="box1">-->
+        <!--<text text="文本1"/>-->
+        <!--<img src="1.gif"/>-->
+    <!--</box>-->
+    <!--<box>-->
+        <!--<text text="文本2"/>-->
+    <!--</box>-->
 </box>

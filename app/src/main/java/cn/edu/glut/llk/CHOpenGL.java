@@ -138,7 +138,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 //        GLES20.glDisable(GL10.GL_CULL_FACE);
 //        GLES20.glEnable(GL10.GL_CCW);
-//        GLES20.glDepthMask(true);
+        GLES20.glDepthMask(true);
 //        GLES20.glEnable(GL10.GL_ALPHA_TEST);
 //        Bitmap b = game.getImage("1.gif");
 //        Bitmap b2=game.getImage("1.png");
@@ -166,8 +166,10 @@ class CHOpenGL implements GLSurfaceView.Renderer{
 //        Matrix.rotateM(mViewMatrix,0,-60f,1f,0f,0f);//把矩形绕x轴旋转60°
 //        Matrix.orthoM(mProjectionMatrix, 0, -ratio, ratio, -10, 1, 0.1f, 100);//正交投影
 //        Matrix.frustumM(mProjectionMatrix, 0, -ratio*0.4f, ratio*0.4f, -1*0.4f, 1*0.4f, 1, 50);
-        Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, 0.1f, 10f);
+//        Matrix.frustumM(mProjectionMatrix, 0, -ratio*0.4f, ratio*0.4f, -1*0.4f, 1*0.4f, 1, 50);
+        Matrix.perspectiveM(mProjectionMatrix, 0, 45, ratio, 0.1f, 100f);
 //        Matrix.setIdentityM(mProjectionMatrix,0);//把矩阵设为单位矩阵
+//        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
         Matrix.setLookAtM(mViewMatrix, 0,0, 0, 5, 0f, 0f, 0f, 0f, 1f, 0f);
         //float cx, //摄像机位置x
         //float cy, //摄像机位置y
@@ -218,6 +220,9 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         draw(id);
     }
     private void doDraw(GameObject gameObject){//绘制
+//        Matrix.rotateM(mProjectionMatrix,0,2,0,1,0);
+//        Matrix.translateM(mProjectionMatrix,0,0f,0f,-0.1f);
+//        Matrix.translateM(mViewMatrix,0,0f,0f,-0.1f);
 
         GLES20.glUseProgram(mProgram);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);

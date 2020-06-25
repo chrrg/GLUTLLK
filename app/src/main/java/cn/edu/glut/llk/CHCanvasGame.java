@@ -182,6 +182,10 @@ class GameObject{
     private float[] mModelMatrix = new float[16];
     private GameObject(){
         Matrix.setIdentityM(mModelMatrix,0);//把矩阵设为单位矩阵
+        //1000
+        //0100
+        //0010
+        //0001
     }
     void addChild(GameObject o){
         if(o==null)return;
@@ -204,7 +208,7 @@ class GameObject{
         return paint;
     }
     void draw(){
-        Matrix.rotateM(mModelMatrix, 0, 2, 0, 1, 0);
+//        Matrix.rotateM(mModelMatrix, 0, 2, 0, 1, 0);
         //先绘制自己，再绘制子元素
         if(w>0&&h>0) {
             updateTexture();//更新纹理
@@ -237,7 +241,7 @@ class GameObject{
                     canvas.drawBitmap(pic, 0, 0, paint);
                 }
             }
-            if(text!=null)canvas.drawText(text,0,h,getPaint());
+
 //            if(buffer!=null&&!buffer.isRecycled())buffer.recycle();
 //            System.gc();
 
@@ -257,6 +261,8 @@ class GameObject{
                 }
 
             }
+//            getPaint().setTextSize(80);
+            if(text!=null)canvas.drawText(text,0,h,getPaint());
             buffer=temp;
             change=false;
 //        }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<box w="100" h="100" gif="1.gif" src="1.png" id="root" fontSize="80" image="stretch">
+<box w="100" h="100" gif="1.gif" src="1.png" id="root" fontSize="20" image="stretch" text="测试文本">
     <!--backColor="#00FF00"-->
     <!--<box x="20" y="20" w="100" h="50" text="测试" backColor="#0000FF" id="box1">-->
         <!--<text text="文本1"/>-->

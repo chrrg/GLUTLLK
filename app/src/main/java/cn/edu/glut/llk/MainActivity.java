@@ -3,16 +3,16 @@ package cn.edu.glut.llk;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import android.opengl.Matrix;
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
 //    private GameObject box;
@@ -29,7 +29,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(90);//高帧率模式 设置最大帧率 测试最高60
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
-        android.opengl.Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0f,-10f);//z越小越远
+        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0f,0f);//z越小越远
+
 //        game.getGameObject().getElementById("root").getPaint().setTextSize(80);
 //        game.getGameObject().getElementById("root").setGif(game.getGif("1.gif"));
 //        GameObject backGround = new GameObject();//新建一个背景
@@ -106,7 +107,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        });
 //        box2.setGif(game.getGif("1.gif"));
 //        game.addGameObject(box2);
-//        new Timer().schedule(this, 0, 5);
+        new Timer().schedule(this, 0, 5);
     }
     public static int getRandomColor(){
         Random random=new Random();
@@ -126,6 +127,16 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
+//        float[] translate = new float[16];
+//        Matrix.setIdentityM(translate,0);
+//        Matrix.translateM(translate,0,0.1f,0f,0f);//z越小越远
+//        Matrix.multiplyMM(game.getGameObject().getModelMatrix(), 0, translate, 0, game.getGameObject().getModelMatrix(), 0);
+//        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0.01f,0f);//z越小越远
+//        game.getGameObject().getModelMatrix()[]-=0.01;
+//        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0.005f,0.001f,-0.01f);//z越小越远
+//        Log.e("getModelMatrix", Arrays.toString(game.getGameObject().getModelMatrix()));
+//        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0.01f,0f);//z越小越远
+//        Matrix.rotateM(game.getGameObject().getModelMatrix(),0,1,1,1,1);
 //        game.getGameObject().getElementById("root").setBackColor(getRandomColor());
 //        if(game.getTime()%2<1)
 //            game.getGameObject().getElementById("root").setBackColor(Color.BLUE);

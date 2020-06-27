@@ -839,7 +839,7 @@ class CHCanvasGame {
 //    }
 
     @SuppressLint("ClickableViewAccessibility")
-    CHCanvasGame (Activity activity, int id, final GameInit init){
+    CHCanvasGame (Activity activity, final GameInit init){
         surfaceview=new GLSurfaceView(activity);
 
         init.onSetGame(this);

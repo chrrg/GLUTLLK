@@ -161,7 +161,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        });
 //        box2.setGif(game.getGif("1.gif"));
 //        game.addGameObject(box2);
-//        new Timer().schedule(this, 0, 5);
+        new Timer().schedule(this, 0, 5);
     }
     public static int getRandomColor(){
         Random random=new Random();
@@ -181,6 +181,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
+        game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
 //        game.getGameObject().updateView();
 //        game.getGameObject().setW((int) (Math.random()*game.getWidth()));
 //        game.getGameObject().setW(500);

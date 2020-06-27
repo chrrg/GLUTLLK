@@ -227,7 +227,7 @@ class GameObject{
             if(parent==null)
                 paint=new Paint();
             else
-                paint=parent.getPaint();
+                paint=new Paint(parent.getPaint());
         return paint;
     }
     void draw(){

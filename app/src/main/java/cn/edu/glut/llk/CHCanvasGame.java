@@ -336,6 +336,11 @@ class GameObject{
 //        this.x = x;
 
     }
+    void moveX(int x){
+        if(mModelMatrix!=null)
+            Matrix.translateM(mModelMatrix,0,2*(float)x/w,0,0);
+        this.x+=x;
+    }
 
     int getY() {
         return y;
@@ -346,8 +351,12 @@ class GameObject{
             Matrix.translateM(mModelMatrix,0,0,-2*((float)y-this.y)/h,0);
         this.y = y;
     }
-
-    public int getW() {
+    void moveY(int y){
+        if(mModelMatrix!=null)
+            Matrix.translateM(mModelMatrix,0,0,-2*(float)y/h,0);
+        this.y += y;
+    }
+    int getW() {
         return w;
     }
 
@@ -361,8 +370,11 @@ class GameObject{
         }
         this.w = w;
     }
+    void moveW(int w){
+        setW(this.w+w);
+    }
 
-    public int getH() {
+    int getH() {
         return h;
     }
 
@@ -374,15 +386,17 @@ class GameObject{
         }
         this.h = h;
     }
+    void moveH(int h){
+        setH(this.h+h);
+    }
     void setBackColor(int parseColor) {
         backColor=parseColor;
         updateView();
     }
-
-    public void setId(String value) {
+    void setId(String value) {
         id=value;
     }
-    public GameObject getElementById(String id){
+    GameObject getElementById(String id){
         GameObject res;
         if(id.equals(this.id))return this;
         for(GameObject ob:children){
@@ -745,34 +759,76 @@ class CHCanvasGame {
             switch(attrName){
                 case "width":
                 case "w":
+                    if(value.startsWith("+"))
+                        value=String.valueOf(r2.getParent().getW()+dpx(r2,value.substring(1)));
+                    if(value.startsWith("-"))
+                        value=String.valueOf(r2.getParent().getW()-dpx(r2,value.substring(1)));
                     r2.setW(dpx(r2,value));
                     break;
                 case "height":
                 case "h":
+                    if(value.startsWith("+"))
+                        value=String.valueOf(r2.getParent().getH()+dpy(r2,value.substring(1)));
+                    if(value.startsWith("-"))
+                        value=String.valueOf(r2.getParent().getH()-dpy(r2,value.substring(1)));
                     r2.setH(dpy(r2,value));
                     break;
                 case "left":
                 case "l":
                 case "x":
+                    if(value.startsWith("+"))
+                        value=String.valueOf(r2.getParent().getX()+dpx(r2,value.substring(1)));
+                    if(value.startsWith("-"))
+                        value=String.valueOf(r2.getParent().getX()-dpx(r2,value.substring(1)));
                     r2.setX(dpx(r2,value));
                     break;
                 case "top":
                 case "t":
                 case "y":
+                    if(value.startsWith("+"))
+                        value=String.valueOf(r2.getParent().getY()+dpy(r2,value.substring(1)));
+                    if(value.startsWith("-"))
+                        value=String.valueOf(r2.getParent().getY()-dpy(r2,value.substring(1)));
                     r2.setY(dpy(r2,value));
                     break;
                 case "right":
                 case "r":
-                    r2.setW(getWidth()+r2.getX()-dpx(r2,value));
+                    int right;
+                    if(value.startsWith("+")) {
+                        if(r2.getParent()!=null)
+                            value = String.valueOf((getWidth() - r2.getParent().getX() - r2.getParent().getW()) + dpx(r2, value.substring(1)));
+                        else
+                            value = String.valueOf(dpx(r2, value.substring(1)));
+                    }
+                    if(value.startsWith("-"))
+                        if(r2.getParent()!=null)
+                            value=String.valueOf((getWidth()-r2.getParent().getX()-r2.getParent().getW())-dpx(r2,value.substring(1)));
+                        else
+                            value = String.valueOf(-dpx(r2, value.substring(1)));
+                    right=getWidth()-r2.getX()-dpx(r2,value);
+                    if(right<0)right=0;
+                    r2.setW(right);
                     break;
                 case "bottom":
                 case "b":
-                    r2.setH(getHeight()+r2.getY()-dpy(r2,value));
+                    int bottom;
+                    if(value.startsWith("+"))
+                        if(r2.getParent()!=null)
+                            value=String.valueOf((getHeight()-r2.getParent().getY()-r2.getParent().getH())+dpy(r2,value.substring(1)));
+                        else
+                            value=String.valueOf(dpy(r2,value.substring(1)));
+                    if(value.startsWith("-"))
+                        if(r2.getParent()!=null)
+                            value=String.valueOf((getHeight()-r2.getParent().getY()-r2.getParent().getH())-dpy(r2,value.substring(1)));
+                        else
+                            value=String.valueOf(-dpy(r2,value.substring(1)));
+                    bottom=getHeight()-r2.getY()-dpy(r2,value);
+                    if(bottom<0)bottom=0;
+                    r2.setH(bottom);
                     break;
                 case "text":
                     r2.setText(value);
                     break;
-
                 case "gif":
                     r2.setPic(getGif(value));
                     break;

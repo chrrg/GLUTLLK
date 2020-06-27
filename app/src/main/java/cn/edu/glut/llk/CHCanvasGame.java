@@ -789,7 +789,6 @@ class CHCanvasGame {
                     r2.setStyleText(value);
                     break;
             }
-//            System.out.print(" " +  + "=\"" + attr.getValue() + "\"");
         }
         r2.init();
         NodeList nodeList = r.getChildNodes();
@@ -815,28 +814,6 @@ class CHCanvasGame {
         }
         return null;
     }
-    private void sort(){
-//        Collections.sort(obj, new Comparator<GameObject>() {
-//            @Override
-//            public int compare(GameObject o1, GameObject o2) {
-//                if (o1 != null && o2 != null)return Integer.compare(o1.getIndex(), o2.getIndex());
-//                return 0;
-//            }
-//        });
-    }
-//    private void drawOnce(Canvas c,Paint paint){
-//        if(root==null)return;//没有根对象
-
-//        camera.fixCamera();
-//        if(backGroundColor!=0)canvas.drawColor(backGroundColor);
-
-//        sort();
-//        root.useCamera(c);//对游戏对象进行更新
-
-//        for(GameObject ob:obj){
-//            ob.draw(c,paint,camera);
-//        }
-//    }
 
     @SuppressLint("ClickableViewAccessibility")
     CHCanvasGame (Activity activity, final GameInit init){
@@ -849,107 +826,17 @@ class CHCanvasGame {
         paint.setColor(Color.RED);
         paint.setAntiAlias(true);
         paint.setDither(true);
-//        surfaceview = activity.findViewById(id);
         final ArrayList<GameObject> kv = new ArrayList<>();
         surfaceview.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 objectTouch(event.getX(),event.getY(),getGameObject(),event);
-//                getGameObject().touch(event.getX(),event.getY())
-//                openGL.rayPicking(event.getX(),event.getY(),getGameObject().getModelMatrix());
-
                 return false;
             }
         });
-
-//        surfaceview.setOnTouchListener(new View.OnTouchListener(){
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//                int x = (int)event.getX()+camera.getX();
-//                int y = (int)event.getY()+camera.getY();
-//                boolean result=false;
-//                Log.i("event.getAction()", String.valueOf(event.getActionIndex())+"|"+String.valueOf(event.getActionMasked()));
-//                int action=event.getActionMasked();
-//                switch(action){
-//                    case MotionEvent.ACTION_DOWN://一个点按下
-//                        Log.i("一个点按下","一个点按下");
-//                        break;
-//                    case MotionEvent.ACTION_POINTER_DOWN://多个点按下
-//                        Log.i("多个点按下","多个点按下");
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        Log.i("移动","移动");
-//                        break;
-//                    case MotionEvent.ACTION_POINTER_UP:
-//                        Log.i("松开了某一个","松开了某一个");
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                    case MotionEvent.ACTION_CANCEL:
-//                        Log.i("全部松开了","全部松开了");
-//                        break;
-//                }
-//                return true;
-//                synchronized(obj) {
-//                    if (event.getAction() == MotionEvent.ACTION_DOWN) {//ACTION_MOVE ACTION_UP
-//                        //                    sort();
-//                        for (GameObject ob : obj) {
-//                            if (ob.isIn(x, y)) {
-//                                kv.add(ob);
-//                                Log.i("event.getActionIndex()", String.valueOf(event.getActionIndex()));
-////                                kv.put(event.getActionIndex(),ob);
-//                                if (ob.touch != null) result = ob.touch.onTouchStart(event);
-//                                if (result) return true;//处理完成
-//                            }
-//                        }
-//                    } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//                        //                    sort();
-//                        for (GameObject ob : obj) {
-//                            if (ob.isIn(x, y)) {
-//                                if (ob.touch != null) result = ob.touch.onTouchMove(event);
-//                                if (result) return true;//处理完成
-//                            }
-//                        }
-//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-//                        //                    sort();
-//                        for (GameObject ob : obj) {
-//                            if (ob.isIn(x, y)) {
-//                                if (ob.touch != null) result = ob.touch.onTouchEnd(event);
-//                                if (result) return true;//处理完成
-//                            }
-//                        }
-//                    }
-//                }
-//                return true;
-//            }
-//        });
-        surfaceview.setEGLContextClientVersion(2);
+        surfaceview.setEGLContextClientVersion(3);
         openGL=new CHOpenGL(this);
         surfaceview.setRenderer(openGL);
-//        surfaceholder = surfaceview.getHolder();
-//        surfaceholder.addCallback(new SurfaceHolder.Callback(){
-//            @Override
-//            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-//                isRunning = true;
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        while (isRunning) {
-//
-////                                try {
-////                                    Thread.sleep(1); // 这个就相当于帧频了，数值越小画面就越流畅
-////                                } catch (Exception e) {
-////                                    e.printStackTrace();
-////                                }
-//
-//                        }
-//                    }
-//                }).start();
-//            }
-//            @Override
-//            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {}
-//            @Override
-//            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {isRunning=false;}
-//        });
         surfaceview.post(new Runnable() {
             @Override
             public void run() {
@@ -959,7 +846,6 @@ class CHCanvasGame {
             }
         });
     }
-
     private boolean objectTouch(float x, float y, GameObject gameObject,MotionEvent event) {
         for(GameObject ob:gameObject.getChildren())
             if(objectTouch(x,y,ob,event))
@@ -991,10 +877,4 @@ class CHCanvasGame {
         }
         return null;
     }
-//    void pause() {
-//        surfaceview.onPause();
-//    }
-//    void resume() {
-//        surfaceview.onResume();
-//    }
 }

@@ -1,8 +1,9 @@
+#version 300 es
 precision mediump float;
-attribute vec4 mPosition;
-attribute vec2 mTexture;
+in vec4 mPosition;
+in vec2 mTexture;
 uniform mat4 uMVPMatrix;
-varying vec2 v_texCoord;
+out vec2 v_texCoord;
 //attribute vec2 inputTextureCoordinate;
 //attribute vec4 aColor;
 //varying vec4 mColor;

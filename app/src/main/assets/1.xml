@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<box w="100" h="100" gif="1.gif" src="1.png" id="root" fontSize="20" image="stretch" text="测试文本">
-    <!--backColor="#00FF00"-->
-    <!--<box x="20" y="20" w="100" h="50" text="测试" backColor="#0000FF" id="box1">-->
-        <!--<text text="文本1"/>-->
-        <!--<img src="1.gif"/>-->
-    <!--</box>-->
-    <!--<box>-->
-        <!--<text text="文本2"/>-->
-    <!--</box>-->
+<!--
+属性attribute:
+width/w  宽度
+height/h 高度
+left/l/x 左距离
+top/t/y  顶距离
+right/r  右距离
+bottom/b 底距离
+
+id       id
+
+单位/unit：
+px/dp    设备像素
+%        父级元素的宽高百分比
+vw       设备宽
+vh       设备高
+
+样式style:
+backColor 背景颜色 示例 backColor:#308030;
+fontSize  字体大小 示例 fontSize:80px;
+color     字体颜色 示例 color:#218081;
+image     图像样式 示例 image:stretch;  stretch （加载图片或gif时自动缩放）
+display   显示样式 示例 display:none;   none （隐藏/不显示）
+textX     文本X样式 示例 textX:left;    left（左对齐） center（居中） right（右对齐）
+textY     文本Y样式 示例 textY:top;    top（顶对齐） center（居中） bottom（底对齐）
+text      文本样算  示例 text:center   center（XY居中 将会覆盖textX和textY）
+注意事项：
+需注意属性或样式具有顺序性
+-->
+<box w="100vw" h="100vh" id="root" style="backColor:#308030;" src="game.jpg">
+    <box l="10%" w="80%" t="10%" h="11vh" text="桂工连连看" style="fontSize:7vh;color:#218081;textX:center;textY:center;"/>
 </box>

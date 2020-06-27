@@ -12,7 +12,9 @@ import android.graphics.Movie;
 import android.graphics.Paint;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import org.w3c.dom.Attr;
@@ -26,7 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -161,7 +164,7 @@ interface OnTouchListener{
 //    }
 //}
 class GameObject{
-    private int x,y,w,h;
+    private int x,y,z,w,h;
     private String id=null;
     private String Tag="obj";
     private Vector<GameObject> children= new Vector<>();
@@ -171,21 +174,38 @@ class GameObject{
     private CHCanvasGame game;
     private Paint paint=null;
     private String text=null;
-    private Bitmap pic=null;
-    private Movie gif=null;
-    private String[] image=null;
+    private Bitmap[] pic=null;
+//    private Movie gif=null;
+    private Map<String,String> style=new HashMap<>();
     private long startTime=android.os.SystemClock.uptimeMillis();
 //    private int vertexShader;
 //    private int fragmentShader;
     private int textureId=0;
     private int backColor=0;
-    private float[] mModelMatrix = new float[16];
+    private boolean display=true;
+    private float[] mModelMatrix;
+    private float textX;
+    private float textY;
+
     private GameObject(){
-        Matrix.setIdentityM(mModelMatrix,0);//把矩阵设为单位矩阵
+//        Matrix.setIdentityM(mModelMatrix,0);//把矩阵设为单位矩阵
         //1000
         //0100
         //0010
         //0001
+    }
+    Vector<GameObject> getChildren(){
+        return children;
+    }
+    void init(){
+        mModelMatrix = new float[16];
+        Matrix.setIdentityM(mModelMatrix,0);
+        Matrix.scaleM(mModelMatrix,0,(float)w/game.getHeight(),(float)h/game.getHeight(),1);
+        Matrix.translateM(mModelMatrix,0,1-(game.getWidth()-2*(float)x)/w,(game.getHeight()-2*(float)y)/h-1,0f);
+    }
+    OnTouchListener touch;
+    void onTouch(OnTouchListener touch){
+        this.touch=touch;
     }
     void addChild(GameObject o){
         if(o==null)return;
@@ -204,12 +224,16 @@ class GameObject{
     }
     Paint getPaint(){
         if(paint==null)
-            if(parent==null)paint=new Paint();else paint=parent.getPaint();
+            if(parent==null)
+                paint=new Paint();
+            else
+                paint=parent.getPaint();
         return paint;
     }
     void draw(){
 //        Matrix.rotateM(mModelMatrix, 0, 2, 0, 1, 0);
         //先绘制自己，再绘制子元素
+        if(!display)return;//不显示，那么自己和子代都不显示
         if(w>0&&h>0) {
             updateTexture();//更新纹理
             game.openGL.drawObj(mModelMatrix, textureId);
@@ -219,7 +243,7 @@ class GameObject{
         }
     }
     private void updateTexture(){
-        if(change||gif != null){
+        if(change||(pic!=null&&pic.length>1)){
             Bitmap b=getBitmap();//画自己获得bitmap
             if(textureId==0)
                 textureId=game.openGL.newTexture(b);
@@ -228,51 +252,30 @@ class GameObject{
         }
     }
     private Bitmap getBitmap(){
-//        if(change||gif != null){
-            Bitmap temp = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);//重绘当前组件
-            Canvas canvas = new Canvas(temp);
-            if(backColor!=0)canvas.drawColor(backColor);
-            if (pic != null) {
-                if(hasImage("stretch")) {
-                    if(pic.getWidth()!=w && pic.getHeight()!=h)
-                        pic = Bitmap.createScaledBitmap(pic, this.w, this.h, true);
-                    canvas.drawBitmap(pic, 0, 0, paint);
-                }else{
-                    canvas.drawBitmap(pic, 0, 0, paint);
-                }
+        if(mModelMatrix==null)init();
+        Bitmap temp = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);//重绘当前组件
+        Canvas canvas = new Canvas(temp);
+        if(backColor!=0)canvas.drawColor(backColor);
+        Paint paint=getPaint();
+        if (pic != null&&pic.length>0) {
+            int index;
+            if(pic.length>1){//gif
+                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime) % pic.length);
+            }else{
+                index=0;
             }
-
-//            if(buffer!=null&&!buffer.isRecycled())buffer.recycle();
-//            System.gc();
-
-            if (gif != null) {
-                Bitmap tempBitmap = Bitmap.createBitmap(gif.width(), gif.height(), Bitmap.Config.ARGB_8888);
-
-                int duration = gif.duration();
-                if (duration == 0) duration = 1000;
-                gif.setTime((int) ((android.os.SystemClock.uptimeMillis() - startTime) % duration));
-                if(hasImage("stretch")){
-                    Canvas gifTemp = new Canvas(tempBitmap);
-                    gif.draw(gifTemp, 0, 0);
-                    tempBitmap = Bitmap.createScaledBitmap(tempBitmap, w, h, true);
-                    canvas.drawBitmap(tempBitmap, 0, 0, paint);
-                }else{
-                    gif.draw(canvas, 0, 0);
-                }
-
-            }
-//            getPaint().setTextSize(80);
-            if(text!=null)canvas.drawText(text,0,h,getPaint());
-            buffer=temp;
-            change=false;
-//        }
+            canvas.drawBitmap(pic[index], 0, 0, paint);
+        }
+        if(text!=null)canvas.drawText(text,textX,textY,paint);
+        buffer=temp;
+        change=false;
         return buffer;
     }
 //    private void updateView(int x,int y){//需要更新试图 有改动 通知父级有改动，下一次渲染需要重新渲染部分试图
 //        change=true;
 ////        if(parent!=null)parent.updateView();
 //    }
-    private void updateView(){//需要更新试图 有改动 通知父级有改动，下一次渲染需要重新渲染部分试图
+    void updateView(){//需要更新试图 有改动 通知父级有改动，下一次渲染需要重新渲染部分试图
         change=true;
 //        if(parent!=null)parent.updateView();
     }
@@ -322,7 +325,16 @@ class GameObject{
     }
 
     void setX(int x) {
-        this.x = x;
+        if(mModelMatrix!=null)
+            Matrix.translateM(mModelMatrix,0,2*((float)x-this.x)/w,0,0);
+//        Matrix.translateM(mModelMatrix,0,((float)x-this.x)*2/game.getHeight()/((float)w/game.getHeight()),0,0f);
+//        Log.e("test", String.valueOf(((float)x-this.x)/game.getHeight()/((float)w/game.getHeight())));
+        this.x=x;
+//        Matrix.scaleM(mModelMatrix,0,(float)w/game.getHeight(),(float)h/game.getHeight(),1);
+//        Matrix.translateM(mModelMatrix,0,(float)(x-this.x)/((float)w/game.getHeight()),0,0f);
+//        Log.e("test", String.valueOf((game.getWidth()-2*(float)(x-this.x))/w));
+//        this.x = x;
+
     }
 
     int getY() {
@@ -330,6 +342,8 @@ class GameObject{
     }
 
     void setY(int y) {
+        if(mModelMatrix!=null)
+            Matrix.translateM(mModelMatrix,0,0,-2*((float)y-this.y)/h,0);
         this.y = y;
     }
 
@@ -338,6 +352,13 @@ class GameObject{
     }
 
     void setW(int w) {
+        if(w<=0)w=1;
+        if(mModelMatrix!=null) {
+//        Matrix.scaleM(mModelMatrix,0,2,1,1);
+            Matrix.scaleM(mModelMatrix, 0, (float) w / this.w, 1, 1);
+//        Matrix.translateM(mModelMatrix,0,((float)w-this.w)/game.getHeight()/((float)w/game.getHeight()),0,0);
+            Matrix.translateM(mModelMatrix, 0, 1 - (float) this.w / w, 0, 0);
+        }
         this.w = w;
     }
 
@@ -346,6 +367,11 @@ class GameObject{
     }
 
     void setH(int h) {
+        if(h<=0)h=1;
+        if(mModelMatrix!=null) {
+            Matrix.scaleM(mModelMatrix, 0, 1, (float) h / this.h, 1);
+            Matrix.translateM(mModelMatrix, 0, 0, (float) this.h / h - 1, 0);
+        }
         this.h = h;
     }
     void setBackColor(int parseColor) {
@@ -366,38 +392,157 @@ class GameObject{
         return null;
     }
 
-    public Bitmap getPic() {
-        return pic;
+//    public Bitmap getPic() {
+//        return pic;
+//    }
+    private void picStretch(){
+        if("stretch".equals(getStyle("image")))//需要自动拉伸
+            for(int index=0;index<pic.length;index++)
+                pic[index] = Bitmap.createScaledBitmap(pic[index], w, h, false);
     }
-
-    public void setPic(Bitmap pic) {
+    void setPic(Bitmap pic) {
+        this.pic = new Bitmap[]{pic};
+        picStretch();
+    }
+    void setPic(Bitmap[] pic) {
         this.pic = pic;
+        picStretch();
     }
 
-    public Movie getGif() {
-        return gif;
+//    public Movie getGif() {
+//        return gif;
+//    }
+//
+//    void setGif(Movie gif) {
+//        this.gif = gif;
+//    }
+    Map<String, String> getStyle() {
+        return style;
     }
+    String getStyle(String s) {
+        return style.get(s);
+    }
+    boolean hasStyle(String s) {
+        return style.containsKey(s);
+    }
+//    void setStyle(Map<String, String> style) {
+//        this.style = style;
+//    }
+    void setStyle(String s1, String s2) {
+        switch(s1){
+            case "backColor":
+                setBackColor(Color.parseColor(s2));
+                updateView();
+                break;
+            case "color":
+                getPaint().setColor(Color.parseColor(s2));
+                updateView();
+                break;
+            case "fontSize":
+                getPaint().setTextSize(game.dpx(this,s2));
+                updateView();
+                break;
+            case "display":
+                setDisplay(!"none".equals(s2));
+                break;
+            case "image":
+                //加载中使用到，这里不用写东西
+                break;
+            case "textX":
+                switch(s2){
+                    case "left":
+                        paint.setTextAlign(Paint.Align.LEFT);
+                        textX=0;
+                        break;
+                    case "center":
+                        paint.setTextAlign(Paint.Align.CENTER);
+                        textX=(float)w/2;
+                        break;
+                    case "right":
+                        paint.setTextAlign(Paint.Align.RIGHT);
+                        textX=w;
+                        break;
+                    default:
 
-    public void setGif(Movie gif) {
-        this.gif = gif;
+                }
+//                if("left".equals(s2)){
+//
+//                }
+//                textX=0;
+                updateView();
+                break;
+            case "textY":
+                Paint.FontMetrics fontMetrics1 = paint.getFontMetrics();
+                switch(s2){
+                    case "top":
+//                        Log.e("text", fontMetrics1.top+"|"+fontMetrics1.ascent+"|"+fontMetrics1.leading+"|"+fontMetrics1.bottom);
+                        textY=fontMetrics1.descent-fontMetrics1.ascent;
+                        break;
+                    case "center":
+                        textY=(h - fontMetrics1.top - fontMetrics1.bottom)/2;
+                        break;
+                    case "bottom":
+                        textY=(float)h - fontMetrics1.bottom/2;
+                        break;
+                    default:
+                }
+                updateView();
+                break;
+            case "text":
+                if("center".equals(s2)){
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+                    //fontMetrics.top为基线到字体上边框的距离
+                    //fontMetrics.bottom为基线到字体下边框的距离
+                    textX=(float)w/2;
+                    textY=(h - fontMetrics.top - fontMetrics.bottom)/2;
+                    updateView();
+                }
+        }
+        style.put(s1,s2);
     }
-
-    public String[] getImage() {
-        return image;
-    }
-
-    public void setImage(String[] image) {
-        this.image = image;
-    }
-    boolean hasImage(String str){
-        return Arrays.asList(image).contains(str);
+//    boolean hasImage(String str){
+//        return Arrays.asList(image).contains(str);
 //        for(String s:image){
 //            if(str.equals(s))return true;
 //        }
 //        return false;
-    }
+//    }
     float[] getModelMatrix(){
         return mModelMatrix;
+    }
+
+    boolean isDisplay() {
+        return display;
+    }
+
+    void setDisplay(boolean display) {
+        this.display = display;
+    }
+    void show() {
+        this.display = true;
+    }
+    void hide() {
+        this.display = false;
+    }
+
+    void setStyleText(String styleText) {
+        String[] s=styleText.split(";");
+        for(String s1:s){
+            if(!s1.contains(":"))continue;
+            int s2=s1.indexOf(":");
+            String key=s1.substring(0,s2).trim();
+            String value=s1.substring(s2+1).trim();
+            if("".equals(key))continue;
+            setStyle(key,value);
+        }
+        updateView();
+    }
+    boolean hasParent(){
+        return parent!=null;
+    }
+    GameObject getParent() {
+        return parent;
     }
 }
 class GameCamera{
@@ -503,10 +648,21 @@ class CHCanvasGame {
         }
         return null;
     }
-    Movie getGif(String filename){
+    Bitmap[] getGif(String filename){
         AssetManager am=activity.getAssets();
         try {
-            return Movie.decodeStream(am.open(filename));
+            Movie gif=Movie.decodeStream(am.open(filename));
+            int duration=gif.duration();
+            if(duration<=0)duration=1000;
+            Bitmap[] frames = new Bitmap[duration];
+            for(int i=0;i<duration;i++){
+                Bitmap bmp = Bitmap.createBitmap(gif.width(), gif.height(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bmp);
+                gif.setTime(i);
+                gif.draw(canvas, 0, 0);
+                frames[i]=bmp;
+            }
+            return frames;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -527,6 +683,14 @@ class CHCanvasGame {
     }
     void setCamera(GameCamera c){this.camera=c;}
     GameCamera getCamera() {return camera;}
+    private static float parseFloat(String s) {
+        if (s == null) return 0;
+        try {
+            return Float.parseFloat(s);
+        } catch (NumberFormatException x) {
+            return 0;
+        }
+    }
     private static int parseInt(String s) {
         if (s == null) return 0;
         try {
@@ -543,12 +707,29 @@ class CHCanvasGame {
             return defaultValue;
         }
     }
-    private int dpx(String in){
-        if(in.endsWith("%"))return parseInt(in.split("%")[0])/100*getWidth();
+    private String dp(String in){
+        if(in.endsWith("vw"))return String.valueOf((int)(parseFloat(in.split("vw")[0]) /100*getWidth()));
+        if(in.endsWith("vh"))return String.valueOf((int)(parseFloat(in.split("vh")[0]) /100*getHeight()));
+        if(in.endsWith("dp"))return String.valueOf((int)parseFloat(in.split("dp")[0]));
+        if(in.endsWith("px"))return String.valueOf((int)parseFloat(in.split("px")[0]));
+        return in;
+    }
+    int dpx(GameObject r,String in){
+        in=dp(in);
+        if(in.endsWith("%")) {
+            int w;
+            if(r.hasParent())w=r.getParent().getW();else w=getWidth();
+            return (int) (parseFloat(in.split("%")[0]) / 100 * w);
+        }
         return parseInt(in);
     }
-    private int dpy(String in){
-        if(in.endsWith("%"))return parseInt(in.split("%")[0])/100*getHeight();
+    int dpy(GameObject r,String in){
+        in=dp(in);
+        if(in.endsWith("%")) {
+            int h;
+            if(r.hasParent())h=r.getParent().getH();else h=getHeight();
+            return (int) (parseFloat(in.split("%")[0]) / 100 * h);
+        }
         return parseInt(in);
     }
     private GameObject parseElement(Element r, GameObject parent){
@@ -562,55 +743,55 @@ class CHCanvasGame {
             String attrName=attr.getName();
             String value=attr.getValue();
             switch(attrName){
+                case "width":
                 case "w":
-                    r2.setW(dpx(value));
+                    r2.setW(dpx(r2,value));
                     break;
+                case "height":
                 case "h":
-                    r2.setH(dpy(value));
+                    r2.setH(dpy(r2,value));
                     break;
+                case "left":
+                case "l":
                 case "x":
-                    r2.setX(dpx(value));
+                    r2.setX(dpx(r2,value));
                     break;
+                case "top":
+                case "t":
                 case "y":
-                    r2.setY(dpy(value));
+                    r2.setY(dpy(r2,value));
                     break;
+                case "right":
                 case "r":
-                    r2.setW(getWidth()+r2.getX()-dpx(value));
+                    r2.setW(getWidth()+r2.getX()-dpx(r2,value));
                     break;
+                case "bottom":
                 case "b":
-                    r2.setH(getHeight()+r2.getY()-dpy(value));
+                    r2.setH(getHeight()+r2.getY()-dpy(r2,value));
                     break;
                 case "text":
                     r2.setText(value);
                     break;
-                case "backColor":
-                    r2.setBackColor(Color.parseColor(value));
-                    break;
+
                 case "gif":
-                    r2.setGif(getGif(value));
+                    r2.setPic(getGif(value));
                     break;
                 case "src":
-                    if("gif".equals(tagName)||value.endsWith(".gif")){
-                        //gif
-                        r2.setGif(getGif(value));
-                    }else{
-                        //图片
-                        r2.setPic(getImage(value));
-                    }
-//                    r2.setW(dpx(r.getAttribute("w")));
-//                    break;
+                    if("gif".equals(tagName)||value.endsWith(".gif"))//gif
+                        r2.setPic(getGif(value));
+                    else
+                        r2.setPic(getImage(value));//图片
                     break;
                 case "id":
                     r2.setId(value);
                     break;
-                case "fontSize":
-                    r2.getPaint().setTextSize(Float.parseFloat(value));
+                case "style":
+                    r2.setStyleText(value);
                     break;
-                case "image":
-                    r2.setImage(value.split("\\|"));
             }
 //            System.out.print(" " +  + "=\"" + attr.getValue() + "\"");
         }
+        r2.init();
         NodeList nodeList = r.getChildNodes();
         Node childNode;
         int num = nodeList.getLength();
@@ -670,6 +851,17 @@ class CHCanvasGame {
         paint.setDither(true);
 //        surfaceview = activity.findViewById(id);
         final ArrayList<GameObject> kv = new ArrayList<>();
+        surfaceview.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                objectTouch(event.getX(),event.getY(),getGameObject(),event);
+//                getGameObject().touch(event.getX(),event.getY())
+//                openGL.rayPicking(event.getX(),event.getY(),getGameObject().getModelMatrix());
+
+                return false;
+            }
+        });
+
 //        surfaceview.setOnTouchListener(new View.OnTouchListener(){
 //            @Override
 //            public boolean onTouch(View view, MotionEvent event) {
@@ -767,6 +959,16 @@ class CHCanvasGame {
             }
         });
     }
+
+    private boolean objectTouch(float x, float y, GameObject gameObject,MotionEvent event) {
+        for(GameObject ob:gameObject.getChildren())
+            if(objectTouch(x,y,ob,event))
+                return true;
+        if(gameObject.touch!=null&&openGL.rayPicking(x,y,gameObject.getModelMatrix()))
+            return gameObject.touch.onTouchStart(event);//是否已处理 true为已处理即不继续传递
+        return false;
+    }
+
     void setGameObject(GameObject root) {
         this.root=root;
     }
@@ -789,10 +991,10 @@ class CHCanvasGame {
         }
         return null;
     }
-    void pause() {
-        surfaceview.onPause();
-    }
-    void resume() {
-        surfaceview.onResume();
-    }
+//    void pause() {
+//        surfaceview.onPause();
+//    }
+//    void resume() {
+//        surfaceview.onResume();
+//    }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.opengl.GLU;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,9 +28,62 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
         camera=new GameCamera(game,-200,200);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
-        game.setMaxFPS(90);//高帧率模式 设置最大帧率 测试最高60
+        game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
-        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0f,0f);//z越小越远
+//        Log.e("debug", String.valueOf(game.getGameObject().getStyle()));
+//        float[] a = game.getGameObject().getModelMatrix();
+//        game.getGameObject().setX(0);
+//        game.getGameObject().setY(200);
+//        game.getGameObject().setW(500);
+//        game.getGameObject().setH(500);
+//        game.getGameObject().onTouch(new OnTouchListener(){
+//            @Override
+//            public boolean onTouchStart(MotionEvent event) {
+//                Log.e("点击","你点击了1!");
+//                return false;
+//            }
+//            @Override
+//            public boolean onTouchMove(MotionEvent event) {
+//                return false;
+//            }
+//            @Override
+//            public boolean onTouchEnd(MotionEvent event) {
+//                return false;
+//            }
+//        });
+//        game.getGameObject().getElementById("box2").onTouch(new OnTouchListener(){
+//
+//            @Override
+//            public boolean onTouchStart(MotionEvent event) {
+//                Log.e("点击","你点击了2!");
+////                return true;
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onTouchMove(MotionEvent event) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onTouchEnd(MotionEvent event) {
+//                return false;
+//            }
+//        });
+        //移到500*500
+//        float x=500,y=500,w=500,h=500;
+//        float radio=(float)game.getWidth()/game.getHeight();
+//        Matrix.scaleM(a,0,w/game.getHeight(),h/game.getHeight(),1);
+//        Matrix.translateM(a,0,0,0,0f);//z越小越远
+//        Matrix.translateM(a,0,-((float)game.getWidth()/game.getHeight()-2*x/game.getHeight()-w/game.getHeight())/(w/game.getHeight()),(1-2*y/game.getHeight()-h/game.getHeight())/(h/game.getHeight()),0f);
+//        Matrix.translateM(a,0,1-game.getWidth()/w,game.getHeight()/h-1,0f);
+//        Matrix.translateM(a,0,1-(game.getWidth()-2*x)/w,(game.getHeight()-2*y)/h-1,0f);
+//        Matrix.translateM(a,0,-(((float)game.getWidth()/game.getHeight())-w/game.getHeight())/(w/game.getHeight()),(1-h/game.getHeight())/(h/game.getHeight()),0f);//z越小越远
+//        Matrix.scaleM(a,0,0.5f,0.5f,1);
+//        Matrix.translateM(a,0,0f,2f,0f);//z越小越远
+//        game.getHeight()
+//        game.getWidth()
+//        Matrix.translateM(a,0,0f,0f,0f);//z越小越远
 
 //        game.getGameObject().getElementById("root").getPaint().setTextSize(80);
 //        game.getGameObject().getElementById("root").setGif(game.getGif("1.gif"));
@@ -107,7 +161,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        });
 //        box2.setGif(game.getGif("1.gif"));
 //        game.addGameObject(box2);
-        new Timer().schedule(this, 0, 5);
+//        new Timer().schedule(this, 0, 5);
     }
     public static int getRandomColor(){
         Random random=new Random();
@@ -127,6 +181,10 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
+//        game.getGameObject().updateView();
+//        game.getGameObject().setW((int) (Math.random()*game.getWidth()));
+//        game.getGameObject().setW(500);
+//        Matrix.scaleM(game.getGameObject().getModelMatrix(),0,1f,1f,0.00001f);
 //        float[] translate = new float[16];
 //        Matrix.setIdentityM(translate,0);
 //        Matrix.translateM(translate,0,0.1f,0f,0f);//z越小越远
@@ -135,8 +193,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        game.getGameObject().getModelMatrix()[]-=0.01;
 //        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0.005f,0.001f,-0.01f);//z越小越远
 //        Log.e("getModelMatrix", Arrays.toString(game.getGameObject().getModelMatrix()));
-//        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0.01f,0f);//z越小越远
-//        Matrix.rotateM(game.getGameObject().getModelMatrix(),0,1,1,1,1);
+//        Matrix.translateM(game.getGameObject().getModelMatrix(),0,0f,0f,0.001f);//z越小越远
+//        Matrix.rotateM(game.getGameObject().getModelMatrix(),0,1f,0,1,0);
 //        game.getGameObject().getElementById("root").setBackColor(getRandomColor());
 //        if(game.getTime()%2<1)
 //            game.getGameObject().getElementById("root").setBackColor(Color.BLUE);
@@ -163,14 +221,14 @@ public class MainActivity extends Activity {
         if(game==null) game = new CHCanvasGame(this, R.id.canvas, new LLKGame());//初始化游戏引擎
         setContentView(game.getContentView());
     }
-    @Override
-    public void onPause() {
-        super.onPause();
-        game.pause();
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        game.resume();
-    }
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        game.pause();
+//    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        game.resume();
+//    }
 }

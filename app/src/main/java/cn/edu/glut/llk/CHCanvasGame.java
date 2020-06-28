@@ -47,122 +47,7 @@ interface ObjectStringChange{
 }
 interface OnTouchListener{
     void onTouchEvent(MotionEvent event);
-//    boolean onTouchMove(MotionEvent event);
-//    boolean onTouchEnd(MotionEvent event);
 }
-//class GameObject{
-//    int x,y,w,h;
-//    private int backColor=0;
-//    private GameObjectDraw od=null;
-//    private Bitmap baseBitmap=null;
-//    private String text=null;
-//    private ObjectStringChange textChange=null;
-//    private Paint selfPaint;
-//    private int index=100;
-//    private Bitmap pic=null;
-//    private Movie gif;
-//    private long gifStart;
-//    private Vector<GameObject> children;
-//    OnTouchListener touch;
-//    private boolean display=true;
-//    void onTouch(OnTouchListener touch){
-//        this.touch=touch;
-//    }
-//    void setDisplay(boolean display){
-//        this.display=display;
-//    }
-//    boolean isIn(int touchX,int touchY){
-//        return touchX>x&&touchX<x+w&&touchY>y&&touchY<y+h;
-//    }
-//    void setPic(Bitmap pic){
-//        baseBitmap=null;
-//        this.pic=pic;
-//    }
-//    void setGif(Movie gif){
-//        baseBitmap=null;
-//        gifStart=android.os.SystemClock.uptimeMillis();
-//        this.gif=gif;
-//    }
-//    void setIndex(int i){
-//        index=i;
-//    }
-//    int getIndex(){
-//        return index;
-//    }
-//    public void clear(){
-//        baseBitmap=null;
-//    }
-//    void setPaint(Paint paint){
-//        selfPaint=paint;
-//    }
-//    void setString(String text){
-//        baseBitmap=null;
-//        this.text=text;
-//    }
-//    void setString(ObjectStringChange text){
-//        baseBitmap=null;
-//        textChange=text;
-//    }
-//    void setBackColor(int backColor) {
-//        baseBitmap=null;
-//        this.backColor=backColor;
-//    }
-//    void removeFromGame(CHCanvasGame game){
-//        game.remove(this);
-//    }
-//    void draw(Canvas c,Paint paint2,GameCamera camera){
-//        if(!display)return;//不显示的不渲染
-//        if(textChange !=null){
-//            String temp=textChange.onListener();
-//            if(text==null||!text.equals(temp)){
-//                text=temp;
-//                baseBitmap=null;
-//            }
-//        }
-//        if(gif !=null){
-//            baseBitmap=null;
-//        }
-//        Paint paint;
-//        if(selfPaint!=null)paint=selfPaint;else paint=paint2;
-//        if(baseBitmap==null) {
-//            baseBitmap = Bitmap.createBitmap(this.w, this.h, Bitmap.Config.ARGB_8888);
-//            Canvas canvas = new Canvas(baseBitmap);
-//            if(backColor!=0){
-//                canvas.drawColor(backColor);
-//            }
-//            if (pic != null){
-//                pic=Bitmap.createScaledBitmap(pic, this.w, this.h, true);
-//                canvas.drawBitmap(pic,0,0,paint);
-//            }
-//            if (gif != null){
-//                Bitmap tempBitmap = Bitmap.createBitmap(gif.width(),gif.height(), Bitmap.Config.ARGB_8888);
-//                Canvas temp=new Canvas(tempBitmap);
-//                int duration=gif.duration();
-//                if(duration==0)duration=1000;
-//                gif.setTime((int) ((android.os.SystemClock.uptimeMillis() - gifStart) % duration));
-//                gif.draw(temp,0,0);
-//                tempBitmap=Bitmap.createScaledBitmap(tempBitmap, this.w, this.h, true);
-//                canvas.drawBitmap(tempBitmap,0,0,paint);
-//            }
-//            if (this.od != null){
-//                this.od.onDraw(canvas, paint);
-//            }
-//            if(text != null){
-//                canvas.drawText(text, 0,this.h,paint);
-//            }
-//        }
-//        c.drawBitmap(baseBitmap,this.x-camera.getX(),this.y-camera.getY(),paint);
-//    }
-//    void set(int x, int y, int w, int h) {
-//        this.x=x;
-//        this.y=y;
-//        this.w=w;
-//        this.h=h;
-//    }
-//    void setDraw(GameObjectDraw od){
-//        this.od=od;
-//    }
-//}
 class Animation{
     private long duration=0;//持续时间
     private int type=0;//1 run 2 next 3delay
@@ -196,6 +81,9 @@ interface AnimateCallback{
     void callback(Object ob,int old,int time);
     void afterAnimate(Object ob);
 }
+interface AnimationIterator{
+    void handle(Object obj);
+}
 class GameAnimation{
     private Vector<Animation> cur=new Vector<>();
     private Vector<Animation> animation=new Vector<>();
@@ -203,17 +91,23 @@ class GameAnimation{
     private boolean all=false;
     private boolean isRun;
     private long time;
-    private long setCurTime(long curTime, boolean isStop){
+    private long setCurTime(final long curTime, boolean isStop){
         long maxDuration=0;
-        for(Animation ani:cur){
+        for(final Animation ani:cur){
             int type=ani.getType();
             long duration=ani.getDuration();
             if(duration>maxDuration)maxDuration=duration;
             if(type==1||type==2){
-                ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
-                if(all&&obj instanceof GameObject)//需要循环
-                    for(GameObject ob:((GameObject) obj).getChildren())
-                        ani.getAnimateCallback().callback(ob,ani.getOld().get(ob),(int)curTime);
+                iteratorAll(obj,new AnimationIterator(){
+                    @Override
+                    public void handle(Object obj) {
+                        ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
+                    }
+                });
+//                ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
+//                if(all&&obj instanceof GameObject)//需要循环
+//                    for(GameObject ob:((GameObject) obj).getChildren())
+//                        ani.getAnimateCallback().callback(ob,ani.getOld().get(ob),(int)curTime);
             }else if(type==3&&!isStop){
                 try {
                     Log.e("sleep",""+duration+"|"+cur.size());
@@ -224,6 +118,11 @@ class GameAnimation{
             }
         }
         return maxDuration;
+    }
+    void iteratorAll(Object ob,AnimationIterator ai){
+        ai.handle(ob);
+        if (all && obj instanceof GameObject)
+            for (GameObject obj : ((GameObject)ob).getChildren())iteratorAll(obj,ai);
     }
     private void init(){
         isRun=true;
@@ -244,13 +143,19 @@ class GameAnimation{
                         }
                     }else if(animation.size()>0){
                         while(true){
-                            Animation ani = animation.get(0);
+                            final Animation ani = animation.get(0);
                             cur.add(ani);
                             if(ani.getAnimateCallback()!=null) {
-                                ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
-                                if (all && obj instanceof GameObject)//需要循环
-                                    for (GameObject ob : ((GameObject) obj).getChildren())
-                                        ani.getOld().put(ob, ani.getAnimateCallback().beforeAnimate(ob));
+                                iteratorAll(obj,new AnimationIterator(){
+                                    @Override
+                                    public void handle(Object obj) {
+                                        ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
+                                    }
+                                });
+//                                ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
+//                                if (all && obj instanceof GameObject)//需要循环
+//                                    for (GameObject ob : ((GameObject) obj).getChildren())
+//                                        ani.getOld().put(ob, ani.getAnimateCallback().beforeAnimate(ob));
                             }
                             animation.remove(0);
                             if(ani.getType()!=1)break;
@@ -269,8 +174,8 @@ class GameAnimation{
             }
         }).start();
     }
-    GameAnimation(Object camera){
-        this.obj=camera;
+    GameAnimation(Object object){
+        this.obj=object;
         init();
     }
     void destroy(){
@@ -747,55 +652,10 @@ class GameCamera{
     float[] getMViewMatrix(){
         return mViewMatrix;
     }
-//    private void setX(int x){
-//        this.x=x;
-//        cameraX=x;
-//    }
-//    private void setY(int y){
-//        this.y=y;
-//        cameraY=y;
-//    }
-//    int getCameraX(){
-//        return cameraX;
-//    }
-//    int getCameraY(){
-//        return cameraY;
-//    }
-//    int getX(){
-//        return x;
-//    }
-//    int getY(){
-//        return y;
-//    }
-//    void moveX(int x){
-//        this.x+=x;
-//        cameraX=this.x;
-//    }
-//    void moveY(int y){
-//        this.y+=y;
-//        cameraY=this.y;
-//    }
-//    void setCameraX(int x){
-//        cameraX=x;
-//    }
-//    void setCameraY(int y){
-//        cameraY=y;
-//    }
-//    boolean fixCamera(){//平滑相机
-//        if(cameraX==x&&cameraY==y)return false;
-//        if(cameraX!=x)x=(int)(x+(cameraX-x)*0.15);
-//        if(cameraY!=y)y=(int)(y+(cameraY-y)*0.15);
-//        return true;
-//    }
     GameCamera(CHCanvasGame game){
         this();
         this.game=game;
     }
-//    GameCamera(CHCanvasGame game,int x,int y){
-//        this.game=game;
-//        setX(x);
-//        setY(y);
-//    }
     GameAnimation animate(){
         return new GameAnimation(this);
     }
@@ -815,6 +675,7 @@ class CHCanvasGame {
     private int backGroundColor=0;
     private long startTime=System.currentTimeMillis();
     private Activity activity;
+    boolean isPause;
     long getTime(){
         return System.currentTimeMillis()-startTime;
     }
@@ -883,7 +744,7 @@ class CHCanvasGame {
     }
     void setCamera(GameCamera c){
         this.camera=c;
-        if(openGL!=null)openGL.setCametaMatrix(c.getMViewMatrix());
+        if(openGL!=null)openGL.setCameraMatrix(c.getMViewMatrix());
     }
     GameCamera getCamera() {return camera;}
     private static float parseFloat(String s) {
@@ -1064,9 +925,9 @@ class CHCanvasGame {
     private boolean[] touchInner=new boolean[MAX_TOUCHPOINTS];
     @SuppressLint("ClickableViewAccessibility")
     CHCanvasGame (Activity activity, final GameInit init){
-        surfaceview=new GLSurfaceView(activity);
-
         init.onSetGame(this);
+        if(camera==null)throw new RuntimeException("未设置摄像机，请在onSetGame设置摄像机！");
+        surfaceview=new GLSurfaceView(activity);
         this.activity=activity;
         paint = new Paint();
         paint.setStrokeWidth(5);
@@ -1176,5 +1037,13 @@ class CHCanvasGame {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void pause() {
+        isPause=true;
+    }
+
+    public void resume() {
+        isPause=false;
     }
 }

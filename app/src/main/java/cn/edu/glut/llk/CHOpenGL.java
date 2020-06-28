@@ -53,7 +53,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
     private int curfps=0;
     private CHCanvasGame game=null;
     private float[] mViewMatrix;
-    void setCametaMatrix(float[] mViewMatrix){
+    void setCameraMatrix(float[] mViewMatrix){
         this.mViewMatrix=mViewMatrix;
     }
     CHOpenGL(CHCanvasGame game){
@@ -142,6 +142,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         vertexBuffer.position(0);
         textureBuffer = ByteBuffer.allocateDirect(textureData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(textureData);
         textureBuffer.position(0);
+        setCameraMatrix(game.getCamera().getMViewMatrix());//设置摄像机
     }
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {//改变时
@@ -354,6 +355,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
     }
     @Override
     public void onDrawFrame(GL10 gl10){
+        if(game.isPause)return;
         long startMs = System.currentTimeMillis();
         if(startMs>curfpsTime+1000){
             Log.i("当前FPS:", String.valueOf(curfps));

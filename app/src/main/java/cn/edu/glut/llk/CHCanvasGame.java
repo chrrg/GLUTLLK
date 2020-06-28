@@ -965,7 +965,7 @@ class CHCanvasGame {
                                     if (touchObj.onTouch[3] != null)
                                         touchObj.onTouch[3].onTouchEvent(event);//进入
                                 }
-                            }else {
+                            }else{
                                 if (touchInner[id]) {
                                     touchInner[id] = false;
                                     if (touchObj.onTouch[4] != null)
@@ -1010,12 +1010,20 @@ class CHCanvasGame {
             o=objectTouch(x, y, ob, index, event,target);
             if (o != null)return o;
         }
-        if(gameObject.isCanTouch&&gameObject.onTouch[index]!=null)//不为空 说明可以响应
-            if(openGL.rayPicking(x,y,gameObject.getModelMatrix())) {//xy在对象范围内
-                if (target!=null && target != gameObject) return null;
-                gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
-                return gameObject;
-            }
+        if(target!=null){
+            if(gameObject.isCanTouch)//不为空 说明可以响应
+                if(openGL.rayPicking(x,y,gameObject.getModelMatrix())) {//xy在对象范围内
+                    if (target != gameObject) return null;
+                    if(gameObject.onTouch[index]!=null)gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
+                    return gameObject;
+                }
+        }else {
+            if (gameObject.isCanTouch && gameObject.onTouch[index] != null)//不为空 说明可以响应
+                if (openGL.rayPicking(x, y, gameObject.getModelMatrix())) {//xy在对象范围内
+                    gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
+                    return gameObject;
+                }
+        }
         return null;//未处理
     }
 

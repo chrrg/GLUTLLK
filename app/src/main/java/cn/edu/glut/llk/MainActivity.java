@@ -37,20 +37,28 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
         game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
-        game.getGameObject().getElementById("input").onTouchStart(new OnTouchListener(){
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                Log.e("点击了！","2");
-//                AlertDialog.Builder builder=;
-                game.getInput(new GameInput(){
-                    @Override
-                    public void finish(String inputText) {
-                        if(inputText!=null)
-                            Log.e("输入了",inputText);
-                    }
-                });
-            }
-        });
+
+        game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
+        game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
+
+        LogicUtil util = new LogicUtil();
+        util.setGameStartUI(game);//设置默认显示游戏开始页面
+        util.addListerLogic(game);//增加监听逻辑
+
+
+//        game.getGameObject().getElementById("input").onTouchStart(new OnTouchListener(){
+//            @Override
+//            public void onTouchEvent(MotionEvent event) {
+//                Log.e("点击了！","2");
+////                AlertDialog.Builder builder=;
+//                game.getInput(new GameInput(){
+//                    @Override
+//                    public void finish(String inputText) {
+//                        Log.e("输入了",inputText);
+//                    }
+//                });
+//            }
+//        });
 
 //        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
 //            @Override

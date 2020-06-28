@@ -1,0 +1,11 @@
+<box id="gameBarrier" w="100vw" h="100vh" text="关卡一" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C88B0000;">
+
+    <!--    顶部菜单-->
+    <box id="game1Menu" w="100vw" h="10vh" text="游戏选项" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C8DCDCDC;">
+        <box id="gameBtn1" w="10%" h="6vh" x="+5vw" t="3vh" text="暂停" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+        <box id="gameBtn2" w="10%" h="6vh" x="+20vw" t="3vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
+        <box id="gameBtn3" w="10%" h="6vh" x="+35vw" t="3vh" text="时间" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+        <box id="gameBtn4" w="10%" h="6vh" x="+50vw" t="3vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
+        <box id="gameBtn5" w="10%" h="6vh" x="+65vw" t="3vh" text="待定" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+    </box>
+</box>

@@ -1,0 +1,36 @@
+    <!--    menu start-->
+<box id="menu"  w="100%" h="75vh" y="25vh"  text="游戏开始界面" style="fontSize:5vh;color:#FFFAFA;backColor:#2F4F4F;textY:bottom;">
+
+<box id="menu1"   h="5vh" x="25%" y="+10vh" right="+25%" text="开始游戏" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;" />
+<box id="menu2"   w="50vw" h="5vh" x="25%" y="+20vh" text="模式55" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#10000000;" /><!--透明度 遮罩,argb 前面加-->
+<box id="menu3"   w="50vw" h="5vh" x="25%" y="55vh" style="backColor:#008080;" />
+<box id="menu4"   w="50vw" h="5vh" x="25%" y="65vh" style="backColor:#008080;" />
+<box id="menu5"   w="50vw" h="5vh" x="25%" y="75vh" style="backColor:#008080;" />
+<box id="button1" w="13%" h="8vh" x="5%" y="87vh" text="排行" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;">
+    <!--            排行页面-->
+    <box id="btn1" w="80vw" h="70vh" x="10vw" r="10vw" y="15vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
+        <box id="btn1Close" l="+85%" h="7vh" r="-4%" t="-8vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
+    </box>
+</box>
+<box id="button2" w="13%" h="8vh" x="25%" y="87vh" text="分享" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+<box id="button30" w="13%" h="8vh" x="45%" y="87vh" text="音乐关" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
+<box id="button3" w="13%" h="8vh" x="45%" y="87vh" text="音乐开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+<box id="button40" w="13%" h="8vh" x="65%" y="87vh" text="声音关" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
+<box id="button4" w="13%" h="8vh" x="65%" y="87vh" text="声音开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+<input id="input" w="13%" h="8vh" x="85%" y="87vh" text="账号" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+
+<!--    menu end-->
+
+<!--       menu1二级菜单 start-->
+<box id="menu10"  w="100vw" h="100vh"  text="二级菜单" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFFAA;">
+    <box id="menu11" l="10vw" h="10vh" y="20vh" r="10vw" text="选择"  style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#556B2F;image:stretch" src="menu11.jpg">
+        <box id="menu10Close" l="80vw" h="7vh" r="5vw" t="-80%" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#558C2F;" />
+    </box>
+    <box id="menu12" l="10vw"  h="10vh" y="35vh" r="10vw"  text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF8C00;"/>
+    <box id="menu13" l="10vw"  h="10vh" y="50vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF4500;"/>
+    <box id="menu14" l="10vw"  h="10vh" y="65vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#87CEFA;"/>
+</box>
+<!--       menu1二级菜单 end-->
+    <!--    加减不是百分比-->
+<!--        <box id="menu11" w="50vw" h="20vh" y="50vh"  style="backColor:#7FFFAA;"  src="1.gif"/>-->
+</box>

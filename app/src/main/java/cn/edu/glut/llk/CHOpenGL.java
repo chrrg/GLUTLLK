@@ -52,6 +52,10 @@ class CHOpenGL implements GLSurfaceView.Renderer{
     private int fps=0;
     private int curfps=0;
     private CHCanvasGame game=null;
+    private float[] mViewMatrix;
+    void setCametaMatrix(float[] mViewMatrix){
+        this.mViewMatrix=mViewMatrix;
+    }
     CHOpenGL(CHCanvasGame game){
         this.game=game;
     }
@@ -83,7 +87,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
     private int mMatrixHandle;
     private int mUniformTextureHandle;
 //    private float[] mModelMatrix = new float[16];// 具体物体的3D变换矩阵，包含旋转、平移、缩放
-    private float[] mViewMatrix = new float[16];//摄像机位置朝向9參数矩阵
+
     private float[] mProjectionMatrix = new float[16];// 4x4矩阵 投影用
     private float[] mMVPMatrix = new float[16];// 最后起作用的总变换矩阵
     private FloatBuffer textureBuffer;
@@ -176,7 +180,6 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         //    float near,   //相對觀察點近面距離
         //    float far)   //相對觀察點遠面距離
         Matrix.perspectiveM(mProjectionMatrix, 0, 90, ratio, 0.01f, 10000f);
-        Matrix.setLookAtM(mViewMatrix, 0,0f, 0f, 1, 0f, 0f, 0f, 0f, 1f, 0f);
         //float cx, //摄像机位置x
         //float cy, //摄像机位置y
         //float cz, //摄像机位置z

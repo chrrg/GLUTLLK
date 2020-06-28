@@ -46,9 +46,9 @@ interface ObjectStringChange{
     String onListener();
 }
 interface OnTouchListener{
-    boolean onTouchStart(MotionEvent event);
-    boolean onTouchMove(MotionEvent event);
-    boolean onTouchEnd(MotionEvent event);
+    boolean onTouchEvent(MotionEvent event);
+//    boolean onTouchMove(MotionEvent event);
+//    boolean onTouchEnd(MotionEvent event);
 }
 //class GameObject{
 //    int x,y,w,h;
@@ -163,6 +163,145 @@ interface OnTouchListener{
 //        this.od=od;
 //    }
 //}
+class Animation{
+    private long duration=0;//持续时间
+    private int type=0;//1 run 2 next 3delay
+    private AnimateCallback animateCallback;
+    private Map<Object,Integer> old=new HashMap<>();
+    Animation(long duration){
+        this.duration=duration;
+    }
+    Animation(long duration,AnimateCallback animateCallback){
+        this.duration=duration;
+        this.animateCallback=animateCallback;
+    }
+    int getType() {
+        return type;
+    }
+    void setType(int type) {
+        this.type = type;
+    }
+    long getDuration() {
+        return duration;
+    }
+    AnimateCallback getAnimateCallback() {
+        return animateCallback;
+    }
+    Map<Object,Integer> getOld() {
+        return old;
+    }
+}
+interface AnimateCallback{
+    int beforeAnimate(Object ob);
+    void callback(Object ob,int old,int time);
+    void afterAnimate(Object ob);
+}
+class GameAnimation{
+    private Vector<Animation> cur=new Vector<>();
+    private Vector<Animation> animation=new Vector<>();
+    private Object obj=null;
+    private boolean all=false;
+    private boolean isRun;
+    private long time;
+    private long setCurTime(long curTime, boolean isStop){
+        long maxDuration=0;
+        for(Animation ani:cur){
+            int type=ani.getType();
+            long duration=ani.getDuration();
+            if(duration>maxDuration)maxDuration=duration;
+            if(type==1||type==2){
+                ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
+                if(all&&obj instanceof GameObject)//需要循环
+                    for(GameObject ob:((GameObject) obj).getChildren())
+                        ani.getAnimateCallback().callback(ob,ani.getOld().get(ob),(int)curTime);
+            }else if(type==3&&!isStop){
+                try {
+                    Log.e("sleep",""+duration+"|"+cur.size());
+                    Thread.sleep(duration);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return maxDuration;
+    }
+    private void init(){
+        isRun=true;
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while(isRun){
+                    if(cur.size()>0) {
+                        //说明当前有动画队列
+                        long maxDuration=setCurTime(android.os.SystemClock.uptimeMillis()-time,false);//sleep
+                        long curTime=android.os.SystemClock.uptimeMillis()-time;
+                        if(curTime>=maxDuration){//动画 结束了
+                            setCurTime(curTime,true);//执行到结束
+                            for(Animation ani:cur)
+                                if(ani.getAnimateCallback()!=null)
+                                    ani.getAnimateCallback().afterAnimate(obj);
+                            cur.clear();
+                        }
+                    }else if(animation.size()>0){
+                        while(true){
+                            Animation ani = animation.get(0);
+                            cur.add(ani);
+                            if(ani.getAnimateCallback()!=null) {
+                                ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
+                                if (all && obj instanceof GameObject)//需要循环
+                                    for (GameObject ob : ((GameObject) obj).getChildren())
+                                        ani.getOld().put(ob, ani.getAnimateCallback().beforeAnimate(ob));
+                            }
+                            animation.remove(0);
+                            if(ani.getType()!=1)break;
+                            if(animation.size()==0)break;
+                            int type=animation.get(0).getType();
+                            if(type!=1)break;
+                        }
+                        time=android.os.SystemClock.uptimeMillis();
+                    }
+                }
+                try {
+                    Thread.sleep(16);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    GameAnimation(Object camera){
+        this.obj=camera;
+        init();
+    }
+    void destroy(){
+        finalize();
+    }
+    protected void finalize(){
+        isRun=false;
+    }
+    GameAnimation setAll(boolean isAll){
+        this.all=isAll;
+        return this;
+    }
+    GameAnimation run(int duration,AnimateCallback animate){//
+        Animation anim=new Animation(duration,animate);
+        anim.setType(1);
+        animation.add(anim);
+        return this;
+    }
+    GameAnimation next(int duration,AnimateCallback animate){
+        Animation anim=new Animation(duration,animate);
+        anim.setType(2);
+        animation.add(anim);
+        return this;
+    }
+    GameAnimation delay(long millis){
+        Animation animate=new Animation(millis);
+        animate.setType(3);
+        animation.add(animate);
+        return this;
+    }
+}
 class GameObject{
     private int x,y,z,w,h;
     private String id=null;
@@ -203,9 +342,26 @@ class GameObject{
         Matrix.scaleM(mModelMatrix,0,(float)w/game.getHeight(),(float)h/game.getHeight(),1);
         Matrix.translateM(mModelMatrix,0,1-(game.getWidth()-2*(float)x)/w,(game.getHeight()-2*(float)y)/h-1,0f);
     }
-    OnTouchListener touch;
-    void onTouch(OnTouchListener touch){
-        this.touch=touch;
+    OnTouchListener onTouchStart;
+    OnTouchListener onTouchMove;
+    OnTouchListener onTouchEnd;
+    OnTouchListener onTouchEnter;
+    OnTouchListener onTouchLeave;
+
+    void onTouchStart(OnTouchListener onTouchStart){
+        this.onTouchStart=onTouchStart;
+    }
+    void onTouchMove(OnTouchListener onTouchMove){
+        this.onTouchMove=onTouchMove;
+    }
+    void onTouchEnd(OnTouchListener onTouchEnd){
+        this.onTouchEnd=onTouchEnd;
+    }
+    void onTouchEnter(OnTouchListener onTouchEnter){
+        this.onTouchEnter=onTouchEnter;
+    }
+    void onTouchLeave(OnTouchListener onTouchLeave){
+        this.onTouchLeave=onTouchLeave;
     }
     void addChild(GameObject o){
         if(o==null)return;
@@ -214,6 +370,12 @@ class GameObject{
     private GameObject(CHCanvasGame game){
         this();
         this.game=game;
+    }
+    GameAnimation animate(){
+        return new GameAnimation(this);
+    }
+    GameAnimation animate(boolean isAll){
+        return new GameAnimation(this).setAll(isAll);
     }
     GameObject(CHCanvasGame game,GameObject parent){
         this(game);
@@ -560,58 +722,75 @@ class GameObject{
     }
 }
 class GameCamera{
-    private int x=0;//当前摄像机位置
-    private int y=0;
-    private int cameraX;//平滑摄像机预计到达的位置
-    private int cameraY;
+    private float[] pos={0,0,1,0,0,0};//当前摄像机位置
+
+//    private int cameraX;//平滑摄像机预计到达的位置
+//    private int cameraY;
     private CHCanvasGame game;
-    private void setX(int x){
-        this.x=x;
-        cameraX=x;
+    private float[] mViewMatrix = new float[16];//摄像机位置朝向9參数矩阵
+    GameCamera(){
+        Matrix.setLookAtM(mViewMatrix, 0,pos[0],pos[1],pos[2],pos[3],pos[4],pos[5], 0f, 1f, 0f);
     }
-    private void setY(int y){
-        this.y=y;
-        cameraY=y;
+    void setValue(int index,float value){
+        pos[index]=value;
+        Matrix.setLookAtM(mViewMatrix, 0,pos[0],pos[1],pos[2],pos[3],pos[4],pos[5], 0f, 1f, 0f);
     }
-    int getCameraX(){
-        return cameraX;
+    float getValue(int index){
+        return pos[index];
     }
-    int getCameraY(){
-        return cameraY;
+    float[] getMViewMatrix(){
+        return mViewMatrix;
     }
-    int getX(){
-        return x;
-    }
-    int getY(){
-        return y;
-    }
-    void moveX(int x){
-        this.x+=x;
-        cameraX=this.x;
-    }
-    void moveY(int y){
-        this.y+=y;
-        cameraY=this.y;
-    }
-    void setCameraX(int x){
-        cameraX=x;
-    }
-    void setCameraY(int y){
-        cameraY=y;
-    }
-    boolean fixCamera(){//平滑相机
-        if(cameraX==x&&cameraY==y)return false;
-        if(cameraX!=x)x=(int)(x+(cameraX-x)*0.15);
-        if(cameraY!=y)y=(int)(y+(cameraY-y)*0.15);
-        return true;
-    }
+//    private void setX(int x){
+//        this.x=x;
+//        cameraX=x;
+//    }
+//    private void setY(int y){
+//        this.y=y;
+//        cameraY=y;
+//    }
+//    int getCameraX(){
+//        return cameraX;
+//    }
+//    int getCameraY(){
+//        return cameraY;
+//    }
+//    int getX(){
+//        return x;
+//    }
+//    int getY(){
+//        return y;
+//    }
+//    void moveX(int x){
+//        this.x+=x;
+//        cameraX=this.x;
+//    }
+//    void moveY(int y){
+//        this.y+=y;
+//        cameraY=this.y;
+//    }
+//    void setCameraX(int x){
+//        cameraX=x;
+//    }
+//    void setCameraY(int y){
+//        cameraY=y;
+//    }
+//    boolean fixCamera(){//平滑相机
+//        if(cameraX==x&&cameraY==y)return false;
+//        if(cameraX!=x)x=(int)(x+(cameraX-x)*0.15);
+//        if(cameraY!=y)y=(int)(y+(cameraY-y)*0.15);
+//        return true;
+//    }
     GameCamera(CHCanvasGame game){
         this.game=game;
     }
-    GameCamera(CHCanvasGame game,int x,int y){
-        this.game=game;
-        setX(x);
-        setY(y);
+//    GameCamera(CHCanvasGame game,int x,int y){
+//        this.game=game;
+//        setX(x);
+//        setY(y);
+//    }
+    GameAnimation animate(){
+        return new GameAnimation(this);
     }
 }
 class CHCanvasGame {
@@ -695,7 +874,10 @@ class CHCanvasGame {
     int getHeight(){
         return this.h;
     }
-    void setCamera(GameCamera c){this.camera=c;}
+    void setCamera(GameCamera c){
+        this.camera=c;
+        if(openGL!=null)openGL.setCametaMatrix(c.getMViewMatrix());
+    }
     GameCamera getCamera() {return camera;}
     private static float parseFloat(String s) {
         if (s == null) return 0;
@@ -906,8 +1088,8 @@ class CHCanvasGame {
         for(GameObject ob:gameObject.getChildren())
             if(objectTouch(x,y,ob,event))
                 return true;
-        if(gameObject.touch!=null&&openGL.rayPicking(x,y,gameObject.getModelMatrix()))
-            return gameObject.touch.onTouchStart(event);//是否已处理 true为已处理即不继续传递
+        if(gameObject.onTouchStart!=null&&openGL.rayPicking(x,y,gameObject.getModelMatrix()))
+            return gameObject.onTouchStart.onTouchEvent(event);//是否已处理 true为已处理即不继续传递
         return false;
     }
 

@@ -14,6 +14,9 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.opengl.Matrix;
+
+import javax.security.auth.callback.Callback;
+
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
 //    private GameObject box;
@@ -26,10 +29,71 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        camera=new GameCamera(game,-200,200);//新建摄像机
+        camera=new GameCamera(game);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
+        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
+            @Override
+            public boolean onTouchEvent(MotionEvent event) {
+                Log.e("点击了FPS","fps clicked");
+                return false;
+            }
+        });
+        //.getElementById("fps")
+        camera.animate().run(1000, new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {
+                return (int) ((GameCamera) ob).getValue(0);
+            }
+            @Override
+            public void callback(Object ob, int old, int time) {
+                ((GameCamera) ob).setValue(0,(float)time/1000+old);
+            }
+            @Override
+            public void afterAnimate(Object ob) {
+                Log.e("摄像头转动完成","camera finish");
+            }
+        });
+        game.getGameObject().animate(true).delay(1000).run(1000, new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Start","ok");
+                return gameObject.getY();
+            }
+            @Override
+            public void callback(Object ob, int old, int time) {
+                GameObject gameObject=(GameObject)ob;
+                gameObject.setY(old+time/5);
+            }
+            @Override
+            public void afterAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Finish","ok");
+            }
+        }).next(1000, new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Start","ok");
+                return gameObject.getY();
+            }
+            @Override
+            public void callback(Object ob, int old, int time) {
+                GameObject gameObject=(GameObject)ob;
+                gameObject.setY(old-time/5);
+            }
+            @Override
+            public void afterAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Finish","ok");
+            }
+        });
+//        game.getGameObject().getElementById("fps").animate().next(1000,100,new AnimateCallback(int value){
+//
+//        }).next(new Animation(1000,100));
+
 //        Log.e("debug", String.valueOf(game.getGameObject().getStyle()));
 //        float[] a = game.getGameObject().getModelMatrix();
 //        game.getGameObject().setX(0);
@@ -182,6 +246,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
+
 //        game.getGameObject().updateView();
 //        game.getGameObject().setW((int) (Math.random()*game.getWidth()));
 //        game.getGameObject().setW(500);

@@ -344,7 +344,7 @@ class GameObject{
         Matrix.translateM(mModelMatrix,0,1-(game.getWidth()-2*(float)x)/w,(game.getHeight()-2*(float)y)/h-1,0f);
     }
     OnTouchListener[] onTouch=new OnTouchListener[6];
-    private GameObject setCanTouch(boolean is){
+     GameObject setCanTouch(boolean is){
         isCanTouch=is;
         return this;
     }//设置是否可以响应触摸事件

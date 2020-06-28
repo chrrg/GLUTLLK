@@ -58,10 +58,18 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
             public void onTouchEvent(MotionEvent event) {
                 Log.e("退出了FPS","fps leaved");
             }
+        }).onClick(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("clicked","fps clicked");
+            }
         });
 
+
+//        game.getGameObject().getElementById("fps").setCanTouch(false);
+
         //.getElementById("fps")
-//        camera.animate().run(1000, new AnimateCallback() {
+//        camera.animate().delay(5000).run(1000, new AnimateCallback() {
 //            @Override
 //            public int beforeAnimate(Object ob) {
 //                return (int) ((GameCamera) ob).getValue(0);
@@ -75,6 +83,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //                Log.e("摄像头转动完成","camera finish");
 //            }
 //        });
+
         game.getGameObject().animate(true).run(1000, new AnimateCallback() {
             @Override
             public int beforeAnimate(Object ob) {
@@ -110,6 +119,56 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
                 Log.d("animate Finish","ok");
             }
         });
+
+//        click start
+        game.getGameObject().getElementById("menu10").setDisplay(false);
+//        game.getGameObject().getElementById("menu1").onTouchStart(new OnTouchListener() {
+//            @Override
+//            public void onTouchEvent(MotionEvent event) {
+//
+//            }
+//        }).onClick(new OnTouchListener() {
+//            @Override
+//            public void onTouchEvent(MotionEvent event) {
+//                Log.i("menu1","menu1点击");
+//                game.getGameObject().getElementById("menu10").setDisplay(true);
+//            }
+//        });
+
+        game.getGameObject().getElementById("menu1").onTouchStart(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("开始了FPS","fps started");
+            }
+        }).onTouchMove(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("移动了FPS","fps moved");
+            }
+        }).onTouchEnd(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("松开了FPS","fps ended");
+            }
+        }).onTouchEnter(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("进入了FPS","fps entered");
+            }
+        }).onTouchLeave(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("退出了FPS","fps leaved");
+            }
+        }).onClick(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("clicked","fps clicked");
+                game.getGameObject().getElementById("menu10").setDisplay(true);
+
+            }
+        });
+
 //        game.getGameObject().getElementById("fps").animate().next(1000,100,new AnimateCallback(int value){
 //
 //        }).next(new Animation(1000,100));

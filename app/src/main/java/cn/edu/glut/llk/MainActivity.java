@@ -31,81 +31,101 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
         game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
-        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
+
+//       二级菜单隐藏
+        game.getGameObject().getElementById("menu10").setDisplay(false);
+
+//        监听事件及逻辑
+        game.getGameObject().getElementById("menu1").onTouchStart(new OnTouchListener() {
             @Override
             public void onTouchEvent(MotionEvent event) {
-                Log.e("开始了FPS","fps started");
+                Log.i("menu1","触摸开始");
             }
-        }).onTouchMove(new OnTouchListener(){
+        }).onClick(new OnTouchListener() {
             @Override
             public void onTouchEvent(MotionEvent event) {
-                Log.e("移动了FPS","fps moved");
-            }
-        }).onTouchEnd(new OnTouchListener(){
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                Log.e("松开了FPS","fps ended");
-            }
-        }).onTouchEnter(new OnTouchListener(){
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                Log.e("进入了FPS","fps entered");
-            }
-        }).onTouchLeave(new OnTouchListener(){
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                Log.e("退出了FPS","fps leaved");
+                Log.i("menu1","被点击");
+//                显示二级菜单
+                game.getGameObject().getElementById("menu10").setDisplay(true);
             }
         });
-        camera.animate().run(1000, new AnimateCallback() {
+
+        game.getGameObject().getElementById("menu10Close").onTouchStart(new OnTouchListener() {
             @Override
-            public int beforeAnimate(Object ob) {
-                return (int) ((GameCamera) ob).getValue(0);
+            public void onTouchEvent(MotionEvent event) {
+                Log.i("menu10Close","触摸开始");
             }
+        }).onClick(new OnTouchListener() {
             @Override
-            public void callback(Object ob, int old, int time) {
-                ((GameCamera) ob).setValue(0,(float)time/1000+old);
-            }
-            @Override
-            public void afterAnimate(Object ob) {
-                Log.e("摄像头转动完成","camera finish");
-            }
-        });
-        game.getGameObject().animate(true).run(1000, new AnimateCallback() {
-            @Override
-            public int beforeAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Start","ok");
-                return gameObject.getY();
-            }
-            @Override
-            public void callback(Object ob, int old, int time) {
-                GameObject gameObject=(GameObject)ob;
-                gameObject.setY(old+time/5);
-            }
-            @Override
-            public void afterAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Finish","ok");
-            }
-        }).next(1000, new AnimateCallback() {
-            @Override
-            public int beforeAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Start","ok");
-                return gameObject.getY();
-            }
-            @Override
-            public void callback(Object ob, int old, int time) {
-                GameObject gameObject=(GameObject)ob;
-                gameObject.setY(old-time/5);
-            }
-            @Override
-            public void afterAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Finish","ok");
+            public void onTouchEvent(MotionEvent event) {
+                Log.i("menu10Close","被点击");
+//                显示二级菜单
+                game.getGameObject().getElementById("menu10").setDisplay(false);
             }
         });
+
+
+//        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
+//            @Override
+//            public void onTouchEvent(MotionEvent event) {
+//                Log.e("开始了FPS","fps started");
+//            }
+//        }).onClick(new OnTouchListener() {
+//            @Override
+//            public void onTouchEvent(MotionEvent event) {
+//                Log.e("点击fps","fps started");            }
+//        });
+
+//        camera.animate().run(1000, new AnimateCallback() {
+////            @Override
+////            public int beforeAnimate(Object ob) {
+////                return (int) ((GameCamera) ob).getValue(0);
+////            }
+////            @Override
+////            public void callback(Object ob, int old, int time) {
+////                ((GameCamera) ob).setValue(0,(float)time/1000+old);
+////            }
+////            @Override
+////            public void afterAnimate(Object ob) {
+////                Log.e("摄像头转动完成","camera finish");
+////            }
+////        });
+
+//        game.getGameObject().animate(true).run(1000, new AnimateCallback() {
+//            @Override
+//            public int beforeAnimate(Object ob) {
+//                GameObject gameObject=(GameObject)ob;
+//                Log.d("animate Start","ok");
+//                return gameObject.getY();
+//            }
+//            @Override
+//            public void callback(Object ob, int old, int time) {
+//                GameObject gameObject=(GameObject)ob;
+//                gameObject.setY(old+time/5);
+//            }
+//            @Override
+//            public void afterAnimate(Object ob) {
+//                GameObject gameObject=(GameObject)ob;
+//                Log.d("animate Finish","ok");
+//            }
+//        }).next(1000, new AnimateCallback() {
+//            @Override
+//            public int beforeAnimate(Object ob) {
+//                GameObject gameObject=(GameObject)ob;
+//                Log.d("animate Start","ok");
+//                return gameObject.getY();
+//            }
+//            @Override
+//            public void callback(Object ob, int old, int time) {
+//                GameObject gameObject=(GameObject)ob;
+//                gameObject.setY(old-time/5);
+//            }
+//            @Override
+//            public void afterAnimate(Object ob) {
+//                GameObject gameObject=(GameObject)ob;
+//                Log.d("animate Finish","ok");
+//            }
+//        });
         new Timer().schedule(this, 0, 5);
     }
     public static int getRandomColor(){

@@ -949,14 +949,17 @@ class CHCanvasGame {
                 switch(action){
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_POINTER_DOWN:
-                        touchEvent[id]=objectTouch(event.getX(index),event.getY(index),getGameObject(),0,event,null);
+                        touchEvent[id]=objectTouch(event.getX(index),event.getY(index),getGameObject(),0,event,null);//响应ontouchstart
+                        if(touchEvent[id]==null)break;
+                        touchInner[id] = true;
+                        if (touchEvent[id].onTouch[3] != null)touchEvent[id].onTouch[3].onTouchEvent(event);//进入
                         break;
                     case MotionEvent.ACTION_MOVE:
                         for (int i = 0; i < pointerCount; i++) {
                             id = event.getPointerId(i);
                             touchObj=touchEvent[id];
                             if(touchObj==null)break;
-                            if(objectTouch(event.getX(i),event.getY(i),getGameObject(),1,event,touchObj)!=null) {
+                            if(objectTouch(event.getX(i),event.getY(i),getGameObject(),1,event,touchObj)!=null) {//响应ontouchmove
                                 if (!touchInner[id]) {
                                     touchInner[id] = true;
                                     if (touchObj.onTouch[3] != null)

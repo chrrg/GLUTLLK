@@ -45,7 +45,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
                 game.getInput(new GameInput(){
                     @Override
                     public void finish(String inputText) {
-                        Log.e("输入了",inputText);
+                        if(inputText!=null)
+                            Log.e("输入了",inputText);
                     }
                 });
             }

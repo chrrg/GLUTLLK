@@ -35,27 +35,47 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
         game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
             @Override
-            public boolean onTouchEvent(MotionEvent event) {
-                Log.e("点击了FPS","fps clicked");
-                return false;
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("开始了FPS","fps started");
+            }
+        }).onTouchMove(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("移动了FPS","fps moved");
+            }
+        }).onTouchEnd(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("松开了FPS","fps ended");
+            }
+        }).onTouchEnter(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("进入了FPS","fps entered");
+            }
+        }).onTouchLeave(new OnTouchListener(){
+            @Override
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("退出了FPS","fps leaved");
             }
         });
+
         //.getElementById("fps")
-        camera.animate().run(1000, new AnimateCallback() {
-            @Override
-            public int beforeAnimate(Object ob) {
-                return (int) ((GameCamera) ob).getValue(0);
-            }
-            @Override
-            public void callback(Object ob, int old, int time) {
-                ((GameCamera) ob).setValue(0,(float)time/1000+old);
-            }
-            @Override
-            public void afterAnimate(Object ob) {
-                Log.e("摄像头转动完成","camera finish");
-            }
-        });
-        game.getGameObject().animate(true).delay(1000).run(1000, new AnimateCallback() {
+//        camera.animate().run(1000, new AnimateCallback() {
+//            @Override
+//            public int beforeAnimate(Object ob) {
+//                return (int) ((GameCamera) ob).getValue(0);
+//            }
+//            @Override
+//            public void callback(Object ob, int old, int time) {
+//                ((GameCamera) ob).setValue(0,(float)time/1000+old);
+//            }
+//            @Override
+//            public void afterAnimate(Object ob) {
+//                Log.e("摄像头转动完成","camera finish");
+//            }
+//        });
+        game.getGameObject().animate(true).run(1000, new AnimateCallback() {
             @Override
             public int beforeAnimate(Object ob) {
                 GameObject gameObject=(GameObject)ob;

@@ -46,7 +46,7 @@ interface ObjectStringChange{
     String onListener();
 }
 interface OnTouchListener{
-    boolean onTouchEvent(MotionEvent event);
+    void onTouchEvent(MotionEvent event);
 //    boolean onTouchMove(MotionEvent event);
 //    boolean onTouchEnd(MotionEvent event);
 }
@@ -303,6 +303,7 @@ class GameAnimation{
     }
 }
 class GameObject{
+    public boolean isCanTouch=true;
     private int x,y,z,w,h;
     private String id=null;
     private String Tag="obj";
@@ -342,26 +343,31 @@ class GameObject{
         Matrix.scaleM(mModelMatrix,0,(float)w/game.getHeight(),(float)h/game.getHeight(),1);
         Matrix.translateM(mModelMatrix,0,1-(game.getWidth()-2*(float)x)/w,(game.getHeight()-2*(float)y)/h-1,0f);
     }
-    OnTouchListener onTouchStart;
-    OnTouchListener onTouchMove;
-    OnTouchListener onTouchEnd;
-    OnTouchListener onTouchEnter;
-    OnTouchListener onTouchLeave;
-
-    void onTouchStart(OnTouchListener onTouchStart){
-        this.onTouchStart=onTouchStart;
+    OnTouchListener[] onTouch=new OnTouchListener[6];
+    private GameObject setCanTouch(boolean is){
+        isCanTouch=is;
+        return this;
+    }//设置是否可以响应触摸事件
+    private boolean isCanTouch(){
+        return isCanTouch;
     }
-    void onTouchMove(OnTouchListener onTouchMove){
-        this.onTouchMove=onTouchMove;
+    GameObject onTouchStart(OnTouchListener onTouchEvent){
+        onTouch[0]=onTouchEvent;return this;
     }
-    void onTouchEnd(OnTouchListener onTouchEnd){
-        this.onTouchEnd=onTouchEnd;
+    GameObject onTouchMove(OnTouchListener onTouchEvent){
+        onTouch[1]=onTouchEvent;return this;
     }
-    void onTouchEnter(OnTouchListener onTouchEnter){
-        this.onTouchEnter=onTouchEnter;
+    GameObject onTouchEnd(OnTouchListener onTouchEvent){
+        onTouch[2]=onTouchEvent;return this;
     }
-    void onTouchLeave(OnTouchListener onTouchLeave){
-        this.onTouchLeave=onTouchLeave;
+    GameObject onTouchEnter(OnTouchListener onTouchEvent){
+        onTouch[3]=onTouchEvent;return this;
+    }
+    GameObject onTouchLeave(OnTouchListener onTouchEvent){
+        onTouch[4]=onTouchEvent;return this;
+    }
+    GameObject onClick(OnTouchListener onTouchEvent){
+        onTouch[5]=onTouchEvent;return this;
     }
     void addChild(GameObject o){
         if(o==null)return;
@@ -782,6 +788,7 @@ class GameCamera{
 //        return true;
 //    }
     GameCamera(CHCanvasGame game){
+        this();
         this.game=game;
     }
 //    GameCamera(CHCanvasGame game,int x,int y){
@@ -1052,7 +1059,9 @@ class CHCanvasGame {
         }
         return null;
     }
-
+    private final static int MAX_TOUCHPOINTS=10;
+    private GameObject[] touchEvent=new GameObject[MAX_TOUCHPOINTS];
+    private boolean[] touchInner=new boolean[MAX_TOUCHPOINTS];
     @SuppressLint("ClickableViewAccessibility")
     CHCanvasGame (Activity activity, final GameInit init){
         surfaceview=new GLSurfaceView(activity);
@@ -1065,11 +1074,56 @@ class CHCanvasGame {
         paint.setAntiAlias(true);
         paint.setDither(true);
         final ArrayList<GameObject> kv = new ArrayList<>();
+
         surfaceview.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                objectTouch(event.getX(),event.getY(),getGameObject(),event);
-                return false;
+                int action=event.getActionMasked();
+                int index=event.getActionIndex();
+                int id=event.getPointerId(index);
+                int pointerCount = event.getPointerCount();
+//                Log.e("ts",index+"|"+id+"|"+pointerCount);
+                if(pointerCount>MAX_TOUCHPOINTS)pointerCount=MAX_TOUCHPOINTS;
+                GameObject touchObj;
+                switch(action){
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        touchEvent[id]=objectTouch(event.getX(index),event.getY(index),getGameObject(),0,event,null);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        for (int i = 0; i < pointerCount; i++) {
+                            id = event.getPointerId(i);
+                            touchObj=touchEvent[id];
+                            if(touchObj==null)break;
+                            if(objectTouch(event.getX(i),event.getY(i),getGameObject(),1,event,touchObj)!=null) {
+                                if (!touchInner[id]) {
+                                    touchInner[id] = true;
+                                    if (touchObj.onTouch[3] != null)
+                                        touchObj.onTouch[3].onTouchEvent(event);//进入
+                                }
+                            }else {
+                                if (touchInner[id]) {
+                                    touchInner[id] = false;
+                                    if (touchObj.onTouch[4] != null)
+                                        touchObj.onTouch[4].onTouchEvent(event);//离开
+                                }
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                    case MotionEvent.ACTION_UP://所有被释放
+                        touchObj=touchEvent[id];
+                        if(touchObj==null)break;
+                        if(touchObj.onTouch[2]!=null)touchObj.onTouch[2].onTouchEvent(event);
+                        if(touchInner[id]){
+                            touchInner[id]=false;
+                            if(touchObj.onTouch[4]!=null)touchObj.onTouch[4].onTouchEvent(event);//离开
+                            if(touchObj.onTouch[5]!=null)touchObj.onTouch[5].onTouchEvent(event);//点击
+                        }
+                        touchEvent[id]=null;
+                        break;
+                }
+                return true;
             }
         });
         surfaceview.setEGLContextClientVersion(3);
@@ -1084,13 +1138,21 @@ class CHCanvasGame {
             }
         });
     }
-    private boolean objectTouch(float x, float y, GameObject gameObject,MotionEvent event) {
-        for(GameObject ob:gameObject.getChildren())
-            if(objectTouch(x,y,ob,event))
-                return true;
-        if(gameObject.onTouchStart!=null&&openGL.rayPicking(x,y,gameObject.getModelMatrix()))
-            return gameObject.onTouchStart.onTouchEvent(event);//是否已处理 true为已处理即不继续传递
-        return false;
+
+
+    private GameObject objectTouch(float x, float y, GameObject gameObject,int index,MotionEvent event,GameObject target) {
+        for(GameObject ob:gameObject.getChildren()) {
+            GameObject o;
+            o=objectTouch(x, y, ob, index, event,target);
+            if (o != null)return o;
+        }
+        if(gameObject.isCanTouch&&gameObject.onTouch[index]!=null)//不为空 说明可以响应
+            if(openGL.rayPicking(x,y,gameObject.getModelMatrix())) {//xy在对象范围内
+                if (target!=null && target != gameObject) return null;
+                gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
+                return gameObject;
+            }
+        return null;//未处理
     }
 
     void setGameObject(GameObject root) {

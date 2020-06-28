@@ -2,7 +2,9 @@ package cn.edu.glut.llk;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -47,6 +50,9 @@ interface ObjectStringChange{
 }
 interface OnTouchListener{
     void onTouchEvent(MotionEvent event);
+}
+interface GameInput{
+    void finish(String inputText);
 }
 class Animation{
     private long duration=0;//持续时间
@@ -679,7 +685,20 @@ class CHCanvasGame {
     long getTime(){
         return System.currentTimeMillis()-startTime;
     }
-
+    void getInput(final GameInput input){
+        final EditText edit=new EditText(getActivity());
+        new AlertDialog.Builder(getActivity()).setTitle("输入框").setMessage("输入文本：").setView(edit).setPositiveButton("确定",new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                input.finish(edit.getText().toString());
+            }
+        }).setNegativeButton("取消",new DialogInterface.OnClickListener(){ //增加一个中间的按钮,并增加点击事件
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                input.finish(null);
+            }
+        }).create().show();
+    }
     void showInputMethod(){
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {

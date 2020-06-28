@@ -31,34 +31,6 @@ text      文本样算  示例 text:center   center（XY居中 将会覆盖textX
 <box w="100vw" h="100vh" id="root" style="backColor:#308030;" src="game.jpg">
     <box w="100vw" h="11vh" id="fps" style="fontSize:5vh;color:#218081;textX:right;textY:top;"/>
     <box l="10%" w="80%" t="10%" h="11vh" text="桂工连连看" style="fontSize:7vh;color:#218081;textX:center;textY:center;"/>
-
-<!--    menu start-->
-    <box id="menu"  w="100%" h="75vh" y="25vh" id="menu" text="游戏开始界面" style="fontSize:5vh;color:#FFFAFA;backColor:#2F4F4F;textY:bottom;">
-
-        <box id="menu1"   h="5vh" x="5%" y="+10vh" right="+5%" text="开始游戏" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;" />
-        <box id="menu2"   w="50vw" h="5vh" x="25%" y="+20vh" text="模式55" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#10000000;" /><!--透明度 遮罩,argb 前面加-->
-        <box id="menu3"   w="50vw" h="5vh" x="25%" y="55vh" style="backColor:#008080;" />
-        <box id="menu4"   w="50vw" h="5vh" x="25%" y="65vh" style="backColor:#008080;" />
-        <box id="menu5"   w="50vw" h="5vh" x="25%" y="75vh" style="backColor:#008080;" />
-        <box id="button1" w="13%" h="8vh" x="5%" y="87vh" text="排行" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-        <box id="button2" w="13%" h="8vh" x="25%" y="87vh" text="分享" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-        <box id="button3" w="13%" h="8vh" x="45%" y="87vh" text="音乐" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-        <box id="button4" w="13%" h="8vh" x="65%" y="87vh" text="声音" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-        <box id="button5" w="13%" h="8vh" x="85%" y="87vh" text="其它" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
- <!--    menu end-->
-
-<!--       menu1二级菜单 start-->
-        <box id="menu10"  w="100vw" h="100vh"  text="二级菜单" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#7FFFAA;">
-            <box id="menu11" l="10vw" h="10vh" y="20vh" r="10vw" text="选择"  style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#556B2F;image:stretch" src="menu11.jpg">
-                <box id="menu10Close" l="80vw" h="7vh" r="5vw" t="-80%" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#558C2F;" />
-            </box>
-            <box id="menu12" l="10vw"  h="10vh" y="35vh" r="10vw"  text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF8C00;"/>
-            <box id="menu13" l="10vw"  h="10vh" y="50vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF4500;"/>
-            <box id="menu14" l="10vw"  h="10vh" y="65vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#87CEFA;"/>
-        </box>
- <!--       menu1二级菜单 end-->
-
-<!--        <box id="menu11" w="50vw" h="20vh" y="50vh"  style="backColor:#7FFFAA;"  src="1.gif"/>-->
-    </box>
+    <input id="input" w="100%" h="10%" t="30%" style="backColor:#508090;"/>
 
 </box>

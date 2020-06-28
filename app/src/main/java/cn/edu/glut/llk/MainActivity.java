@@ -1,9 +1,11 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioManager;
 import android.opengl.GLU;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.opengl.Matrix;
+import android.view.View;
+
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
 //    private GameObject box;
@@ -30,6 +34,55 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
+        game.getGameObject().getElementById("menu10").setDisplay(false);
+
+//        Listener start
+        game.getGameObject().getElementById("menu1").onTouch(new OnTouchListener() {
+            @Override
+            public boolean onTouchStart(MotionEvent event) {
+
+//                game.getGameObject().getElementById("menu").setDisplay(false);
+                game.getGameObject().getElementById("menu10").setDisplay(true);
+                return true;
+            }
+
+            @Override
+            public boolean onTouchMove(MotionEvent event) {
+                return false;
+            }
+
+            @Override
+            public boolean onTouchEnd(MotionEvent event) {
+                return false;
+            }
+        });
+
+
+        game.getGameObject().getElementById("menu10Close").onTouch(new OnTouchListener() {
+            @Override
+            public boolean onTouchStart(MotionEvent event) {
+//                关闭二级菜单
+                game.getGameObject().getElementById("menu10").setDisplay(false);
+                return true;
+            }
+
+            @Override
+            public boolean onTouchMove(MotionEvent event) {
+                return false;
+            }
+
+            @Override
+            public boolean onTouchEnd(MotionEvent event) {
+                return false;
+            }
+        });
+
+
+
+//        音乐声
+
+ //        Listener end
+
 //        Log.e("debug", String.valueOf(game.getGameObject().getStyle()));
 //        float[] a = game.getGameObject().getModelMatrix();
 //        game.getGameObject().setX(0);

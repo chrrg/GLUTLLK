@@ -1,11 +1,9 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.AudioManager;
 import android.opengl.GLU;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +14,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.opengl.Matrix;
-import android.view.View;
+
+import javax.security.auth.callback.Callback;
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
@@ -30,58 +29,90 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        camera=new GameCamera(game,-200,200);//新建摄像机
+        camera=new GameCamera(game);//新建摄像机
         game.setCamera(camera);//设置2d摄像机
         game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
-        game.getGameObject().getElementById("menu10").setDisplay(false);
-
-//        Listener start
-        game.getGameObject().getElementById("menu1").onTouch(new OnTouchListener() {
+        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
             @Override
-            public boolean onTouchStart(MotionEvent event) {
-
-//                game.getGameObject().getElementById("menu").setDisplay(false);
-                game.getGameObject().getElementById("menu10").setDisplay(true);
-                return true;
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("开始了FPS","fps started");
             }
-
+        }).onTouchMove(new OnTouchListener(){
             @Override
-            public boolean onTouchMove(MotionEvent event) {
-                return false;
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("移动了FPS","fps moved");
             }
-
+        }).onTouchEnd(new OnTouchListener(){
             @Override
-            public boolean onTouchEnd(MotionEvent event) {
-                return false;
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("松开了FPS","fps ended");
             }
-        });
-
-
-        game.getGameObject().getElementById("menu10Close").onTouch(new OnTouchListener() {
+        }).onTouchEnter(new OnTouchListener(){
             @Override
-            public boolean onTouchStart(MotionEvent event) {
-//                关闭二级菜单
-                game.getGameObject().getElementById("menu10").setDisplay(false);
-                return true;
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("进入了FPS","fps entered");
             }
-
+        }).onTouchLeave(new OnTouchListener(){
             @Override
-            public boolean onTouchMove(MotionEvent event) {
-                return false;
-            }
-
-            @Override
-            public boolean onTouchEnd(MotionEvent event) {
-                return false;
+            public void onTouchEvent(MotionEvent event) {
+                Log.e("退出了FPS","fps leaved");
             }
         });
 
-
-
-//        音乐声
-
- //        Listener end
+        //.getElementById("fps")
+//        camera.animate().run(1000, new AnimateCallback() {
+//            @Override
+//            public int beforeAnimate(Object ob) {
+//                return (int) ((GameCamera) ob).getValue(0);
+//            }
+//            @Override
+//            public void callback(Object ob, int old, int time) {
+//                ((GameCamera) ob).setValue(0,(float)time/1000+old);
+//            }
+//            @Override
+//            public void afterAnimate(Object ob) {
+//                Log.e("摄像头转动完成","camera finish");
+//            }
+//        });
+        game.getGameObject().animate(true).run(1000, new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Start","ok");
+                return gameObject.getY();
+            }
+            @Override
+            public void callback(Object ob, int old, int time) {
+                GameObject gameObject=(GameObject)ob;
+                gameObject.setY(old+time/5);
+            }
+            @Override
+            public void afterAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Finish","ok");
+            }
+        }).next(1000, new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Start","ok");
+                return gameObject.getY();
+            }
+            @Override
+            public void callback(Object ob, int old, int time) {
+                GameObject gameObject=(GameObject)ob;
+                gameObject.setY(old-time/5);
+            }
+            @Override
+            public void afterAnimate(Object ob) {
+                GameObject gameObject=(GameObject)ob;
+                Log.d("animate Finish","ok");
+            }
+        });
+//        game.getGameObject().getElementById("fps").animate().next(1000,100,new AnimateCallback(int value){
+//
+//        }).next(new Animation(1000,100));
 
 //        Log.e("debug", String.valueOf(game.getGameObject().getStyle()));
 //        float[] a = game.getGameObject().getModelMatrix();
@@ -235,6 +266,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
+
 //        game.getGameObject().updateView();
 //        game.getGameObject().setW((int) (Math.random()*game.getWidth()));
 //        game.getGameObject().setW(500);

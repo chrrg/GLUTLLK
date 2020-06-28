@@ -2,8 +2,6 @@ package cn.edu.glut.llk;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES30;
-import android.opengl.GLES30;
-import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
@@ -13,7 +11,6 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;

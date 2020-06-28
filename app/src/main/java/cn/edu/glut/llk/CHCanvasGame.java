@@ -950,6 +950,8 @@ class CHCanvasGame {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_POINTER_DOWN:
                         touchEvent[id]=objectTouch(event.getX(index),event.getY(index),getGameObject(),0,event,null);
+                        touchInner[id] = true;
+                        if (touchEvent[id].onTouch[3] != null)touchEvent[id].onTouch[3].onTouchEvent(event);//进入
                         break;
                     case MotionEvent.ACTION_MOVE:
                         for (int i = 0; i < pointerCount; i++) {

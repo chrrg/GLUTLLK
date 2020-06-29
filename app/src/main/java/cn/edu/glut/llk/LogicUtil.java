@@ -1,200 +1,139 @@
 package cn.edu.glut.llk;
+
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
-import android.view.MotionEvent;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class LogicUtil {
-    protected  AnimateLib anLib;
-    LogicUtil() {
+    private AnimateLib anLib;
+    private String UsernameTest;
+    private String PasswordTest;
+    CHCanvasGame game;
+
+    LogicUtil(CHCanvasGame game) {
         this.anLib = new AnimateLib();
+        this.game=game;
     }
+    public interface ListerLogicCallBack {
+        void ListerDoSomething();
+    }//   接口
 
- public  interface ListerLogicCallBack{ void ListerDoSomething();}//   接口
-//    共用逻辑      暂时使用共用逻辑，使用JDK1.8Lambda表达式 如果后期要再用回原来的，
- public  void CreateLister(final CHCanvasGame game, final String id, final ListerLogicCallBack  callBack){
-        game.getGameObject().getElementById(id).onTouchStart(new OnTouchListener() {
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                Log.i(id,"触摸开始");
-            }
-        }).onClick(new OnTouchListener() {
-            @Override
-            public void onTouchEvent(MotionEvent event) {
-                Log.i(id,"被点击");
-               callBack.ListerDoSomething();//实现逻辑
-            }
+    //    共用逻辑      暂时使用共用逻辑，使用JDK1.8Lambda表达式 如果后期要再用回原来的，
+    public void CreateLister( final String id, final ListerLogicCallBack callBack) {
+        game.getGameObject().getElementById(id).onTouchStart(event -> Log.i(id, "触摸开始")).onClick(event -> {
+            Log.i(id, "被点击");
+            callBack.ListerDoSomething();//实现逻辑
         });
     }
-/*================================================================================================*/
 
-    public  void setGameStartUI(final CHCanvasGame game){
+    public void setDisplay( String id, boolean display) {  game.getGameObject().getElementById(id).setDisplay(display); }
+    @TargetApi(Build.VERSION_CODES.N)
+    public void setDisplay(Map<String, Boolean> display) { display.forEach((id, b) -> game.getGameObject().getElementById(id).setDisplay(b));}
+    /*================================================================================================*/
+    //入口
+    @TargetApi(Build.VERSION_CODES.N)
+    void Init() {
+        setGameStartUI();//设置开始界面
+        addListerLogic();//增加监听逻辑
+
+        List ids= Arrays.asList(
+//                                "btn1",
+                                "inputFrame",
+//                                "menu10",
+                                "gameBarrier"
+        );
+        ids.forEach(e->CreateLister(e.toString(),()->{}));//notCanTouch 背景层空响应 由背景监听拦截
+    }
+
+    public void setGameStartUI() {
 //设置默认显示方式
-        game.getGameObject().getElementById("menu10").setDisplay(false);
-        game.getGameObject().getElementById("btn1").setDisplay(false);
-        game.getGameObject().getElementById("gameBarrier").setDisplay(false);
+        Map<String, Boolean> setShow = new HashMap<>();
+        setShow.put("menu10", false);
+        setShow.put("btn1", false);
+        setShow.put("gameBarrier", false);
+        setShow.put("inputFrame", false);//输入重用框？？？
+        setDisplay(setShow);
     }
 
-//增加监听事件及逻辑
-    public  void addListerLogic(final CHCanvasGame game ){
+    //增加监听事件及逻辑
+    public void addListerLogic() {
 //menu start
-        CreateLister(game, "menu1",()-> {
-                    anLib.PopUpAnimate(game, "menu10", true, 500, 500);//添加弹窗效果
-                    game.getGameObject().getElementById("menu10").setDisplay(true);// 显示二级菜单});
-                });
-
-        CreateLister(game, "menu10Close", () -> {
-            game.getGameObject().getElementById("menu10").setDisplay(false);// 关闭二级菜单
-
+        CreateLister("menu1", () -> {
+            anLib.PopUpAnimate(game, "menu10", true, 500, 500);//添加弹窗效果
+            setDisplay("menu10", true);// 显示二级菜单
         });
+
+        CreateLister("menu10Close", () -> setDisplay("menu10", false));// 关闭二级菜单
         //二级菜单
         //startGame
-        CreateLister(game,"menu11",()->{
-            game.getGameObject().getElementById("menu").setDisplay(false);// 关闭menu菜单
+        CreateLister("menu11", () -> {
+            setDisplay("menu", false);// 关闭menu菜单
             startGame1(game);//开始游戏
         });
 //menu end
 
 //button start
         //排行start
-        CreateLister(game,"button1",()->{
-            anLib.PopUpAnimate(game,"btn1",true,500,500);//添加弹窗效果
-            game.getGameObject().getElementById("btn1").setDisplay(true);// 显示排行
+        CreateLister("button1", () -> {
+            anLib.PopUpAnimate(game, "btn1", true, 500, 500);//添加弹窗效果
+            setDisplay("btn1", true);// 显示排行
         });
 
-        CreateLister(game,"btn1Close",()->{
-            game.getGameObject().getElementById("btn1").setDisplay(false);// 关闭排行
-        });
+        CreateLister("btn1Close", () -> setDisplay("btn1", false));// 关闭排行
         //排行end
         //音乐声音开关start
-        CreateLister(game,"button3",()->{
-            if(  game.getGameObject().getElementById("button3").isDisplay())
-            { game.getGameObject().getElementById("button3").setDisplay(false);game.getGameObject().getElementById("button30").setDisplay(true);}
-            else { game.getGameObject().getElementById("button3").setDisplay(true);game.getGameObject().getElementById("button30").setDisplay(false);}
+        CreateLister("button3", () -> {
+            if (game.getGameObject().getElementById("button3").isDisplay()) {
+                setDisplay("button3", false);
+                setDisplay("button30", true);
+            } else {
+                setDisplay("button3", true);
+                setDisplay("button30", false);
+            }
         });
-        CreateLister(game,"button4",()->{
-            if(  game.getGameObject().getElementById("button4").isDisplay())
-            { game.getGameObject().getElementById("button4").setDisplay(false);game.getGameObject().getElementById("button40").setDisplay(true);}
-            else { game.getGameObject().getElementById("button4").setDisplay(true);game.getGameObject().getElementById("button40").setDisplay(false);}
+        CreateLister("button4", () -> {
+            if (game.getGameObject().getElementById("button4").isDisplay()) {
+                setDisplay("button4", false);
+                setDisplay("button40", true);
+            } else {
+                setDisplay("button4", true);
+                setDisplay("button40", false);
+            }
         });
         //音乐声音开关end
-        //分享start
-        CreateLister(game,"button2",()->{Log.i("分享功能","不实现");});
-        //分享end
 
-//        game.getGameObject().getElementById("menu1").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("menu1","触摸开始");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("menu1","被点击");
-//                anLib.PopUpAnimate(game,"menu10",true,500,500);//添加弹窗效果
-//                game.getGameObject().getElementById("menu10").setDisplay(true);// 显示二级菜单
-//            }
-//        });
-
-//        game.getGameObject().getElementById("menu10Close").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("menu10Close","触摸开始");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("menu10Close","被点击");
-//                game.getGameObject().getElementById("menu10").setDisplay(false);// 关闭二级菜单
-//            }
-//        });
-        //二级菜单
-        //startGame
-//        game.getGameObject().getElementById("menu11").onTouchStart(event -> Log.i("menu11","触摸开始")).onClick(event -> {
-//            Log.i("menu11","被点击");
-//
-//        });
-
-//menu end
-
-//button start
-        //排行start
-//        game.getGameObject().getElementById("button1").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button1","触摸button1");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button1","被点击");
-//
-//            }
-//        });
-
-//        game.getGameObject().getElementById("btn1Close").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("btn1Close","btn1Close 触摸");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("btn1Close","被点击");
-//                game.getGameObject().getElementById("btn1").setDisplay(false);// 关闭排行
-//            }
-//        });
-        //排行end
-        //音乐声音开关start
-//        game.getGameObject().getElementById("button3").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button3","button3 触摸");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button3","被点击");
-//                if(  game.getGameObject().getElementById("button3").isDisplay())
-//                { game.getGameObject().getElementById("button3").setDisplay(false);game.getGameObject().getElementById("button30").setDisplay(true);}
-//                else { game.getGameObject().getElementById("button3").setDisplay(true);game.getGameObject().getElementById("button30").setDisplay(false);}
-//            }
-//        });
-//        game.getGameObject().getElementById("button4").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button4","button3 触摸");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button4","被点击");
-//                if(  game.getGameObject().getElementById("button4").isDisplay())
-//                { game.getGameObject().getElementById("button4").setDisplay(false);game.getGameObject().getElementById("button40").setDisplay(true);}
-//                else { game.getGameObject().getElementById("button4").setDisplay(true);game.getGameObject().getElementById("button40").setDisplay(false);}
-//            }
-//        });
-        //音乐声音开关end
-
-        //分享start
-//        game.getGameObject().getElementById("button2").onTouchStart(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button2","button2 触摸");
-//            }
-//        }).onClick(new OnTouchListener() {
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.i("button2","被点击");
-//                //TODO 分享待实现
-//            }
-//        });
-        //分享end
         // 输入框start
-        game.getGameObject().getElementById("input").onTouchStart(event -> {
-            Log.e("账号点击了！","2");
+        CreateLister("button5", () -> setDisplay("inputFrame", true));//显示输入框
+        game.getGameObject().getElementById("inputUsername").onTouchStart(event -> {
+            Log.e("账号点击了！", "2");
 //                AlertDialog.Builder builder=;
             game.getInput(inputText -> {
-                if(inputText==null)Log.i("输入框","没有输入内容");
-                else Log.e("输入了",inputText);
+                if (inputText == null) Log.i("输入框", "没有输入内容");
+                else{ Log.e("输入了", inputText);UsernameTest=inputText;}
+                game.getGameObject().getElementById("inputUsername").setText(inputText);
             });
+        });
+        game.getGameObject().getElementById("inputPass").onTouchStart(event -> {
+            Log.e("点击了密码框", "2");
+            game.getInput(inputText -> {
+                if (inputText == null) Log.i("输入框", "没有输入内容");
+                else {Log.e("输入了", inputText);PasswordTest=inputText;}
+                game.getGameObject().getElementById("inputPass").setText(inputText);
+            });
+        });
+        CreateLister("Cancel", () -> setDisplay("inputFrame", false));//不登录
+        CreateLister("Submit", () -> {
+            Log.i("提交登录", "登录判断待TODO");
+            if (UsernameTest.equals("user1") && PasswordTest.equals("123456"))
+                Log.i("登录成功", UsernameTest + PasswordTest);
+                setDisplay("inputFrame",false);//登录判断，成功则关闭登录框
         });
         // 输入框end
 //      button end
@@ -209,7 +148,7 @@ public class LogicUtil {
     private void startGame2(CHCanvasGame game) {
         // 开始游戏
 //        game.getGameObject().getElementById("gameBarrier").setDisplay(true);
-
+//状态转换
     }
 
 }

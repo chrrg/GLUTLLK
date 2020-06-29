@@ -41,9 +41,9 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
         game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
 
-        LogicUtil util = new LogicUtil();
-        util.setGameStartUI(game);//设置默认显示游戏开始页面
-        util.addListerLogic(game);//增加监听逻辑
+        LogicUtil util = new LogicUtil(game);
+        util.Init();//显示游戏开始页面
+
 
 
 //        game.getGameObject().getElementById("input").onTouchStart(new OnTouchListener(){
@@ -162,7 +162,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
         InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
-        Log.e("asdasd",""+imm.isActive());
+//        Log.e("asdasd",""+imm.isActive());
     }
 }
 public class MainActivity extends Activity {

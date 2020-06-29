@@ -221,6 +221,7 @@ class GameObject{
         Tag = tag;
     }
     void setText(String text) {
+        if(text==null)text="";
         if(text.equals(this.text))return;
         this.text = text;
         updateView();//通知需要更新
@@ -927,6 +928,7 @@ class CHCanvasGame {
         });
     }
     private GameObject objectTouch(float x, float y, GameObject gameObject,int index,MotionEvent event,GameObject target) {
+        if(!gameObject.isDisplay())return null;
         for(GameObject ob:gameObject.getChildren()) {
             GameObject o;
             o=objectTouch(x, y, ob, index, event,target);

@@ -17,7 +17,15 @@
 <box id="button3" w="13%" h="8vh" x="45%" y="87vh" text="音乐开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
 <box id="button40" w="13%" h="8vh" x="65%" y="87vh" text="声音关" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
 <box id="button4" w="13%" h="8vh" x="65%" y="87vh" text="声音开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-<input id="input" w="13%" h="8vh" x="85%" y="87vh" text="账号" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+<box id="button5"  w="13%" h="8vh" x="85%" y="87vh" text="账号" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;">
+    <box id="inputFrame" l="10vw" h="35vh" r="10vw" y="30vh" text="输入框" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#C85F9EA0;">
+     <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+5vh" text="用户名" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;"/>
+     <input id="inputPass" l="+15%" h="7vh" r="+15%" y="+15vh" text="密码" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;"/>
+     <box id="Cancel" l="+5%" y="+75%" r="+60%" b="+5%" text="取消" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
+     <box id="Submit" l="+60%" y="+75%" r="+5%" b="+5%" text="提交" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
+    </box>
+</box>
+
 
 <!--    menu end-->
 

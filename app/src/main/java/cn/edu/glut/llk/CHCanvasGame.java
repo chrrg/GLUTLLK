@@ -928,21 +928,21 @@ class CHCanvasGame {
         });
     }
     private GameObject objectTouch(float x, float y, GameObject gameObject,int index,MotionEvent event,GameObject target) {
-        if(!gameObject.isDisplay())return null;
+        if(!gameObject.isDisplay()||!gameObject.isCanTouch())return null;
         for(GameObject ob:gameObject.getChildren()) {
             GameObject o;
             o=objectTouch(x, y, ob, index, event,target);
             if (o != null)return o;
         }
         if(target!=null){
-            if(gameObject.isCanTouch())//不为空 说明可以响应
+//            if(gameObject.isCanTouch())//不为空 说明可以响应
                 if(openGL.rayPicking(x,y,gameObject.getModelMatrix())) {//xy在对象范围内
                     if (target != gameObject) return null;
                     if(gameObject.onTouch[index]!=null)gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
                     return gameObject;
                 }
         }else {
-            if (gameObject.isCanTouch() && gameObject.onTouch[index] != null)//不为空 说明可以响应
+            if (gameObject.onTouch[index] != null)//不为空 说明可以响应
                 if (openGL.rayPicking(x, y, gameObject.getModelMatrix())) {//xy在对象范围内
                     gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
                     return gameObject;

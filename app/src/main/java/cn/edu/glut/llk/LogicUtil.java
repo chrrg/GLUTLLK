@@ -113,7 +113,7 @@ public class LogicUtil {
         CreateLister("button5", () -> setDisplay("inputFrame", true));//显示输入框
         game.getGameObject().getElementById("inputUsername").onTouchStart(event -> {
             Log.e("账号点击了！", "2");
-//                AlertDialog.Builder builder=;
+            game.getGameObject().getElementById("menu").setCanTouch(false);
             game.getInput(inputText -> {
                 if (inputText == null) Log.i("输入框", "没有输入内容");
                 else{ Log.e("输入了", inputText);UsernameTest=inputText;}

@@ -2,6 +2,7 @@ package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.text.method.Touch;
 import android.util.Log;
 
 import java.lang.reflect.Array;
@@ -32,7 +33,7 @@ public class LogicUtil {
             callBack.ListerDoSomething();//实现逻辑
         });
     }
-
+    public  void setCanTouch(String id,boolean Touch){game.getGameObject().getElementById(id).setCanTouch(Touch);}
     public void setDisplay( String id, boolean display) {  game.getGameObject().getElementById(id).setDisplay(display); }
     @TargetApi(Build.VERSION_CODES.N)
     public void setDisplay(Map<String, Boolean> display) { display.forEach((id, b) -> game.getGameObject().getElementById(id).setDisplay(b));}
@@ -60,6 +61,7 @@ public class LogicUtil {
         setShow.put("gameBarrier", false);
         setShow.put("inputFrame", false);//输入重用框？？？
         setDisplay(setShow);
+
     }
 
     //增加监听事件及逻辑
@@ -113,7 +115,6 @@ public class LogicUtil {
         CreateLister("button5", () -> setDisplay("inputFrame", true));//显示输入框
         game.getGameObject().getElementById("inputUsername").onTouchStart(event -> {
             Log.e("账号点击了！", "2");
-            game.getGameObject().getElementById("menu").setCanTouch(false);
             game.getInput(inputText -> {
                 if (inputText == null) Log.i("输入框", "没有输入内容");
                 else{ Log.e("输入了", inputText);UsernameTest=inputText;}

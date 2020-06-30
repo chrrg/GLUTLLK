@@ -1,27 +1,15 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.opengl.GLU;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.opengl.Matrix;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
-import javax.security.auth.callback.Callback;
+import android.view.inputmethod.InputMethodManager;
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
@@ -35,32 +23,18 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        game.setMaxFPS(60);//高帧率模式 设置最大帧率 测试最高60 0为不限制
+        game.setMaxFPS(20);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
 
-//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
-//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
-        game.getGameObject().setDisplay(false);
-        CHAnimateTool tool=new CHAnimateTool();
-        GameAnimation ani=game.getGameObject().animate(true);
-        ani.delay(1000);
-        tool.fadeIn(ani);
-        ani.delay(1000);
-        tool.fadeOut(ani);
-        ani.delay(1000);
-        tool.fadeIn(ani);
-        ani.delay(1000);
-//        tool.rightOut(ani);
-//        ani.delay(1000);
-//        tool.rightIn(ani);
-        ani.next(() -> {
-            Log.e("finish","finish");
-            ani.destroy();
-        });
 
+        game.getGameObject().appendChild(game.getGameObjectFromXML("2.xml"));
+        game.getGameObject().appendChild(game.getGameObjectFromXML("3.xml"));
+//        game.getGameObject().parentNode.removeChild(game.getGameObject());
+//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("4.xml"));
+//        game.getGameObject().getChildren().get(0).getChildren().add(new GameObject())
 
-//        LogicUtil util = new LogicUtil(game);
-//        util.Init();//显示游戏开始页面
+        Logical util = new Logical(game);
+        util.Init();//显示游戏开始页面
 
 
 
@@ -158,7 +132,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //                Log.d("animate Finish","ok");
 //            }
 //        });
-        new Timer().schedule(this, 0, 50);
+        new Timer().schedule(this, 0, 5);
     }
     public static int getRandomColor(){
         Random random=new Random();
@@ -178,6 +152,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
+        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
 //        Log.e("asdasd",""+imm.isActive());
     }
 }

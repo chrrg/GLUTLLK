@@ -4,7 +4,9 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Logical {
@@ -238,9 +240,9 @@ public class Logical {
 
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
         //生成游戏方块矩阵：
-        int[] integers = {1, 2,3, 4};
+        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
 
-        anLib.GenerateGameBlock(game,game.getGameObject().getChildren().get(5).getChildren().get(0),8,6,integers,1);
+        anLib.GenerateGameBlock(game,game.getGameObject().getChildren().get(5).getChildren().get(0),8,6,EmptyColumn,1);
     }
 
     private void startGame2(CHCanvasGame game) {

@@ -3,6 +3,7 @@ package cn.edu.glut.llk;
 import android.os.Handler;
 import android.util.Log;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -100,7 +101,7 @@ import java.util.Observer;
 //        });
     }
 
-      void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row,int column,int[] n,int Squares){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
+      void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn, int Squares){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
           GameObject Canvas = new GameObject(game);
           int BlockWidthAndHeight= (int)(game.getWidth()-game.getWidth()*0.05)/column;//宽//默认正方形
           int CanvasWidth=game.getWidth();//默认100%
@@ -122,6 +123,8 @@ import java.util.Observer;
 
           for (int j=0;j<column;j++){
             /*生成列*/
+           if( EmptyColumn.contains(j+1))continue;//如果此列为空，则不生成此列
+
           GameObject a = new GameObject(game);
           a.setId("Column"+j);
           a.setW(BlockWidthAndHeight);

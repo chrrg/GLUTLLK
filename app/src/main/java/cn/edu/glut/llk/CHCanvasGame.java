@@ -48,7 +48,7 @@ interface GameInput{
 }
 class Animation{
     private long duration=0;//持续时间
-    private int type=0;//1 run 2 next 3delay
+    private int type=0;//1 run 2 next 3delay 4runcode
     private AnimateCallback animateCallback;
     private Map<Object,Integer> old=new HashMap<>();
     Animation(long duration){
@@ -79,6 +79,9 @@ interface AnimateCallback{
     void callback(Object ob,int old,int time);
     void afterAnimate(Object ob);
 }
+interface AnimateNextRun{
+    void run();
+}
 interface AnimationIterator{
     void handle(Object obj);
 }
@@ -105,6 +108,9 @@ class GameObject{
     private float textY;
     private GameObject(){
 
+    }
+    CHCanvasGame getGame(){
+        return game;
     }
     Vector<GameObject> getChildren(){
         return children;
@@ -363,7 +369,7 @@ class GameObject{
                         textX=w;
                         break;
                     default:
-
+                        textX=game.dpx(this,s2);
                 }
 //                if("left".equals(s2)){
 //
@@ -385,6 +391,7 @@ class GameObject{
                         textY=(float)h - fontMetrics1.bottom/2;
                         break;
                     default:
+                        textY=game.dpy(this,s2);
                 }
                 updateView();
                 break;
@@ -398,6 +405,7 @@ class GameObject{
                     textY=(h - fontMetrics.top - fontMetrics.bottom)/2;
                     updateView();
                 }
+                break;
         }
         style.put(s1,s2);
     }
@@ -433,6 +441,13 @@ class GameObject{
     }
     GameObject getParent() {
         return parentNode;
+    }
+
+    void setAlpha(int i) {
+        Paint paint=getPaint();
+        paint.setAlpha(i);
+        updateView();
+        for(GameObject ob:children)ob.setAlpha(i);
     }
 }
 class GameCamera{
@@ -480,7 +495,9 @@ class GameAnimation{
                 iteratorAll(obj,new AnimationIterator(){
                     @Override
                     public void handle(Object obj) {
-                        ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
+                        long curT=curTime;
+                        if(curT>ani.getDuration())curT=ani.getDuration();
+                        ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curT);
                     }
                 });
 //                ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
@@ -519,6 +536,7 @@ class GameAnimation{
                                 if(ani.getAnimateCallback()!=null)
                                     ani.getAnimateCallback().afterAnimate(obj);
                             cur.clear();
+                            continue;
                         }
                     }else if(animation.size()>0){
                         while(true){
@@ -527,8 +545,8 @@ class GameAnimation{
                             if(ani.getAnimateCallback()!=null) {
                                 iteratorAll(obj,new AnimationIterator(){
                                     @Override
-                                    public void handle(Object obj) {
-                                        ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
+                                    public void handle(Object ob1) {
+                                        ani.getOld().put(ob1, ani.getAnimateCallback().beforeAnimate(obj));
                                     }
                                 });
 //                                ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
@@ -543,12 +561,13 @@ class GameAnimation{
                             if(type!=1)break;
                         }
                         time=android.os.SystemClock.uptimeMillis();
+                    }else
+                        isRun=false;
+                    try {
+                        Thread.sleep(16);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                }
-                try {
-                    Thread.sleep(16);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
@@ -556,6 +575,9 @@ class GameAnimation{
     GameAnimation(Object object){
         this.obj=object;
         init();
+    }
+    Object getObj(){
+        return obj;
     }
     void destroy(){
         finalize();
@@ -576,6 +598,22 @@ class GameAnimation{
     GameAnimation next(int duration,AnimateCallback animate){
         Animation anim=new Animation(duration,animate);
         anim.setType(2);
+        animation.add(anim);
+        return this;
+    }
+    GameAnimation next(AnimateNextRun runCode){
+        AnimateCallback animate = new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {return 0;}
+            @Override
+            public void callback(Object ob, int old, int time) {}
+            @Override
+            public void afterAnimate(Object ob) {
+                runCode.run();
+            }
+        };
+        Animation anim=new Animation(0,animate);
+        anim.setType(4);
         animation.add(anim);
         return this;
     }

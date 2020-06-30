@@ -35,14 +35,32 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        game.setMaxFPS(20);//高帧率模式 设置最大帧率 测试最高60 0为不限制
+        game.setMaxFPS(60);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
 
-        game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
-        game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
+//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
+//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
+        game.getGameObject().setDisplay(false);
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani=game.getGameObject().animate(true);
+        ani.delay(1000);
+        tool.fadeIn(ani);
+        ani.delay(1000);
+        tool.fadeOut(ani);
+        ani.delay(1000);
+        tool.fadeIn(ani);
+        ani.delay(1000);
+//        tool.rightOut(ani);
+//        ani.delay(1000);
+//        tool.rightIn(ani);
+        ani.next(() -> {
+            Log.e("finish","finish");
+            ani.destroy();
+        });
 
-        LogicUtil util = new LogicUtil(game);
-        util.Init();//显示游戏开始页面
+
+//        LogicUtil util = new LogicUtil(game);
+//        util.Init();//显示游戏开始页面
 
 
 
@@ -140,7 +158,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //                Log.d("animate Finish","ok");
 //            }
 //        });
-        new Timer().schedule(this, 0, 5);
+        new Timer().schedule(this, 0, 50);
     }
     public static int getRandomColor(){
         Random random=new Random();
@@ -160,8 +178,6 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
-        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
 //        Log.e("asdasd",""+imm.isActive());
     }
 }

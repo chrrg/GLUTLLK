@@ -88,7 +88,7 @@ class GameObject{
     private String id=null;
     private String Tag="obj";
     private Vector<GameObject> children= new Vector<>();
-    private GameObject parent=null;
+    public GameObject parentNode=null;
     private boolean change=true;//false 说明没有改动 true 需要重绘
     private Bitmap buffer=null;
     private CHCanvasGame game;
@@ -108,6 +108,14 @@ class GameObject{
     }
     Vector<GameObject> getChildren(){
         return children;
+    }
+    void appendChild(GameObject obj){
+        if(obj.parentNode!=null)obj.parentNode.children.remove(obj);
+        children.add(obj);
+        obj.parentNode=this;
+    }
+    void removeChild(GameObject obj){
+        children.remove(obj);
     }
     void init(){
         mModelMatrix = new float[16];
@@ -145,7 +153,7 @@ class GameObject{
         if(o==null)return;
         children.add(o);
     }
-    private GameObject(CHCanvasGame game){
+    GameObject(CHCanvasGame game){
         this();
         this.game=game;
     }
@@ -155,19 +163,19 @@ class GameObject{
     GameAnimation animate(boolean isAll){
         return new GameAnimation(this).setAll(isAll);
     }
-    GameObject(CHCanvasGame game,GameObject parent){
-        this(game);
-        this.parent=parent;
-    }
+//    GameObject(CHCanvasGame game,GameObject parent){
+//        this(game);
+//        parentNode=parent;
+//    }
     void setPaint(Paint paint){
         this.paint=paint;
     }
     Paint getPaint(){
         if(paint==null)
-            if(parent==null)
+            if(parentNode==null)
                 paint=new Paint();
             else
-                paint=new Paint(parent.getPaint());
+                paint=new Paint(parentNode.getPaint());
         return paint;
     }
     void draw(){
@@ -420,10 +428,10 @@ class GameObject{
         updateView();
     }
     boolean hasParent(){
-        return parent!=null;
+        return parentNode!=null;
     }
     GameObject getParent() {
-        return parent;
+        return parentNode;
     }
 }
 class GameCamera{
@@ -722,7 +730,8 @@ class CHCanvasGame {
     }
     private GameObject parseElement(Element r, GameObject parent){
         if(r==null)return null;
-        GameObject r2=new GameObject(this,parent);
+        GameObject r2=new GameObject(this);
+        if(parent!=null)parent.appendChild(r2);
         String tagName=r.getTagName();
         r2.setTag(tagName);
         NamedNodeMap attris = r.getAttributes();

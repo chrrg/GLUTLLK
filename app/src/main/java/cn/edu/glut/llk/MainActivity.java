@@ -23,7 +23,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        game.setMaxFPS(20);//高帧率模式 设置最大帧率 测试最高60 0为不限制
+        game.setMaxFPS(12);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
 
 

@@ -157,7 +157,6 @@ import java.util.Observer;
  class MyHandler extends Handler {
 
     CHCanvasGame game;
-    Observable observable= new Observable();//观察者
     static int GameTime=1000*60*2;//默认2分钟
 
     public MyHandler(CHCanvasGame game) {
@@ -214,21 +213,14 @@ import java.util.Observer;
 
     }
 
-    @Deprecated
-    public void register(Observer observer){
-        /*注册对象*/
-        observable.addObserver((o, arg) -> {
-            // doSomething
-            /*o 是观察者对象，e 是本次事件*/
-        });
-    }
-    @Deprecated
-    public  void setChanged(){
-//           observable.se 要重写
-//                observable.hasChanged()
-    }
-    @Deprecated
-    public  void  notifyObserver(){
-        observable.notifyObservers();
+}
+class Myobserver extends Observable{
+   //观察者
+   private int data = 0;
+
+    public void setData(int data){
+        this.data = data;
+        this.setChanged();//标记此 Observable对象为已改变的对象
+        this.notifyObservers();//通知所有的观察者
     }
 }

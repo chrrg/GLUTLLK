@@ -8,19 +8,22 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 public class Logical {
-    private AnimateLib anLib;
-    CHCanvasGame game;
-
     private String UsernameTest;
     private String PasswordTest;
 
     private int MusicSwitch=1;//1为开
     private int Sound=1;
 
+    CHCanvasGame game;
+    private AnimateLib anLib;
     private MyHandler myHandler;
+    private Myobserver myobserver;
     Logical(CHCanvasGame game) {
+        this.myobserver =new Myobserver();
         this.anLib = new AnimateLib();
         this.game=game;
         this.myHandler=new MyHandler(this.game);
@@ -238,11 +241,11 @@ public class Logical {
         setDisplay("gameBarrier", true);//显示游戏关卡
         setDisplay("gamePauseMaskLayer", false);//不显示暂停层
 
-        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,1);
+        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 
-        anLib.GenerateGameBlock(game,game.getGameObject().getChildren().get(5).getChildren().get(0),8,6,EmptyColumn,1);
     }
 
     private void startGame2(CHCanvasGame game) {

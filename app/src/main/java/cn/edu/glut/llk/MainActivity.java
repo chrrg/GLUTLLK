@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
@@ -23,12 +24,36 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void onInit() {
         game.setBackGroundColor(Color.GRAY);//设置游戏背景为灰色
-        game.setMaxFPS(12);//高帧率模式 设置最大帧率 测试最高60 0为不限制
+        game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
-
 
         game.getGameObject().appendChild(game.getGameObjectFromXML("2.xml"));
         game.getGameObject().appendChild(game.getGameObjectFromXML("3.xml"));
+
+
+//        game.getGameObject().setDisplay(false);
+//        CHAnimateTool tool=new CHAnimateTool();
+//        GameAnimation ani = game.getGameObject().animate(true).delay(1000);
+//
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//
+//        ani.next(() -> {
+//            Log.e("ok","ok");
+//        });
+//
+
 //        game.getGameObject().parentNode.removeChild(game.getGameObject());
 //        game.getGameObject().getChildren().add(game.getGameObjectFromXML("4.xml"));
 //        game.getGameObject().getChildren().get(0).getChildren().add(new GameObject())
@@ -152,8 +177,8 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     @Override
     public void run() {//定时器 对象向下移动
         game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
-        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
+//        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
 //        Log.e("asdasd",""+imm.isActive());
     }
 }

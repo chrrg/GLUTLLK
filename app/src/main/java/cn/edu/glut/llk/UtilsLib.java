@@ -1,53 +1,96 @@
 package cn.edu.glut.llk;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
+import java.util.concurrent.atomic.AtomicReference;
 
- class AnimateLib {
-    public void PopUpAnimate(CHCanvasGame game,String id,boolean isAll,int runDuration,int nextDuration){
+class AnimateLib {
+     public void PopUpAnimate(CHCanvasGame game,String id,boolean isAll,int runDuration,int nextDuration){
 
-        game.getGameObject().getElementById(id).animate(isAll).run(runDuration, new AnimateCallback() {
-            @Override
-            public int beforeAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Start","ok");
-                return gameObject.getY();
-            }
-            @Override
-            public void callback(Object ob, int old, int time) {
-                GameObject gameObject=(GameObject)ob;
-                gameObject.setY(old-time/5);
-            }
-            @Override
-            public void afterAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Finish","ok");
-            }
-        }).next(nextDuration, new AnimateCallback() {
-            @Override
-            public int beforeAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Start","ok");
-                return gameObject.getY();
-            }
-            @Override
-            public void callback(Object ob, int old, int time) {
-                GameObject gameObject=(GameObject)ob;
-                gameObject.setY(old+time/5);
-            }
-            @Override
-            public void afterAnimate(Object ob) {
-                GameObject gameObject=(GameObject)ob;
-                Log.d("animate Finish","ok");
-            }
+         game.getGameObject().getElementById(id).animate(isAll).run(runDuration, new AnimateCallback() {
+             @Override
+             public int beforeAnimate(Object ob) {
+                 GameObject gameObject=(GameObject)ob;
+                 Log.d("animate Start","ok");
+                 return gameObject.getY();
+             }
+             @Override
+             public void callback(Object ob, int old, int time) {
+                 GameObject gameObject=(GameObject)ob;
+                 gameObject.setY(old-time/5);
+             }
+             @Override
+             public void afterAnimate(Object ob) {
+                 GameObject gameObject=(GameObject)ob;
+                 Log.d("animate Finish","ok");
+             }
+         }).next(nextDuration, new AnimateCallback() {
+             @Override
+             public int beforeAnimate(Object ob) {
+                 GameObject gameObject=(GameObject)ob;
+                 Log.d("animate Start","ok");
+                 return gameObject.getY();
+             }
+             @Override
+             public void callback(Object ob, int old, int time) {
+                 GameObject gameObject=(GameObject)ob;
+                 gameObject.setY(old+time/5);
+             }
+             @Override
+             public void afterAnimate(Object ob) {
+                 GameObject gameObject=(GameObject)ob;
+                 Log.d("animate Finish","ok");
+             }
+         });
+     }
+
+   
+    public void fadeIn(CHCanvasGame game,String id){
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani = game.getGameObject().getElementById(id).animate(true);
+        tool.fadeIn(ani);
+        ani.next(() -> {
+            Log.e("ok","okfadeIn");
         });
     }
+    public void fadeOut(CHCanvasGame game,String id){
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani = game.getGameObject().getElementById(id).animate(true);
+        tool.fadeOut(ani);
+        ani.next(() -> {
+            Log.e("ok","okfadeIn");
+        });
+    }
+    public void  fade(CHCanvasGame game){
+        game.getGameObject().setDisplay(false);
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani = game.getGameObject().animate(true).delay(1000);
 
-    private void turnOverDrop(){
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+
+        ani.next(() -> {
+            Log.e("ok","ok");
+        });
+    }
+        private void turnOverDrop(){
         //camara翻转180 向下 display
 
 //        camera.animate().run(1000, new AnimateCallback() {
@@ -101,7 +144,7 @@ import java.util.Observer;
 //        });
     }
 
-      void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn, int Squares){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
+      void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn, int Squares, Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
           GameObject Canvas = new GameObject(game);
           int BlockWidthAndHeight= (int)(game.getWidth()-game.getWidth()*0.05)/column;//宽//默认正方形
           int CanvasWidth=game.getWidth();//默认100%
@@ -121,6 +164,7 @@ import java.util.Observer;
           Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
           Node.appendChild(Canvas);//加在关卡一下
 
+          HashMap<GameObject,String> idAndGameObject=new HashMap<>();
           for (int j=0;j<column;j++){
             /*生成列*/
            if( EmptyColumn.contains(j+1))continue;//如果此列为空，则不生成此列
@@ -150,8 +194,13 @@ import java.util.Observer;
               b.setStyle("backColor","#CCD2691E");
               else b.setStyle("backColor","#CC556B2F");
               a.appendChild(b);
+              // 事件
+              idAndGameObject.put(b,String.valueOf(i)+j);
+              b.onTouchStart(event ->myobserver.BlockTouch(game,b)).onClick(event -> myobserver.BlockOnclick(game,b));
           }
-      }}
+      }
+          myobserver.setData(idAndGameObject);
+     }
 }
 
  class MyHandler extends Handler {
@@ -170,6 +219,7 @@ import java.util.Observer;
 //                        // 移除所有的msg.what为0等消息，保证只有一个循环消息队列再跑
                 this.removeMessages(0);
 //                        // app的功能逻辑处理
+
                 if(GameTime>=1000) {
                     int remain=GameTime/1000;
                     GameTime -= 1000;
@@ -192,7 +242,13 @@ import java.util.Observer;
 //                        3、在延迟时间已到，handler中msg.what=0的方法已执行，再执行removeMessages(0)，不起作用。
                 this.removeMessages(0);// 暂停游戏,移掉0消息，不会进0里。
                 break;
-
+            case 2:
+                this.removeMessages(2);
+                if(game.getGameObject().getElementById("yun").getX()<game.getWidth())
+                game.getGameObject().getElementById("yun").setX(game.getGameObject().getElementById("yun").getX()+game.getWidth()/1000);//移动
+                else game.getGameObject().getElementById("yun").setX(-game.getGameObject().getElementById("yun").getW());//重回
+                this.sendEmptyMessageDelayed(2,50);
+                break;
             default:
                 break;
         }
@@ -215,12 +271,52 @@ import java.util.Observer;
 
 }
 class Myobserver extends Observable{
-   //观察者
-   private int data = 0;
 
-    public void setData(int data){
+
+     //点击事件，销毁事件，平移事件，退出事件，暂停事件。触摸移动事件
+    //点击事件全部注册
+   private HashMap<GameObject, String> data;
+
+    public void setData(HashMap<GameObject, String> data){
         this.data = data;
-        this.setChanged();//标记此 Observable对象为已改变的对象
-        this.notifyObservers();//通知所有的观察者
+
+    }
+    public void BlockOnclick(CHCanvasGame game, GameObject b){
+     game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));
+     Remove(b);//点击消除，测试用
+     PingYi(game,1);//测试用
+    }
+    public  void BlockTouch(CHCanvasGame game, GameObject b){
+        game.getGameObject().getElementById("gameScore").setText("TouchBlock"+data.get(b));
+    }
+    public void  BlockMove(){}
+    @TargetApi(Build.VERSION_CODES.N)
+    public void PingYi(CHCanvasGame game, int number){
+        data.forEach((k,v)->  {
+            k.setX(k.getX()+ k.getW());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
+            if(k.getX()+k.getW()>game.getWidth())
+                {
+//                    Remove(k.parentNode);//移除父列  不用了
+                    k.setX((int)(game.getWidth()*0.025+k.getW()));//重用，回左边
+//                    k.parentNode.setDisplay(true);//重新显示这一列,没事，多true几次而已，相当每一个列块元素都显示
+                    k.setDisplay(true);//统一true
+                    //k.setText();也可以在这里，初始化随机性
+                }
+        });
+        //                    onInit() 重新初始化这一列
+        TellAlgorithmsMatrixPermutation();
+    }
+    public  void TellAlgorithmsMatrixPermutation(){
+//        重新初始化我的数据 如图片，能被消的属性
+        //告诉矩阵转换最后一列到前面
+    }
+    public void TellAlgorithsMatrixRemoveBlock(GameObject b){
+        //告诉矩阵消掉一个或者两个block
+    }
+    public void Remove(GameObject b){
+        TellAlgorithsMatrixRemoveBlock(b);//在移除之前，告诉算法，消掉的块
+//        data.remove(b);//更新数据//即然重用，就不能删除了
+        b.setDisplay(false);
+//        b.parentNode.removeChild(b);//即然重用，就不能删除了
     }
 }

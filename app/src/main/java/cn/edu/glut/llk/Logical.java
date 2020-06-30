@@ -1,6 +1,7 @@
 package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 
@@ -8,8 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 public class Logical {
     private String UsernameTest;
@@ -17,7 +16,8 @@ public class Logical {
 
     private int MusicSwitch=1;//1为开
     private int Sound=1;
-
+    Bitmap SoundOn;
+    Bitmap SoundOff;
     CHCanvasGame game;
     private AnimateLib anLib;
     private MyHandler myHandler;
@@ -27,6 +27,8 @@ public class Logical {
         this.anLib = new AnimateLib();
         this.game=game;
         this.myHandler=new MyHandler(this.game);
+       this.SoundOn = game.getImage("SoundOn.png");
+      this.SoundOff= game.getImage("SoundOff.png");
     }
     public interface ListerLogicCallBack {
         void ListerDoSomething();
@@ -51,7 +53,7 @@ public class Logical {
     void Init() {
         setGameStartUI();//设置开始界面
         addListerLogic();//增加监听逻辑
-
+        myHandler.sendEmptyMessage(2);//云漂浮
 //        List ids= Arrays.asList(
 ////                                "RankPage",
 //                "inputFrame",
@@ -69,6 +71,10 @@ public class Logical {
         setShow.put("gameBarrier", false);
         setShow.put("inputFrame", false);//输入重用框？？？
         setDisplay(setShow);
+
+
+
+        getObjectById("yun").setX(-40);
 
     }
 
@@ -118,8 +124,9 @@ public class Logical {
     private void addMainListerLogic() {
         //menu start
         CreateLister("menu1", () -> {
-            anLib.PopUpAnimate(game, "submenu", true, 500, 500);//添加弹窗效果
-            setDisplay("submenu", true);// 显示二级菜单
+//            anLib.PopUpAnimate(game, "submenu", true, 400, 400);//添加弹窗效果
+            anLib.fadeIn(game,"submenu");
+//            setDisplay("submenu", true);// 显示二级菜单
 
             setCanTouch("menu0",false);
             setCanTouch("BottomButton",false);
@@ -127,7 +134,8 @@ public class Logical {
         });
 
         CreateLister("submenuClose", () -> {
-            setDisplay("submenu", false);
+            anLib.fadeOut(game,"submenu");
+//            setDisplay("submenu", false);
 
             setCanTouch("menu0", true);
             setCanTouch("BottomButton", true);
@@ -139,6 +147,11 @@ public class Logical {
 
             startGame1(game);//开始游戏
         });
+        CreateLister("EndlessMenu",()->{
+
+            setDisplay("menu", false);// 关闭menu菜单
+            startGame2(game);
+        });
 //menu end
 
 
@@ -147,7 +160,7 @@ public class Logical {
     private void addRankListerLogic() {
         //排行start
         CreateLister("Rank", () -> {
-            anLib.PopUpAnimate(game, "RankPage", true, 500, 500);//添加弹窗效果
+            anLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
             setDisplay("RankPage", true);// 显示排行
 
             setCanTouch( "menu0",false);
@@ -155,7 +168,8 @@ public class Logical {
         });
 
         CreateLister("RankPageClose", () -> {
-            setDisplay("RankPage", false);
+            anLib.fadeOut(game,"RankPage");
+//            setDisplay("RankPage", false);
             //恢复
             setCanTouch("menu0", true);
             setCanTouch("BottomButton", true);
@@ -228,9 +242,11 @@ public class Logical {
             if (Sound == 1) {
                 setText("Sound","声音开");
                 Sound = 0;
+                getObjectById("Sound").setPic(SoundOn);
             } else {
                 setText("Sound","声音关");
                 Sound = 1;
+                getObjectById("Sound").setPic(SoundOff);
             }
         });
     }
@@ -243,14 +259,20 @@ public class Logical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,1);
+        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,1,myobserver);
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 
     }
 
     private void startGame2(CHCanvasGame game) {
         // 开始游戏
-//        game.getGameObject().getElementById("gameBarrier").setDisplay(true);
+        setDisplay("gameBarrier", true);//显示游戏关卡
+        setDisplay("gamePauseMaskLayer", false);//不显示暂停层
+
+        //生成游戏方块矩阵：
+        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,1, myobserver);
+        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 //状态转换
     }
     private  void ResetSomeSceneState(){

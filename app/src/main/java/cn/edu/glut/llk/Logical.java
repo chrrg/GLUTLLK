@@ -2,15 +2,12 @@ package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class LogicUtil {
+public class Logical {
     private AnimateLib anLib;
     CHCanvasGame game;
 
@@ -21,10 +18,10 @@ public class LogicUtil {
     private int Sound=1;
 
     private MyHandler myHandler;
-    LogicUtil(CHCanvasGame game) {
+    Logical(CHCanvasGame game) {
         this.anLib = new AnimateLib();
         this.game=game;
-       this.myHandler=new MyHandler(this.game);
+        this.myHandler=new MyHandler(this.game);
     }
     public interface ListerLogicCallBack {
         void ListerDoSomething();
@@ -109,6 +106,7 @@ public class LogicUtil {
         CreateLister("gameExit",()->{
             setDisplay("gameBarrier",false);
             setDisplay("menu",true);//回主菜单
+            getObjectById("gameBlock").parentNode.removeChild(getObjectById("gameBlock"));//移除gameBlock
         });
     }
 
@@ -147,7 +145,7 @@ public class LogicUtil {
             anLib.PopUpAnimate(game, "RankPage", true, 500, 500);//添加弹窗效果
             setDisplay("RankPage", true);// 显示排行
 
-           setCanTouch( "menu0",false);
+            setCanTouch( "menu0",false);
             setCanTouch("BottomButton",false);
         });
 
@@ -216,7 +214,7 @@ public class LogicUtil {
                 setText("Music","音乐关");
                 MusicSwitch = 0;
             } else {
-               setText("Music","音乐开");
+                setText("Music","音乐开");
                 MusicSwitch = 1;
             }
         });
@@ -226,19 +224,23 @@ public class LogicUtil {
                 setText("Sound","声音开");
                 Sound = 0;
             } else {
-              setText("Sound","声音关");
+                setText("Sound","声音关");
                 Sound = 1;
             }
         });
     }
 
     private void startGame1(CHCanvasGame game) {
+
         // 开始游戏
         setDisplay("gameBarrier", true);//显示游戏关卡
         setDisplay("gamePauseMaskLayer", false);//不显示暂停层
 
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
+        //生成游戏方块矩阵：
+        int[] integers = {1, 2,3, 4};
 
+        anLib.GenerateGameBlock(game,game.getGameObject().getChildren().get(5).getChildren().get(0),8,6,integers,1);
     }
 
     private void startGame2(CHCanvasGame game) {
@@ -246,68 +248,8 @@ public class LogicUtil {
 //        game.getGameObject().getElementById("gameBarrier").setDisplay(true);
 //状态转换
     }
- private  void ResetSomeSceneState(){
+    private  void ResetSomeSceneState(){
 //        恢复场景初始状态，比如 退出游戏 再进
- }
-   static class MyHandler extends  Handler{
-
-        CHCanvasGame game;
-        static int GameTime=1000*60*2;//默认2分钟
-
-       public MyHandler(CHCanvasGame game) {
-           this.game = game;
-       }
-
-       @Override
-            public void handleMessage(android.os.Message msg) {
-                switch (msg.what) {
-                    case 0:
-//                        // 移除所有的msg.what为0等消息，保证只有一个循环消息队列再跑
-                        this.removeMessages(0);
-//                        // app的功能逻辑处理
-                        if(GameTime>=1000) {
-                            int remain=GameTime/1000;
-                            GameTime -= 1000;
-                           // 再次发出msg，循环更新
-                            remain-=1;
-                            game.getGameObject().getElementById("gameTime").setText(Integer.toString(remain));
-                            this.sendEmptyMessageDelayed(0, 1000);
-                        } else {
-                            gameOver();//不发送消息，同case:1效果，
-
-                        }
-                        break;
-
-                    case 1:
-                        // 直接移除，定时器停止
-//
-//                        removeMessages会将handler对应message queue里的消息清空，如果带了int参数则是对应的消息清空。队列里面没有消息则handler会不工作，但不表示handler会停止。当队列中有新的消息进来以后handler还是会处理。
-//                        1、这个方法使用的前提是之前调用过sendEmptyMessageDelayed(0, time)，意思是延迟time执行handler中msg.what=0的方法；
-//                        2、在延迟时间未到的前提下，执行removeMessages(0)，则上面的handler中msg.what=0的方法取消执行；
-//                        3、在延迟时间已到，handler中msg.what=0的方法已执行，再执行removeMessages(0)，不起作用。
-                        this.removeMessages(0);// 暂停游戏,移掉0消息，不会进0里。
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-            public  void starGameTimeCount(int GameTime){
-                MyHandler.GameTime =GameTime;
-                sendEmptyMessage(0);// 0 消息会减秒娄直到少于1000毫秒
-            }
-            public  void  PauseGameCountDown(){
-               sendEmptyMessage(1);//清空0消息，不会执行case0了
-            }
-            public void ContinueGame(){
-                sendEmptyMessage(0);//发送0消息，继续
-            }
-            public void gameOver(){
-                sendEmptyMessage(1);//清空0消息
-                game.getGameObject().getElementById("gameTime").setText("GameOver");
-
-            }
-        }
-
+    }
 
 }

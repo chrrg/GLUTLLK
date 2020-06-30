@@ -1,27 +1,15 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.opengl.GLU;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.opengl.Matrix;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
-import javax.security.auth.callback.Callback;
+import android.view.inputmethod.InputMethodManager;
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
@@ -38,10 +26,14 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setMaxFPS(20);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
 
-        game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
-        game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
 
-        LogicUtil util = new LogicUtil(game);
+        game.getGameObject().appendChild(game.getGameObjectFromXML("2.xml"));
+        game.getGameObject().appendChild(game.getGameObjectFromXML("3.xml"));
+//        game.getGameObject().parentNode.removeChild(game.getGameObject());
+//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("4.xml"));
+//        game.getGameObject().getChildren().get(0).getChildren().add(new GameObject())
+
+        Logical util = new Logical(game);
         util.Init();//显示游戏开始页面
 
 

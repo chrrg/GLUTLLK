@@ -111,8 +111,8 @@ class GameObject{
     }
     void appendChild(GameObject obj){
         if(obj.parentNode!=null)obj.parentNode.children.remove(obj);
-        children.add(obj);
         obj.parentNode=this;
+        children.add(obj);
     }
     void removeChild(GameObject obj){
         children.remove(obj);

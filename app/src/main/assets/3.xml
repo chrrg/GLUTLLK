@@ -1,11 +1,20 @@
 <box id="gameBarrier" w="100vw" h="100vh" text="关卡一" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C88B0000;">
 
-    <!--    顶部菜单-->
-    <box id="game1Menu" w="100vw" h="10vh" text="游戏选项" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C8DCDCDC;">
-        <box id="gameBtn1" w="10%" h="6vh" x="+5vw" t="3vh" text="暂停" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-        <box id="gameBtn2" w="10%" h="6vh" x="+20vw" t="3vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
-        <box id="gameBtn3" w="10%" h="6vh" x="+35vw" t="3vh" text="时间" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-        <box id="gameBtn4" w="10%" h="6vh" x="+50vw" t="3vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
-        <box id="gameBtn5" w="10%" h="6vh" x="+65vw" t="3vh" text="待定" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+    <box id="gameBarrierMenu">
+        <!--    顶部菜单-->
+        <box id="gameTopMenu" w="100vw" h="10vh" text="游戏顶部选项" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C8DCDCDC;">
+            <box id="gamePause" w="15%" h="6vh" x="+2vw" t="3vh" text="暂停" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+            <box id="gameTime" l="+20vw" h="6vh"  t="3vh" r="+17vw" text="时间" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
+            <box id="gameExit" w="15%" h="6vh" x="+85vw" t="3vh" r="+2vw" text="退出" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+        </box>
+        <!--底部菜单-->
+        <box id="gameBottomMenu"  w="100vw" h="10vh" text="游戏底部选项" y="90vh" b="2vh" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#C8A0522D;">
+            <box id="gameOther" w="20vw" x="+2vw"  y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>
+            <box id="gameScore" w="42vw" x="+29vw"  y="90vh" b="2vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>
+            <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>
+        </box>
+    </box>
+    <box id="gamePauseMaskLayer" w="100vw" h="100vh" text="暂停选项层" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C800BFFF;">
+        <box id="gameContinue" l="10vw" r="10vw" t="30vh" b="30vh" text="继续游戏" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#000080;"/>
     </box>
 </box>

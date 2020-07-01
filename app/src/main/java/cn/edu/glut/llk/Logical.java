@@ -259,7 +259,7 @@ public class Logical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,1,myobserver);
+        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 
     }
@@ -271,7 +271,7 @@ public class Logical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,1, myobserver);
+        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,true, myobserver);//Endless 无尽模式
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 //状态转换
     }

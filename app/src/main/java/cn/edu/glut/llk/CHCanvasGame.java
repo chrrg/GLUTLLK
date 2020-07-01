@@ -449,6 +449,14 @@ class GameObject{
         updateView();
         for(GameObject ob:children)ob.setAlpha(i);
     }
+
+     String getId() {
+        return id;
+    }
+
+    public int getBackColor() {
+        return backColor;
+    }
 }
 class GameCamera{
     private float[] pos={0,0,1,0,0,0};//当前摄像机位置

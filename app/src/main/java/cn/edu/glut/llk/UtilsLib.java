@@ -198,7 +198,7 @@ class AnimateLib {
               b.onTouchStart(event ->myobserver.BlockTouch(game,b)).onClick(event -> myobserver.BlockOnclick(game,b));
           }
       }
-          myobserver.setData(idAndGameObject,Endless);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题
+          myobserver.setData(idAndGameObject,Endless,Canvas);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
      }
 }
 
@@ -277,18 +277,20 @@ class Myobserver {
    private HashMap<GameObject, String> data;
     private Elimination elimination;
     boolean Endless=false;//无尽模式 默认 false
+    private GameObject canvas;
 
 
-    public void setData(HashMap<GameObject, String> data,boolean Endless){
+    public void setData(HashMap<GameObject, String> data, boolean Endless, GameObject canvas){
         this.data = data;
         this.elimination=new Elimination();// 消除块用
         this.Endless=Endless;//无尽模式
+        this.canvas=canvas;
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
      game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));
           boolean  isCanPingYi= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否要平移
 //         Remove(b);//点击消除，测试用
-        if(Endless==true && isCanPingYi) PingYi(game,1);//测试用 无尽模式并且两个物体可以消 则平移 ,
+        if(Endless==true && isCanPingYi) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
         game.getGameObject().getElementById("gameScore").setText("TouchBlock"+data.get(b));//测试用
@@ -296,7 +298,7 @@ class Myobserver {
     }
     public void  BlockMove(){}
     @TargetApi(Build.VERSION_CODES.N)
-    public void PingYi(CHCanvasGame game, int number){
+    public void PingYi(CHCanvasGame game, int number){//左右移动
         data.forEach((k,v)->  {
             k.setX(k.getX()+ k.getW());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
             if(k.getX()+k.getW()>game.getWidth())
@@ -312,6 +314,22 @@ class Myobserver {
         });
         //                    onInit() 重新初始化这一列
         TellAlgorithmsMatrixPermutation();
+    }
+    @TargetApi(Build.VERSION_CODES.N)
+    public void PingYi(CHCanvasGame game){//上下移动
+        data.forEach((k,v)->  {
+            k.setY(k.getY()+ k.getH());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
+            if(k.getY()+k.getH()>(canvas.getY()+canvas.getH()))//到底部了
+            {
+//                    Remove(k.parentNode);//移除父列  不用了
+                k.setY(canvas.getY());//重用，回左边
+//                    k.parentNode.setDisplay(true);//重新显示这一列,没事，多true几次而已，相当每一个列块元素都显示 不行，
+                k.setDisplay(true);//统一true 有依赖，这句不能删除 ，列模式下是没有问题的。不只是出格的。 行模式下就有问题吗？
+
+                //k.setText();也可以在这里，初始化随机性
+
+            }
+        });
     }
     public  void TellAlgorithmsMatrixPermutation(){
 //        重新初始化我的数据 如图片，能被消的属性

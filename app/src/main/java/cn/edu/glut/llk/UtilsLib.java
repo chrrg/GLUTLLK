@@ -6,8 +6,13 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Vector;
+
+import dalvik.annotation.TestTarget;
 
 class AnimateLib {
      public void PopUpAnimate(CHCanvasGame game,String id,boolean isAll,int runDuration,int nextDuration){
@@ -198,7 +203,7 @@ class AnimateLib {
               b.onTouchStart(event ->myobserver.BlockTouch(game,b)).onClick(event -> myobserver.BlockOnclick(game,b));
           }
       }
-          myobserver.setData(idAndGameObject,Endless,Canvas);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
+          myobserver.setData(game, idAndGameObject,Endless,Canvas);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
      }
 }
 
@@ -278,18 +283,22 @@ class Myobserver {
     private Elimination elimination;
     boolean Endless=false;//无尽模式 默认 false
     private GameObject canvas;
+    private CHCanvasGame game;
 
 
-    public void setData(HashMap<GameObject, String> data, boolean Endless, GameObject canvas){
+    public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, GameObject canvas){
         this.data = data;
-        this.elimination=new Elimination();// 消除块用
+        this.elimination=new Elimination(game);// 消除块用
         this.Endless=Endless;//无尽模式
         this.canvas=canvas;
+        this.game=game;
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
      game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));
           boolean  isCanPingYi= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否要平移
 //         Remove(b);//点击消除，测试用
+//        elimination.doaRRAY();//测试用
+        elimination.test();//测试用
         if(Endless==true && isCanPingYi) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
@@ -351,6 +360,7 @@ class Myobserver {
     /*队列 满的时候清空*/
 }
 class Elimination{
+    private final CHCanvasGame game;
     boolean One=false;
     boolean Two=false;
     GameObject OneObj;
@@ -358,7 +368,11 @@ class Elimination{
     int OneBackColor;
     int TwoBackColor;
 
-     public  boolean click(GameObject b,boolean Endless){
+    public Elimination(CHCanvasGame game) {
+        this.game=game;
+    }
+
+    public  boolean click(GameObject b,boolean Endless){
 
          //只有满的时候发送，并清空，先判断满没满先
          if(One==true&&Two==true){
@@ -427,6 +441,239 @@ class Elimination{
         two .setBackColor(TwoBackColor);//恢复原来的颜色	测试用
     }
 
+/*分段函数,递归
+* 数组 int[]
+* */
+class ij{
+    public int dir;
+
+    public ij(int i, int j) {
+        this.i = i;
+        this.j = j;
+        this.start= false;
+        this.dir=-1;
+    }
+    boolean start;
+    boolean first=false;
+    boolean last=false;
+    int i;int j;}
+
+    public void  test(){
+//    if(Math.random()>0.5)game.getGameObject().getElementById("test").setDisplay(false);
+//    else game.getGameObject().getElementById("test").setDisplay(true);
+//        (i,j) (1,2) (1,3) (1,4) //平移的话，不能id 号
+        ArrayList<ij> a=new ArrayList<>();
+        ij a1 = new ij(1, 2);//假设这个是被消掉的个，加上
+        ij a2 =new ij(1,3);
+        ij a3 =new ij(1,4);
+        ij a4=new ij(2,4);
+        ij a5=new ij(3,4);//不能有两个相同的点，假设这个是被消掉的最后一个，不要加上
+//
+        a.add(a1);
+        a.add(a2);
+        a.add(a3);
+        a.add(a4);
+        a.add(a5);
+
+       GameObject LINES= game.getGameObject().getElementById("Line");
+
+        ij  xy;
+        if(!a.isEmpty()){
+            xy=a.get(0);
+        }
+
+        for (int i=0;i<a.size();i++){
+
+            ij x1y1 = a.get(i);
+
+            GameObject LINE =  game.getGameObject().getElementById("Line"+i);
+             LINE.setW(game.getGameObject().getElementById("Column1").getW());
+            LINE.setH(game.getGameObject().getElementById("Column1").getW());
+            LINE.setX((int) (x1y1.j*game.getGameObject().getElementById("Column1").getW()+game.getWidth() * 0.025));
+            LINE.setY(game.getGameObject().getElementById("Column1").getY() + x1y1.i * game.getGameObject().getElementById("Column1").getW());
+            LINE.setBackColor(Color.BLACK);
+            game.getGameObject().getElementById("Line"+i).setDisplay(true);
+
+}
+//            if (xy.i == x1y1.i)//横
+//            {
+//                LINE.setText("横");
+////                LINE.setStyleText("fontSize:2vh;color:#FFFAFA;textY:bottom;");
+////                LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);LINE.setY(LINE.getY()+(int)(game.getGameObject().getElementById("Column1").getW()/3));
+//            } else {
+//                LINE.setText("纵");
+////                LINE.setStyleText("fontSize:2vh;color:#FFFAFA;textY:bottom;");
+////                LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);LINE.setX(LINE.getX()+(int)(game.getGameObject().getElementById("Column1").getW()/3));
+//            }
+
+//            if(()|| ){//转折点
+
+//            }
+
+//        }
+//        ，对Vector、ArrayList在迭代的时候如果同时对其进行修改就会抛出java.util.ConcurrentModificationException异常。
+//        if( game.getGameObject().getElementById("LINECanvas")!=null)
+//       game.getGameObject().getElementById("gameBarrier").removeChild(LINECanvas);//移除,
+
+    }
+
+
+
+
+//@TargetApi(Build.VERSION_CODES.N)
+//public void doaRRAY(){
+////    (i,j) (1,2) (1,3) (1,4) //平移的话，不能id 号
+//    ArrayList<ij> a=new ArrayList<>();
+//    ij a1 = new ij(1, 2);
+//    ij a2 =new ij(1,3);
+//    ij a3 =new ij(1,4);
+//    ij a4=new ij(2,4);
+//    ij a5=new ij(3,4);//不能有两个相同的点
+//
+//    a.add(a1);
+//    a.add(a2);
+//    a.add(a3);
+//    a.add(a4);
+//    a.add(a5);
+//
+//
+//
+//    turningPoint(a);// start=true
+//    a.forEach((k)->{
+//
+//        if(k.start) System.out.println("i:"+k.i+"j"+k.j);
+//    });
+//
+//    //起点终点
+//   if(a.size()>=2) {
+//       a.get(0).first = true;
+//       a.get(a.size()-1).last=true;
+//
+//       for(int i=0;i<a.size();i++){
+//        if(!a.get(i).first || !a.get(i).last || !a.get(i).start)
+//            a.remove(i);
+//       }
+//       CreateLine(a);
+//   }
+//   else {
+//       //只有一个元素
+////       CreateOnePoint(a);
+//   }
+//
+//}
+//
+//    private void turningPoint(ArrayList<ij> a) {
+//        //结束条件 没有下一个了
+//        int dir=0;
+//        for(int i=0;i<a.size();i++){
+//
+//            ij o = (ij) a.get(i);
+//            int x=o.i;
+//            int y=o.j;//前一个
+//
+//            if(a.size()<=i+1)break;//没有了
+//            ij o1 = (ij) a.get(i + 1);
+//            int x1=o1.i;
+//            int y1=o1.j;
+//
+//            int preDir=dir;
+//
+//            if( y-y1>0)dir=1;//向右
+//            if(x1-x>0)dir=2;//向上
+//            if(y-y1<0)dir=3;//向左
+//            if(x1-x<0)dir=4;//向下
+//
+//            if(preDir==0)preDir=dir;//第一个的时候
+//            if(dir!=preDir)
+//            {  o1.start=true;//分向变化开始点
+//                o1.dir=dir;
+//            }
+//        }
+//    }
+//public void CreateLine(ArrayList A){
+//    GameObject LINECanvas=new GameObject(game);
+//    game.getGameObject().getElementById("gameBarrier").addChild(LINECanvas);
+//   ListIterator iterator=A.listIterator();
+//
+//    ij xy = (ij) iterator.next();
+//   while (iterator.hasNext()) {
+//
+//       ij x1y1 = (ij) iterator.next();
+//
+//
+//
+//       switch (x1y1.dir){
+//           case 1:           {
+//
+//               GameObject LINE=new GameObject(game);
+//               LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);
+//               LINE.setH(Math.abs(x1y1.i-xy.i)*game.getGameObject().getElementById("Column1").getW());
+//              if(x1y1.i-xy.i>0) LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW());
+//              else LINE.setY(game.getGameObject().getElementById("Column1").getY()+x1y1.i*game.getGameObject().getElementById("Column1").getW());
+//               LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025)+game.getGameObject().getElementById("Column1").getW()/2);
+//               LINE.setBackColor(Color.BLACK);
+//               LINECanvas.addChild(LINE);
+//               System.out.println("向右");break;}
+//           case 2:
+//               {
+//                   GameObject LINE=new GameObject(game);
+//                   LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);
+//                   LINE.setW(Math.abs(x1y1.j-xy.j)*game.getGameObject().getElementById("Column1").getW());
+//                   LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW()+game.getGameObject().getElementById("Column1").getW()/2);
+//                   if(x1y1.j-xy.j>0)LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025));
+//                   else LINE.setX(game.getGameObject().getElementById("Column1").getW()*x1y1.j+(int)(game.getWidth()*0.025));
+//                   LINE.setBackColor(Color.BLACK);
+//                   LINECanvas.addChild(LINE);
+//                   System.out.println("向上");break;}
+//           case 3:
+//             {
+//                 GameObject LINE=new GameObject(game);
+//                 LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);
+//                 LINE.setH(Math.abs(x1y1.i-xy.i)*game.getGameObject().getElementById("Column1").getW());
+//                 if(x1y1.i-xy.i>0) LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW());
+//                 else LINE.setY(game.getGameObject().getElementById("Column1").getY()+x1y1.i*game.getGameObject().getElementById("Column1").getW());
+//                 LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025)+game.getGameObject().getElementById("Column1").getW()/2);
+//                 LINE.setBackColor(Color.BLACK);
+//                 LINECanvas.addChild(LINE);
+//                 System.out.println("向左");break;}
+//           case 4:
+//               {
+//                   GameObject LINE=new GameObject(game);
+//                   LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);
+//                   LINE.setW(Math.abs(x1y1.j-xy.j)*game.getGameObject().getElementById("Column1").getW());
+//                   LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW()+game.getGameObject().getElementById("Column1").getW()/2);
+//                   if(x1y1.j-xy.j>0)LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025));
+//                   else LINE.setX(game.getGameObject().getElementById("Column1").getW()*x1y1.j+(int)(game.getWidth()*0.025));
+//                   LINE.setBackColor(Color.BLACK);
+//                   LINECanvas.addChild(LINE);
+//                   System.out.println("向下"); break;}
+//           default:
+//               System.out.println("只有一条直线，只有一个 或者默认-1 ");    break;
+//       }
+//
+//
+//   }
+//
+//
+//
+////   if(dir!=o.dir){
+////       dir=o.dir;// 下一次
+////
+////
+////   }
+////
+////
+////        if(preDir==2 || preDir==4)//向上下
+////        {   LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);
+////            LINE.setH(Math.abs(i-starI)*game.getGameObject().getElementById("Column1").getW());
+////            LINE.setX(game.getGameObject().getElementById("Column1").getW()*j+(int)(game.getWidth()*0.025));
+////            if(i-starI>=0)
+////                LINE.setY(game.getGameObject().getElementById("gameBlock").getY()+);
+////            else
+////        }
+////
+////    }
+//}
 
     public  void  ToDoLine(){
          /*路径  得到的只有 i,j 一对*/

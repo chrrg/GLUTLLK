@@ -70,6 +70,7 @@ public class Logical {
         setShow.put("RankPage", false);
         setShow.put("gameBarrier", false);
         setShow.put("inputFrame", false);//输入重用框？？？
+        setShow.put("Line",false);//line
         setDisplay(setShow);
 
 

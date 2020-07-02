@@ -78,11 +78,11 @@ CHCanvasGame game;
                 game.getImage("animal11.jpg"),
                 game.getImage("animal12.jpg"),
                 game.getImage("animal13.jpg"),
-                game.getImage("animal4.jpg"),
-                game.getImage("animal5.jpg"),
-                game.getImage("animal6.jpg"),
-                game.getImage("animal7.jpg"),
-                game.getImage("animal8.jpg"),
+                game.getImage("animal14.jpg"),
+                game.getImage("animal15.jpg"),
+                game.getImage("animal16.jpg"),
+                game.getImage("animal17.jpg"),
+                game.getImage("animal18.jpg"),
         };
 
         Item[][] item= new Item[8][6];
@@ -91,7 +91,7 @@ CHCanvasGame game;
                 item[i][j]=new Item();//初始化
             }
         }
-        LinkSearch.generateBoard(item, bitmaps);
+        LinkSearch.generateBoard(item, bitmaps);//好像要自己清空格子，
 
         return item;
     }

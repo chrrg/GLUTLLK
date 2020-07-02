@@ -312,7 +312,7 @@ class Myobserver {
         boolean  isCanPingYi= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否要平移
 //         Remove(b);//点击消除，测试用
 //        elimination.doaRRAY();//测试用
-        elimination.test();//测试用
+//        elimination.test();//测试用
         if(Endless==true && isCanPingYi) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
@@ -440,6 +440,7 @@ class Elimination{
     private void hold(GameObject b) {
         b.setBackColor(Color.RED);
     }
+    @TargetApi(Build.VERSION_CODES.N)
     public boolean TellAlgorithsMatrixRemoveBlock(GameObject one, GameObject two, boolean Endless){
         //告诉矩阵消掉两个block
        /* if(!Endless)
@@ -468,7 +469,14 @@ class Elimination{
            {
 
               List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI,srcJ),new Point(dirI,dirJ));
-              if(path!=null)return  true;//可以 isempty??
+              if(path!=null)
+                  {
+                      path.forEach((k)-> System.out.println("path为："+k.x+k.y));
+                      item[srcI][srcJ].setEmpty();//设为没有被占领
+                      item[dirI][dirJ].setEmpty();  // 还要清空格子为em
+                      test(path,srcI,srcJ,dirI,dirJ);//连线
+                      return  true;
+                  }//可以 isempty??
                else  return false;
            }
            else  return false;//两个图片不是同一个
@@ -499,23 +507,26 @@ class Elimination{
         boolean last=false;
         int i;int j;}
 
-    public void  test()  {
+    @TargetApi(Build.VERSION_CODES.N)
+    public void  test(List<Point> points,int srcI,int srcJ,int dirI,int dirJ)  {
 //    if(Math.random()>0.5)game.getGameObject().getElementById("test").setDisplay(false);
 //    else game.getGameObject().getElementById("test").setDisplay(true);
 //        (i,j) (1,2) (1,3) (1,4) //平移的话，不能id 号
-        ArrayList<ij> a=new ArrayList<>();
-        ij a1 = new ij(1, 2);//假设这个是被消掉的个，加上
-        ij a2 =new ij(1,3);
-        ij a3 =new ij(1,4);
-        ij a4=new ij(2,4);
-        ij a5=new ij(3,4);//不能有两个相同的点，假设这个是被消掉的最后一个，不要加上
+//        ArrayList<ij> a=new ArrayList<>();
+//        ij a1 = new ij(1, 2);//假设这个是被消掉的个，加上
+//        ij a2 =new ij(1,3);
+//        ij a3 =new ij(1,4);
+//        ij a4=new ij(2,4);
+//        ij a5=new ij(3,4);//不能有两个相同的点，假设这个是被消掉的最后一个，不要加上
 //
-        a.add(a1);
-        a.add(a2);
-        a.add(a3);
-        a.add(a4);
-        a.add(a5);
-        turningPoint(a);//转折点标记
+//        a.add(a1);
+//        a.add(a2);
+//        a.add(a3);
+//        a.add(a4);
+//        a.add(a5);
+//        turningPoint(a);//转折点标记
+        //最后的dir考虑？
+        points.add(new Point(dirI,dirJ));
 
         GameObject line=new GameObject(game);
         line.setW(game.getWidth());
@@ -527,35 +538,69 @@ class Elimination{
         LINES.setDisplay(true);
         LINES.appendChild(line);
 
+   for (int i=0;i<points.size();i++) {
+       Point point = points.get(i);
+       GameObject LINE = new GameObject(game);
+       LINE.setW(game.getGameObject().getElementById("Column1").getW() + Math.abs(point.y - srcJ) * game.getGameObject().getElementById("Column1").getW());
+       LINE.setH(game.getGameObject().getElementById("Column1").getW() + Math.abs(point.x - srcI) * game.getGameObject().getElementById("Column1").getW());
+       if (point.x == srcI)//横
+       {
+           if (point.y > srcJ)
+               LINE.setX((int) (srcJ * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));//直线结束端点在右
+           else
+               LINE.setX((int) (point.y * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));//直线结束端点在左
+           LINE.setY(game.getGameObject().getElementById("Column1").getY() + point.x * game.getGameObject().getElementById("Column1").getW());
+       } else {
+           //纵
+           if (point.x > srcI)
+               LINE.setY(srcJ * game.getGameObject().getElementById("Column1").getW() + game.getGameObject().getElementById("Column1").getY());//直线结束端点在下
+           else
+               LINE.setY(point.y * game.getGameObject().getElementById("Column1").getW() + game.getGameObject().getElementById("Column1").getY());//直线结束端点在上
+           LINE.setX(game.getGameObject().getElementById("Column1").getY() + point.y * game.getGameObject().getElementById("Column1").getW());
+       }
 
-        ij  xy = null;
-        if(!a.isEmpty()){
-            xy=a.get(0);
+       LINE.setBackColor(Color.BLACK);
+       line.appendChild(LINE);
+
+       //下次循环
+       srcI = point.x;
+       srcJ = point.y;
+   }
+        try {
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-//        ij  xy=a.get(0);
+        LINES.getChildren().remove(line);
 
-        for (int i=0;i<a.size();i++) {
+//        ij  xy = null;
+//        if(!a.isEmpty()){
+//            xy=a.get(0);
+//        }
+////        ij  xy=a.get(0);
 
-            ij x1y1 = a.get(i);
-            GameObject LINE = new GameObject(game);
-            LINE.setW(game.getGameObject().getElementById("Column1").getW());
-            LINE.setH(game.getGameObject().getElementById("Column1").getW());
-            LINE.setX((int) (x1y1.j * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));
-            LINE.setY(game.getGameObject().getElementById("Column1").getY() + x1y1.i * game.getGameObject().getElementById("Column1").getW());
-            LINE.setBackColor(Color.BLACK);
-            line.appendChild(LINE);
-
-            if(a.size()>i+1)if(a.get(i+1).start)continue;//转折占则不缩小了
-            if (xy.i == x1y1.i)//横
-            {
-
-
-                LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);LINE.setY(LINE.getY()+ (game.getGameObject().getElementById("Column1").getW()/3));
-            } else {
-
-
-                LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);LINE.setX(LINE.getX()+ (game.getGameObject().getElementById("Column1").getW()/3));
-            }
+//        for (int i=0;i<a.size();i++) {
+//
+//            ij x1y1 = a.get(i);
+//            GameObject LINE = new GameObject(game);
+//            LINE.setW(game.getGameObject().getElementById("Column1").getW());
+//            LINE.setH(game.getGameObject().getElementById("Column1").getW());
+//            LINE.setX((int) (x1y1.j * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));
+//            LINE.setY(game.getGameObject().getElementById("Column1").getY() + x1y1.i * game.getGameObject().getElementById("Column1").getW());
+//            LINE.setBackColor(Color.BLACK);
+//            line.appendChild(LINE);
+//
+//            if(a.size()>i+1)if(a.get(i+1).start)continue;//转折占则不缩小了
+//            if (xy.i == x1y1.i)//横
+//            {
+//
+//
+//                LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);LINE.setY(LINE.getY()+ (game.getGameObject().getElementById("Column1").getW()/3));
+//            } else {
+//
+//
+//                LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);LINE.setX(LINE.getX()+ (game.getGameObject().getElementById("Column1").getW()/3));
+//            }
 //
 
 //        }
@@ -568,14 +613,13 @@ class Elimination{
 //        if( game.getGameObject().getElementById("LINECanvas")!=null)
 //       game.getGameObject().getElementById("gameBarrier").removeChild(LINECanvas);//移除,
 
-        }
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LINES.getChildren().remove(line);
+
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
 
 //@TargetApi(Build.VERSION_CODES.N)

@@ -1,6 +1,7 @@
 package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -10,7 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dalvik.annotation.TestTarget;
 
@@ -168,6 +172,10 @@ class AnimateLib {
         Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
         Node.appendChild(Canvas);//加在关卡一下
 
+        // 生成棋盘
+        suanfa suanfa = new suanfa(game);
+        Item[][] items = suanfa.main();//一个矩阵，包含了贴哪张图片
+
         HashMap<GameObject,String> idAndGameObject=new HashMap<>();
         for (int j=0;j<column;j++){
             /*生成列*/
@@ -197,13 +205,17 @@ class AnimateLib {
                 if(i%2==0)//偶数
                     b.setStyle("backColor","#CCD2691E");
                 else b.setStyle("backColor","#CC556B2F");
+
+                // 设置图片
+                b.setPic(items[i][j].bitmap);
+
                 a.appendChild(b);
                 // 事件
                 idAndGameObject.put(b,String.valueOf(i)+j);
                 b.onTouchStart(event ->myobserver.BlockTouch(game,b)).onClick(event -> myobserver.BlockOnclick(game,b));
             }
         }
-        myobserver.setData(game, idAndGameObject,Endless,Canvas);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
+        myobserver.setData(game, idAndGameObject,Endless,Canvas,items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
     }
 }
 
@@ -284,14 +296,16 @@ class Myobserver {
     boolean Endless=false;//无尽模式 默认 false
     private GameObject canvas;
     private CHCanvasGame game;
+    private Item[][] item;//这次游戏的图片属于哪个方块
 
 
-    public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, GameObject canvas){
+    public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, GameObject canvas, Item[][] items){
         this.data = data;
-        this.elimination=new Elimination(game);// 消除块用
+        this.elimination=new Elimination(game,items);// 消除块用
         this.Endless=Endless;//无尽模式
         this.canvas=canvas;
         this.game=game;
+        this.item=items;//持有一个引用 ,好像暂时没有什么用
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
         game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));
@@ -361,6 +375,7 @@ class Myobserver {
 }
 class Elimination{
     private final CHCanvasGame game;
+    private final Item[][] item;
     boolean One=false;
     boolean Two=false;
     GameObject OneObj;
@@ -368,8 +383,9 @@ class Elimination{
     int OneBackColor;
     int TwoBackColor;
 
-    public Elimination(CHCanvasGame game) {
+    public Elimination(CHCanvasGame game, Item[][] items) {
         this.game=game;
+        this.item=items;
     }
 
     public  boolean click(GameObject b,boolean Endless){
@@ -433,7 +449,32 @@ class Elimination{
         else
         // 无尽模式。平移的话，id 是没有用的 。*/
 //       return Math.random() < 0.5;//  return result;
-        return true;
+//        one.getPic();//返回的是一个数组
+        if(!Endless){
+            Pattern reg = Pattern.compile("(\\d)(\\d)");
+            String O=one.getId();
+           String T= two.getId();
+            Matcher matcher = reg.matcher(O);
+            Matcher matcher1Dir = reg.matcher(T);
+            if(matcher.find()&& matcher1Dir.find()) System.out.println("找到正则id");//先查找到第一个匹配的。
+            else throw new Resources.NotFoundException();//id 没有找到
+            int srcI= Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
+            int srcJ= Integer.parseInt(Objects.requireNonNull(matcher.group(2)));
+
+
+            int dirI= Integer.parseInt(Objects.requireNonNull(matcher1Dir.group(1)));
+            int dirJ= Integer.parseInt(Objects.requireNonNull(matcher1Dir.group(2)));
+           if( item[srcI][srcJ].bitmap==item[dirI][dirJ].bitmap)
+           {
+
+              List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI,srcJ),new Point(dirI,dirJ));
+              if(path!=null)return  true;//可以 isempty??
+               else  return false;
+           }
+           else  return false;//两个图片不是同一个
+        }
+
+        return false;
     }
 
     private void sendNoHold(GameObject one, GameObject two) {
@@ -474,9 +515,11 @@ class Elimination{
         a.add(a3);
         a.add(a4);
         a.add(a5);
+        turningPoint(a);//转折点标记
+
         GameObject line=new GameObject(game);
-        line.setW(500);
-        line.setH(500);//用绝对值 ？
+        line.setW(game.getWidth());
+        line.setH(game.getHeight());//用绝对值 ？
         line.setX(0);
         line.setY(0);
         line.setId("nnn");
@@ -494,7 +537,6 @@ class Elimination{
         for (int i=0;i<a.size();i++) {
 
             ij x1y1 = a.get(i);
-
             GameObject LINE = new GameObject(game);
             LINE.setW(game.getGameObject().getElementById("Column1").getW());
             LINE.setH(game.getGameObject().getElementById("Column1").getW());
@@ -503,6 +545,7 @@ class Elimination{
             LINE.setBackColor(Color.BLACK);
             line.appendChild(LINE);
 
+            if(a.size()>i+1)if(a.get(i+1).start)continue;//转折占则不缩小了
             if (xy.i == x1y1.i)//横
             {
 
@@ -577,33 +620,7 @@ class Elimination{
 //
 //}
 //
-//    private void turningPoint(ArrayList<ij> a) {
-//        //结束条件 没有下一个了
-//        int dir=0;
-//        for(int i=0;i<a.size();i++){
-//
-//            ij o = (ij) a.get(i);
-//            int x=o.i;
-//            int y=o.j;//前一个
-//
-//            if(a.size()<=i+1)break;//没有了
-//            ij o1 = (ij) a.get(i + 1);
-//            int x1=o1.i;
-//            int y1=o1.j;
-//
-//            int preDir=dir;
-//
-//            if( y-y1>0)dir=1;//向右
-//            if(x1-x>0)dir=2;//向上
-//            if(y-y1<0)dir=3;//向左
-//            if(x1-x<0)dir=4;//向下
-//
-//            if(preDir==0)preDir=dir;//第一个的时候
-//            if(dir!=preDir)
-//            {  o1.start=true;//分向变化开始点
-//                o1.dir=dir;
-//            }
-//        }
+
 //    }
 //public void CreateLine(ArrayList A){
 //    GameObject LINECanvas=new GameObject(game);
@@ -689,6 +706,33 @@ class Elimination{
 ////
 //    }
     }
+    private void turningPoint(ArrayList<ij> a) {
+        //结束条件 没有下一个了
+        int dir=0;
+        for(int i=0;i<a.size();i++){
+
+            ij o = (ij) a.get(i);
+            int x=o.i;
+            int y=o.j;//前一个
+
+            if(a.size()<=i+1)break;//没有了
+            ij o1 = (ij) a.get(i + 1);
+            int x1=o1.i;
+            int y1=o1.j;
+
+            int preDir=dir;
+
+            if( y-y1>0)dir=1;//向右
+            if(x1-x>0)dir=2;//向上
+            if(y-y1<0)dir=3;//向左
+            if(x1-x<0)dir=4;//向下
+
+            if(preDir==0)preDir=dir;//第一个的时候
+            if(dir!=preDir)
+            {  o1.start=true;//分向变化开始点
+                o1.dir=dir;
+            }
+        }}
 
     public  void  ToDoLine(){
         /*路径  得到的只有 i,j 一对*/

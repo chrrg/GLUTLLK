@@ -457,6 +457,10 @@ class GameObject{
     public int getBackColor() {
         return backColor;
     }
+
+    public Bitmap[] getPic() {
+        return pic;
+    }
 }
 class GameCamera{
     private float[] pos={0,0,1,0,0,0};//当前摄像机位置

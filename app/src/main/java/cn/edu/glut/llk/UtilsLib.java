@@ -6,19 +6,15 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
-
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import dalvik.annotation.TestTarget;
-
 class AnimateLib {
+
     public void PopUpAnimate(CHCanvasGame game,String id,boolean isAll,int runDuration,int nextDuration){
 
         game.getGameObject().getElementById(id).animate(isAll).run(runDuration, new AnimateCallback() {
@@ -152,7 +148,7 @@ class AnimateLib {
 //        });
     }
 
-    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn, boolean Endless, Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
+    synchronized  void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn, boolean Endless, Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
         GameObject Canvas = new GameObject(game);
         int BlockWidthAndHeight= (int)(game.getWidth()-game.getWidth()*0.05)/column;//宽//默认正方形
         int CanvasWidth=game.getWidth();//默认100%
@@ -162,19 +158,22 @@ class AnimateLib {
         if (row*BlockWidthAndHeight>CanvasHeight)Log.e("创建方块矩阵","长度不够，行太多，");
         //高度够的情况下：使Canvas高度合适 游戏块的大小
         CanvasHeight=row*BlockWidthAndHeight;
-        //考虑不要Canvas?
 
-        Canvas.setId("gameBlock");
+       final int gameWidth=game.getWidth();// 全部定为int final ,不要动态去获取
+       final int gameHeight=game.getHeight();// 全部定为int final ,不要动态去获取
+        final int CanvasY=gameHeight/10*2;
+
+                Canvas.setId("gameBlock");
         Canvas.setW(CanvasWidth);
         Canvas.setH(CanvasHeight);
-        Canvas.setY(game.getHeight()/10*2);// 乘二 是 与上面的 距顶10% 相关联
+        Canvas.setY(gameHeight/10*2);// 乘二 是 与上面的 距顶10% 相关联
         Canvas.setText("游戏区域");
         Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
         Node.appendChild(Canvas);//加在关卡一下
 
         // 生成棋盘
-        suanfa suanfa = new suanfa(game);
-        Item[][] items = suanfa.main();//一个矩阵，包含了贴哪张图片
+       //静态方法，不用实例化类
+        Item[][] items = suanfa.main(game,"blocks");//一个矩阵，包含了贴哪张图片,blocks是assets目录下的所有文件
 
         HashMap<GameObject,String> idAndGameObject=new HashMap<>();
         for (int j=0;j<column;j++){
@@ -186,7 +185,7 @@ class AnimateLib {
             a.setW(BlockWidthAndHeight);
             a.setH(CanvasHeight);//与
             a.setText("col"+j);
-            a.setX((int)(game.getWidth()*0.025+j*BlockWidthAndHeight));
+            a.setX((int)(gameWidth*0.025+j*BlockWidthAndHeight));
             a.setY(Canvas.getY());//距Canvas 0%
             a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#0000FF;");
             if(j%2==0)a.setStyle("backColor","#CC7FFF00");
@@ -198,10 +197,10 @@ class AnimateLib {
                 b.setId("Block"+i+j);//id为block
                 b.setW(BlockWidthAndHeight);
                 b.setH(BlockWidthAndHeight);
-                b.setX((int)(game.getWidth()*0.025)+j*BlockWidthAndHeight);//与列相同
-                b.setY(Canvas.getY()+i*BlockWidthAndHeight);
+                b.setX((int)(gameWidth*0.025)+j*BlockWidthAndHeight);//与列相同
+                b.setY(CanvasY+i*BlockWidthAndHeight);
                 b.setText(String.valueOf(i)+ j);
-                b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;");
+                b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;image:stretch;");//设置图片之前设置图片样式
                 if(i%2==0)//偶数
                     b.setStyle("backColor","#CCD2691E");
                 else b.setStyle("backColor","#CC556B2F");
@@ -215,6 +214,7 @@ class AnimateLib {
                 b.onTouchStart(event ->myobserver.BlockTouch(game,b)).onClick(event -> myobserver.BlockOnclick(game,b));
             }
         }
+
         myobserver.setData(game, idAndGameObject,Endless,Canvas,items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
     }
 }
@@ -509,55 +509,79 @@ class Elimination{
 
     @TargetApi(Build.VERSION_CODES.N)
     public void  test(List<Point> points,int srcI,int srcJ,int dirI,int dirJ)  {
-//    if(Math.random()>0.5)game.getGameObject().getElementById("test").setDisplay(false);
-//    else game.getGameObject().getElementById("test").setDisplay(true);
-//        (i,j) (1,2) (1,3) (1,4) //平移的话，不能id 号
-//        ArrayList<ij> a=new ArrayList<>();
-//        ij a1 = new ij(1, 2);//假设这个是被消掉的个，加上
-//        ij a2 =new ij(1,3);
-//        ij a3 =new ij(1,4);
-//        ij a4=new ij(2,4);
-//        ij a5=new ij(3,4);//不能有两个相同的点，假设这个是被消掉的最后一个，不要加上
-//
-//        a.add(a1);
-//        a.add(a2);
-//        a.add(a3);
-//        a.add(a4);
-//        a.add(a5);
-//        turningPoint(a);//转折点标记
-        //最后的dir考虑？
+
+            // 不是null 才进来，最多 空集
+//        if(!points.isEmpty())//null和空集合isEmpty不是同一个东西
+            points.add(0,new Point(srcI,srcJ));//不是空集则 加上源消掉的物块
+        //最后的dir考虑吗  paints不空则说明 至少一条直线 （一个格子算吗？）
         points.add(new Point(dirI,dirJ));
 
         GameObject line=new GameObject(game);
-        line.setW(game.getWidth());
-        line.setH(game.getHeight());//用绝对值 ？
-        line.setX(0);
-        line.setY(0);
+        line.setW(500);
+        line.setH(500);//用绝对值 ？
+        line.setX(12);
+        line.setY(12);
         line.setId("nnn");
         GameObject LINES= game.getGameObject().getElementById("Line");//所有动态创建的gameobject 一定要设置w h x y 不然使用会报错
         LINES.setDisplay(true);
         LINES.appendChild(line);
 
-   for (int i=0;i<points.size();i++) {
+        // 定义些常量,列宽度
+       final int Column1W= game.getGameObject().getElementById("Column1").getW();
+        final int Column1H= game.getGameObject().getElementById("Column1").getH();
+       final  int Column1Y=game.getGameObject().getElementById("Column1").getY();
+       final  int WH=Column1W/2;//默认宽高1/2colw
+
+   for (int i=1;i<points.size();i++) {
        Point point = points.get(i);
        GameObject LINE = new GameObject(game);
-       LINE.setW(game.getGameObject().getElementById("Column1").getW() + Math.abs(point.y - srcJ) * game.getGameObject().getElementById("Column1").getW());
-       LINE.setH(game.getGameObject().getElementById("Column1").getW() + Math.abs(point.x - srcI) * game.getGameObject().getElementById("Column1").getW());
-       if (point.x == srcI)//横
-       {
-           if (point.y > srcJ)
-               LINE.setX((int) (srcJ * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));//直线结束端点在右
-           else
-               LINE.setX((int) (point.y * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));//直线结束端点在左
-           LINE.setY(game.getGameObject().getElementById("Column1").getY() + point.x * game.getGameObject().getElementById("Column1").getW());
-       } else {
-           //纵
-           if (point.x > srcI)
-               LINE.setY(srcJ * game.getGameObject().getElementById("Column1").getW() + game.getGameObject().getElementById("Column1").getY());//直线结束端点在下
-           else
-               LINE.setY(point.y * game.getGameObject().getElementById("Column1").getW() + game.getGameObject().getElementById("Column1").getY());//直线结束端点在上
-           LINE.setX(game.getGameObject().getElementById("Column1").getY() + point.y * game.getGameObject().getElementById("Column1").getW());
+       LINE.setW(WH);
+       LINE.setH(WH);
+        
+       int dir=0;
+       if( point.y-srcJ>0)dir=1;//向右
+       if(point.y-srcJ<0) dir=2;////向左
+       if(srcI-point.x>0)dir=3;//向上
+       if(srcI-point.x<0) dir=4;//向下
+       //x*y*w应该是两点的距离
+       switch (dir){
+           case 1:
+           {//横右
+               LINE.setW(Math.abs(point.y - srcJ) * Column1W +WH/2);
+               LINE.setX((int) ( game.getWidth() * 0.025)+srcJ * Column1W +WH);//直线结束端点在右,默认在 结束端点加长一点1/4
+
+               LINE.setY(Column1Y + point.x * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
+               break;
+           }
+           case 2:{
+               //横左
+               LINE.setW(WH/2+Math.abs(point.y - srcJ) * Column1W);
+               LINE.setX((int) (game.getWidth() * 0.025+point.y * Column1W+WH/2));//直线结束端点在左
+
+               LINE.setY(Column1Y + point.x * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
+               break;
+           }
+           case 3:{
+               //纵 上
+               LINE.setH(WH+Math.abs(point.x - srcI) * Column1W);
+               LINE.setY(Column1Y+point.x * Column1W +WH/2);//直线结束端点在上
+
+               LINE.setX((int) (game.getWidth() * 0.025+ point.y * Column1W +Column1W/4));
+               break;
+           }
+           case 4:{
+               //纵下
+               LINE.setH(Math.abs(point.x - srcI) * Column1W+WH/2);
+               LINE.setY( Column1Y+srcI * Column1W +WH);//直线结束端点在下
+
+               LINE.setX((int) (game.getWidth() * 0.025+ point.y * Column1W +Column1W/4));
+               break;
+           }
+           default:
+               System.out.println("有问题"); break;
        }
+       
+
 
        LINE.setBackColor(Color.BLACK);
        line.appendChild(LINE);
@@ -567,236 +591,16 @@ class Elimination{
        srcJ = point.y;
    }
         try {
-            Thread.sleep(150);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         LINES.getChildren().remove(line);
 
-//        ij  xy = null;
-//        if(!a.isEmpty()){
-//            xy=a.get(0);
-//        }
-////        ij  xy=a.get(0);
 
-//        for (int i=0;i<a.size();i++) {
+//直接 横纵 前后两端点加上 线条 窄度 的 一半
 //
-//            ij x1y1 = a.get(i);
-//            GameObject LINE = new GameObject(game);
-//            LINE.setW(game.getGameObject().getElementById("Column1").getW());
-//            LINE.setH(game.getGameObject().getElementById("Column1").getW());
-//            LINE.setX((int) (x1y1.j * game.getGameObject().getElementById("Column1").getW() + game.getWidth() * 0.025));
-//            LINE.setY(game.getGameObject().getElementById("Column1").getY() + x1y1.i * game.getGameObject().getElementById("Column1").getW());
-//            LINE.setBackColor(Color.BLACK);
-//            line.appendChild(LINE);
-//
-//            if(a.size()>i+1)if(a.get(i+1).start)continue;//转折占则不缩小了
-//            if (xy.i == x1y1.i)//横
-//            {
-//
-//
-//                LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);LINE.setY(LINE.getY()+ (game.getGameObject().getElementById("Column1").getW()/3));
-//            } else {
-//
-//
-//                LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);LINE.setX(LINE.getX()+ (game.getGameObject().getElementById("Column1").getW()/3));
-//            }
-//
-
-//        }
-//            if(()|| ){//转折点
-
-//            }
-
-//        }
-//        ，对Vector、ArrayList在迭代的时候如果同时对其进行修改就会抛出java.util.ConcurrentModificationException异常。
-//        if( game.getGameObject().getElementById("LINECanvas")!=null)
-//       game.getGameObject().getElementById("gameBarrier").removeChild(LINECanvas);//移除,
-
-
-
-//        try {
-//            Thread.sleep(100);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-
-//@TargetApi(Build.VERSION_CODES.N)
-//public void doaRRAY(){
-////    (i,j) (1,2) (1,3) (1,4) //平移的话，不能id 号
-//    ArrayList<ij> a=new ArrayList<>();
-//    ij a1 = new ij(1, 2);
-//    ij a2 =new ij(1,3);
-//    ij a3 =new ij(1,4);
-//    ij a4=new ij(2,4);
-//    ij a5=new ij(3,4);//不能有两个相同的点
-//
-//    a.add(a1);
-//    a.add(a2);
-//    a.add(a3);
-//    a.add(a4);
-//    a.add(a5);
-//
-//
-//
-//    turningPoint(a);// start=true
-//    a.forEach((k)->{
-//
-//        if(k.start) System.out.println("i:"+k.i+"j"+k.j);
-//    });
-//
-//    //起点终点
-//   if(a.size()>=2) {
-//       a.get(0).first = true;
-//       a.get(a.size()-1).last=true;
-//
-//       for(int i=0;i<a.size();i++){
-//        if(!a.get(i).first || !a.get(i).last || !a.get(i).start)
-//            a.remove(i);
-//       }
-//       CreateLine(a);
-//   }
-//   else {
-//       //只有一个元素
-////       CreateOnePoint(a);
-//   }
-//
-//}
-//
-
-//    }
-//public void CreateLine(ArrayList A){
-//    GameObject LINECanvas=new GameObject(game);
-//    game.getGameObject().getElementById("gameBarrier").addChild(LINECanvas);
-//   ListIterator iterator=A.listIterator();
-//
-//    ij xy = (ij) iterator.next();
-//   while (iterator.hasNext()) {
-//
-//       ij x1y1 = (ij) iterator.next();
-//
-//
-//
-//       switch (x1y1.dir){
-//           case 1:           {
-//
-//               GameObject LINE=new GameObject(game);
-//               LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);
-//               LINE.setH(Math.abs(x1y1.i-xy.i)*game.getGameObject().getElementById("Column1").getW());
-//              if(x1y1.i-xy.i>0) LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW());
-//              else LINE.setY(game.getGameObject().getElementById("Column1").getY()+x1y1.i*game.getGameObject().getElementById("Column1").getW());
-//               LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025)+game.getGameObject().getElementById("Column1").getW()/2);
-//               LINE.setBackColor(Color.BLACK);
-//               LINECanvas.addChild(LINE);
-//               System.out.println("向右");break;}
-//           case 2:
-//               {
-//                   GameObject LINE=new GameObject(game);
-//                   LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);
-//                   LINE.setW(Math.abs(x1y1.j-xy.j)*game.getGameObject().getElementById("Column1").getW());
-//                   LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW()+game.getGameObject().getElementById("Column1").getW()/2);
-//                   if(x1y1.j-xy.j>0)LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025));
-//                   else LINE.setX(game.getGameObject().getElementById("Column1").getW()*x1y1.j+(int)(game.getWidth()*0.025));
-//                   LINE.setBackColor(Color.BLACK);
-//                   LINECanvas.addChild(LINE);
-//                   System.out.println("向上");break;}
-//           case 3:
-//             {
-//                 GameObject LINE=new GameObject(game);
-//                 LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);
-//                 LINE.setH(Math.abs(x1y1.i-xy.i)*game.getGameObject().getElementById("Column1").getW());
-//                 if(x1y1.i-xy.i>0) LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW());
-//                 else LINE.setY(game.getGameObject().getElementById("Column1").getY()+x1y1.i*game.getGameObject().getElementById("Column1").getW());
-//                 LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025)+game.getGameObject().getElementById("Column1").getW()/2);
-//                 LINE.setBackColor(Color.BLACK);
-//                 LINECanvas.addChild(LINE);
-//                 System.out.println("向左");break;}
-//           case 4:
-//               {
-//                   GameObject LINE=new GameObject(game);
-//                   LINE.setH(game.getGameObject().getElementById("Column1").getW()/2);
-//                   LINE.setW(Math.abs(x1y1.j-xy.j)*game.getGameObject().getElementById("Column1").getW());
-//                   LINE.setY(game.getGameObject().getElementById("Column1").getY()+xy.i*game.getGameObject().getElementById("Column1").getW()+game.getGameObject().getElementById("Column1").getW()/2);
-//                   if(x1y1.j-xy.j>0)LINE.setX(game.getGameObject().getElementById("Column1").getW()*xy.j+(int)(game.getWidth()*0.025));
-//                   else LINE.setX(game.getGameObject().getElementById("Column1").getW()*x1y1.j+(int)(game.getWidth()*0.025));
-//                   LINE.setBackColor(Color.BLACK);
-//                   LINECanvas.addChild(LINE);
-//                   System.out.println("向下"); break;}
-//           default:
-//               System.out.println("只有一条直线，只有一个 或者默认-1 ");    break;
-//       }
-//
-//
-//   }
-//
-//
-//
-////   if(dir!=o.dir){
-////       dir=o.dir;// 下一次
-////
-////
-////   }
-////
-////
-////        if(preDir==2 || preDir==4)//向上下
-////        {   LINE.setW(game.getGameObject().getElementById("Column1").getW()/2);
-////            LINE.setH(Math.abs(i-starI)*game.getGameObject().getElementById("Column1").getW());
-////            LINE.setX(game.getGameObject().getElementById("Column1").getW()*j+(int)(game.getWidth()*0.025));
-////            if(i-starI>=0)
-////                LINE.setY(game.getGameObject().getElementById("gameBlock").getY()+);
-////            else
-//        }
-////
-//    }
     }
-    private void turningPoint(ArrayList<ij> a) {
-        //结束条件 没有下一个了
-        int dir=0;
-        for(int i=0;i<a.size();i++){
+   
 
-            ij o = (ij) a.get(i);
-            int x=o.i;
-            int y=o.j;//前一个
-
-            if(a.size()<=i+1)break;//没有了
-            ij o1 = (ij) a.get(i + 1);
-            int x1=o1.i;
-            int y1=o1.j;
-
-            int preDir=dir;
-
-            if( y-y1>0)dir=1;//向右
-            if(x1-x>0)dir=2;//向上
-            if(y-y1<0)dir=3;//向左
-            if(x1-x<0)dir=4;//向下
-
-            if(preDir==0)preDir=dir;//第一个的时候
-            if(dir!=preDir)
-            {  o1.start=true;//分向变化开始点
-                o1.dir=dir;
-            }
-        }}
-
-    public  void  ToDoLine(){
-        /*路径  得到的只有 i,j 一对*/
-/*        id 图片、画矩阵  转弯问题，
-如何 i增，j 同向下。 i 相同 j增加 是 向右 。 i同 ，j减是向左。 i 增加 j 增加 是不可能的 只有同时减 是可能的（差一列下，向上）。 只有 一个在增加
-        if i==nextpathi  j- left j+ right
-        if i>nextpathi j- up
-        if i<nextpath j+ down
-  方法二：
- 创建game 物体        得到的只有i,j 算出w h x y  w h 是已知的 i,j 是从0 开始的
-    x=gameWidth*0.025+i*j
-    y=CanvasHeight+h*j
-    y=id(i,j).ParentNode.getY()
-    Generated gameBlockLine
-    for from path  extract i,j
-    setID(id)
-    saveID
-    sleep(效果)
-    end Loop
-    removeDestroy forEach ID
- */
-    }
 }

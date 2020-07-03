@@ -1,6 +1,9 @@
 package cn.edu.glut.llk;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,7 +17,7 @@ interface LinkInterface<T> {
 
     public T getContent();
 
-    public void setContent(T content);
+    public void setContent(Bitmap content);
 }
 
 class Point {
@@ -56,34 +59,45 @@ Empty=false;
     }
 
 }
-public class suanfa {
-CHCanvasGame game;
-
-    public suanfa(CHCanvasGame game) {
-        this.game = game;
+public class suanfa {//算法静态化，不用实例化
+  private static ArrayList<Bitmap> bitmaps;
+  private static String blocksType;
+   static ArrayList<Bitmap> getBlocksImage(CHCanvasGame game, String pathName) throws IOException {
+        if(bitmaps==null || !blocksType.equals(pathName)) {//单例
+            blocksType=pathName;//方块图片类型,第一次为空，不等于，第二次不为空，这样就可进行类型选择了
+        ArrayList   b = new ArrayList<>();
+            String[] files = game.getActivity().getAssets().list(pathName);
+            assert files != null;
+            for (int i = 0; i < files.length; i++) {
+                Bitmap bitmap = BitmapFactory.decodeStream(game.getActivity().getAssets().open(pathName + "/" + files[i]));
+                b.add(bitmap);
+            }
+         bitmaps=b;//应该没问题
+        }
+        return bitmaps;
     }
-
-    public Item[][] main(){
-        Bitmap[] bitmaps={game.getImage("animal1.jpg"),
-                game.getImage("animal1.jpg"),
-                game.getImage("animal2.jpg"),
-                game.getImage("animal3.jpg"),
-                game.getImage("animal4.jpg"),
-                game.getImage("animal5.jpg"),
-                game.getImage("animal6.jpg"),
-                game.getImage("animal7.jpg"),
-                game.getImage("animal8.jpg"),
-                game.getImage("animal9.jpg"),
-                game.getImage("animal10.jpg"),
-                game.getImage("animal11.jpg"),
-                game.getImage("animal12.jpg"),
-                game.getImage("animal13.jpg"),
-                game.getImage("animal14.jpg"),
-                game.getImage("animal15.jpg"),
-                game.getImage("animal16.jpg"),
-                game.getImage("animal17.jpg"),
-                game.getImage("animal18.jpg"),
-        };
+    public static Item[][] main(CHCanvasGame game,String pathNameCell){
+        //不要有重复的图片
+//        Bitmap[] bitmaps={
+//                game.getImage("blocks/animal1.jpg"),
+//                game.getImage("blocks/animal2.jpg"),
+//                game.getImage("blocks/animal3.jpg"),
+//                game.getImage("blocks/animal4.jpg"),
+//                game.getImage("blocks/animal5.jpg"),
+//                game.getImage("blocks/animal6.jpg"),
+//                game.getImage("blocks/animal7.jpg"),
+//                game.getImage("blocks/animal8.jpg"),
+//                game.getImage("blocks/animal9.jpg"),
+//                game.getImage("blocks/animal10.jpg"),
+//                game.getImage("blocks/animal11.jpg"),
+//                game.getImage("blocks/animal12.jpg"),
+//                game.getImage("blocks/animal13.jpg"),
+//                game.getImage("blocks/animal14.jpg"),
+//                game.getImage("blocks/animal15.jpg"),
+//                game.getImage("blocks/animal16.jpg"),
+//                game.getImage("blocks/animal17.jpg"),
+//                game.getImage("blocks/animal18.jpg"),
+//        };
 
         Item[][] item= new Item[8][6];
         for(int i=0;i<8;i++){
@@ -91,7 +105,11 @@ CHCanvasGame game;
                 item[i][j]=new Item();//初始化
             }
         }
-        LinkSearch.generateBoard(item, bitmaps);//好像要自己清空格子，
+        try {
+            LinkSearch.generateBoard(item, getBlocksImage(game,pathNameCell));//好像要自己清空格子，
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return item;
     }
@@ -244,7 +262,7 @@ class LinkSearch {
         return null;
     }
 
-    public static <T> void generateBoard(LinkInterface<T>[][] datas, T[] optConts) {
+    public static <T> void generateBoard(LinkInterface<T>[][] datas, ArrayList<Bitmap> optConts) {
         List<Point> list = new LinkedList<>();
         for(int i = 0; i < datas.length; i++) {
             for(int j = 0; j < datas[i].length; j++) {
@@ -260,7 +278,7 @@ class LinkSearch {
             LinkInterface<T> dest = datas[destPt.x][destPt.y];//得到棋盘上的相应位置，
             src.setNonEmpty();//位置为不为空，默认是空
             dest.setNonEmpty();
-            T t = optConts[(int)(Math.random() * optConts.length)];//填上图片
+            Bitmap t= optConts.get((int) (Math.random() * optConts.size()));//填上图片
             src.setContent(t);
             dest.setContent(t);
         }

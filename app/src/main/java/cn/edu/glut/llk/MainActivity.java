@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,10 +60,12 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        game.getGameObject().getChildren().add(game.getGameObjectFromXML("4.xml"));
 //        game.getGameObject().getChildren().get(0).getChildren().add(new GameObject())
 
-        Logical util = new Logical(game);
+        MainLogical util = new MainLogical(game);
         util.Init();//显示游戏开始页面
-
-
+//        //生成游戏方块矩阵：
+//        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+//        Myobserver myobserver = new Myobserver();
+//        GenerateChessboard.GenerateGameBlock(game,game.getGameObject().getElementById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
 
 //        game.getGameObject().getElementById("input").onTouchStart(new OnTouchListener(){
 //            @Override

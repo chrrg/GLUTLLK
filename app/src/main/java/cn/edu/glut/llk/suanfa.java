@@ -65,7 +65,7 @@ public class suanfa {//算法静态化，不用实例化
    static ArrayList<Bitmap> getBlocksImage(CHCanvasGame game, String pathName) throws IOException {
         if(bitmaps==null || !blocksType.equals(pathName)) {//单例
             blocksType=pathName;//方块图片类型,第一次为空，不等于，第二次不为空，这样就可进行类型选择了
-        ArrayList   b = new ArrayList<>();
+        ArrayList<Bitmap>   b = new ArrayList<>();
             String[] files = game.getActivity().getAssets().list(pathName);
             assert files != null;
             for (int i = 0; i < files.length; i++) {
@@ -76,28 +76,9 @@ public class suanfa {//算法静态化，不用实例化
         }
         return bitmaps;
     }
-    public static Item[][] main(CHCanvasGame game,String pathNameCell){
+    public static Item[][] main(CHCanvasGame game, String pathNameCell, List<Integer> emptyColumn){
         //不要有重复的图片
-//        Bitmap[] bitmaps={
-//                game.getImage("blocks/animal1.jpg"),
-//                game.getImage("blocks/animal2.jpg"),
-//                game.getImage("blocks/animal3.jpg"),
-//                game.getImage("blocks/animal4.jpg"),
-//                game.getImage("blocks/animal5.jpg"),
-//                game.getImage("blocks/animal6.jpg"),
-//                game.getImage("blocks/animal7.jpg"),
-//                game.getImage("blocks/animal8.jpg"),
-//                game.getImage("blocks/animal9.jpg"),
-//                game.getImage("blocks/animal10.jpg"),
-//                game.getImage("blocks/animal11.jpg"),
-//                game.getImage("blocks/animal12.jpg"),
-//                game.getImage("blocks/animal13.jpg"),
-//                game.getImage("blocks/animal14.jpg"),
-//                game.getImage("blocks/animal15.jpg"),
-//                game.getImage("blocks/animal16.jpg"),
-//                game.getImage("blocks/animal17.jpg"),
-//                game.getImage("blocks/animal18.jpg"),
-//        };
+
 
         Item[][] item= new Item[8][6];
         for(int i=0;i<8;i++){
@@ -106,7 +87,7 @@ public class suanfa {//算法静态化，不用实例化
             }
         }
         try {
-            LinkSearch.generateBoard(item, getBlocksImage(game,pathNameCell));//好像要自己清空格子，
+            LinkSearch.generateBoard(item, getBlocksImage(game,pathNameCell),emptyColumn);//好像要自己清空格子，
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -128,8 +109,8 @@ class LinkSearch {
 
         // 如果两点的x坐标相等，则在水平方向上扫描
         if(srcPt.x == destPt.x) {
-            min = srcPt.y < destPt.y ? srcPt.y : destPt.y;
-            max = srcPt.y > destPt.y ? srcPt.y : destPt.y;
+            min = Math.min(srcPt.y, destPt.y);
+            max = Math.max(srcPt.y, destPt.y);
             for(min++; min < max; min++) {
                 if(!datas[srcPt.x][min].isEmpty())
                     return false;
@@ -137,8 +118,8 @@ class LinkSearch {
         }
         // 如果两点的y坐标相等，则在竖直方向上扫描
         else {
-            min = srcPt.x < destPt.x ? srcPt.x : destPt.x;
-            max = srcPt.x > destPt.x ? srcPt.x : destPt.x;
+            min = Math.min(srcPt.x, destPt.x);
+            max = Math.max(srcPt.x, destPt.x);
             for(min++; min < max; min++) {
                 if(!datas[min][srcPt.y].isEmpty())
                     return false;
@@ -262,11 +243,11 @@ class LinkSearch {
         return null;
     }
 
-    public static <T> void generateBoard(LinkInterface<T>[][] datas, ArrayList<Bitmap> optConts) {
+    public static <T> void generateBoard(LinkInterface<T>[][] datas, ArrayList<Bitmap> optConts, List<Integer> emptyColumn) {
         List<Point> list = new LinkedList<>();
         for(int i = 0; i < datas.length; i++) {
             for(int j = 0; j < datas[i].length; j++) {
-                if(j==2||j==3)continue;//去掉两列
+                if(emptyColumn.contains(j+1))continue;//去掉相应列 传来是 从0开始的
                 list.add(new Point(i, j));//根据datas 的长度生成 列表list point类 为下面的随机做准备
             }
         }

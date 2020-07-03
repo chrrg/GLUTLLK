@@ -28,7 +28,7 @@
             <box id="submenuClose" l="80vw" h="7vh" r="5vw" t="-80%" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#558C2F;" />
         </box>
         <box id="EndlessMenu" l="10vw"  h="10vh" y="35vh" r="10vw"  text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF8C00;image:stretch"  src="无尽关卡.png"/>
-        <box id="menu13" l="10vw"  h="10vh" y="50vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF4500;"/>
+        <box id="FullCell" l="10vw"  h="10vh" y="50vh" r="10vw" text="满格" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF4500;"/>
         <box id="menu14" l="10vw"  h="10vh" y="65vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#87CEFA;"/>
     </box>
     <!--            排行页面-->

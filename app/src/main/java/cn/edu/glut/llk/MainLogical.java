@@ -4,13 +4,14 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
-
+import cn.edu.glut.llk.GenerateChessboard;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Logical {
+public class MainLogical {
     private String UsernameTest;
     private String PasswordTest;
 
@@ -19,12 +20,10 @@ public class Logical {
     Bitmap SoundOn;
     Bitmap SoundOff;
     CHCanvasGame game;
-    private AnimateLib anLib;
     private MyHandler myHandler;
     private Myobserver myobserver;
-    Logical(CHCanvasGame game) {
+    MainLogical(CHCanvasGame game) {
         this.myobserver =new Myobserver();
-        this.anLib = new AnimateLib();
         this.game=game;
         this.myHandler=new MyHandler(this.game);
         this.SoundOn = game.getImage("SoundOn.png");
@@ -53,14 +52,7 @@ public class Logical {
     void Init() {
         setGameStartUI();//设置开始界面
         addListerLogic();//增加监听逻辑
-        myHandler.sendEmptyMessage(2);//云漂浮
-//        List ids= Arrays.asList(
-////                                "RankPage",
-//                "inputFrame",
-////                                "submenu",
-//                "gameBarrier"
-//        );
-//        ids.forEach(e->CreateLister(e.toString(),()->{}));//notCanTouch 背景层空响应 由背景监听拦截
+//        myHandler.sendEmptyMessage(2);//云漂浮
     }
 
     public void setGameStartUI() {
@@ -72,11 +64,6 @@ public class Logical {
         setShow.put("inputFrame", false);//输入重用框？？？
         setShow.put("Line",false);//line
         setDisplay(setShow);
-
-
-
-        getObjectById("yun").setX(-40);
-
     }
 
     //增加监听事件及逻辑，及处理
@@ -89,12 +76,8 @@ public class Logical {
         addGameExitSwitch();
         addGamePuaseHandle();//暂停处理
         addGameContinue();//继续游戏处理
-        addGameTimeHandle();
     }
-
-    private void addGameTimeHandle() {
-
-    }
+/*====================================================================================================*/
 
     private void addGameContinue() {
         CreateLister("gameContinue", () -> {
@@ -118,7 +101,7 @@ public class Logical {
         CreateLister("gameExit",()->{
             setDisplay("gameBarrier",false);
             setDisplay("menu",true);//回主菜单
-            getObjectById("gameBlock").parentNode.removeChild(getObjectById("gameBlock"));//移除gameBlock
+           removeGameBlockChessboard();//移动游戏块
         });
     }
 
@@ -126,8 +109,8 @@ public class Logical {
         //menu start
         CreateLister("menu1", () -> {
 //            anLib.PopUpAnimate(game, "submenu", true, 400, 400);//添加弹窗效果
-            anLib.fadeIn(game,"submenu");
-//            setDisplay("submenu", true);// 显示二级菜单
+//            anLib.fadeIn(game,"submenu");
+            setDisplay("submenu", true);// 显示二级菜单
 
             setCanTouch("menu0",false);
             setCanTouch("BottomButton",false);
@@ -135,8 +118,8 @@ public class Logical {
         });
 
         CreateLister("submenuClose", () -> {
-            anLib.fadeOut(game,"submenu");
-//            setDisplay("submenu", false);
+//            anLib.fadeOut(game,"submenu");
+            setDisplay("submenu", false);
 
             setCanTouch("menu0", true);
             setCanTouch("BottomButton", true);
@@ -153,6 +136,16 @@ public class Logical {
             setDisplay("menu", false);// 关闭menu菜单
             startGame2(game);
         });
+        CreateLister("NextBarrierTest",()->{
+            //生成新的棋盘
+            List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+    GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
+        });
+        CreateLister("FullCell",()->{
+            setDisplay("menu", false);// 关闭menu菜单
+            startGame3(game);
+        });
+
 //menu end
 
 
@@ -161,7 +154,7 @@ public class Logical {
     private void addRankListerLogic() {
         //排行start
         CreateLister("Rank", () -> {
-            anLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
+            AnimateLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
             setDisplay("RankPage", true);// 显示排行
 
             setCanTouch( "menu0",false);
@@ -169,7 +162,7 @@ public class Logical {
         });
 
         CreateLister("RankPageClose", () -> {
-            anLib.fadeOut(game,"RankPage");
+            AnimateLib.fadeOut(game,"RankPage");
 //            setDisplay("RankPage", false);
             //恢复
             setCanTouch("menu0", true);
@@ -251,8 +244,8 @@ public class Logical {
             }
         });
     }
-
-    private void startGame1(CHCanvasGame game) {
+/*====================starGamePlay=====================================*/
+  synchronized   private void startGame1(CHCanvasGame game) {
 
         // 开始游戏
         setDisplay("gameBarrier", true);//显示游戏关卡
@@ -260,7 +253,7 @@ public class Logical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
+      GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 
     }
@@ -272,12 +265,26 @@ public class Logical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+        //      boolean  RepeatLevels=true;
 //        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,true, myobserver);//Endless 无尽模式
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 //状态转换
     }
+    private void startGame3(CHCanvasGame game){
+        // 开始游戏
+        setDisplay("gameBarrier", true);//显示游戏关卡
+        setDisplay("gamePauseMaskLayer", false);//不显示暂停层
+        //生成游戏方块矩阵：
+        List<Integer> EmptyColumn = Collections.singletonList(-1);//从全满就行了
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false, myobserver);// 无尽模式
+        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
+    }
     private  void ResetSomeSceneState(){
 //        恢复场景初始状态，比如 退出游戏 再进
+    }
+    private void removeGameBlockChessboard(){
+      game.getGameObject().getElementById("gameBarrierMenu").removeChild(game.getGameObject().getElementById("gameBlock"));
+//        getObjectById("gameBlock").parentNode.removeChild(getObjectById("gameBlock"));//移除gameBlock
     }
 
 }

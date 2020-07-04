@@ -137,6 +137,8 @@ public class MainLogical {
             startGame2(game);
         });
         CreateLister("NextBarrierTest",()->{
+            //先移除
+            removeGameBlockChessboard();
             //生成新的棋盘
             List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
     GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
@@ -253,7 +255,7 @@ public class MainLogical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-      GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless
+      GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 
     }
@@ -265,8 +267,7 @@ public class MainLogical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-        //      boolean  RepeatLevels=true;
-//        anLib.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,true, myobserver);//Endless 无尽模式
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,true, myobserver);//Endless 无尽模式
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 //状态转换
     }
@@ -276,7 +277,7 @@ public class MainLogical {
         setDisplay("gamePauseMaskLayer", false);//不显示暂停层
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Collections.singletonList(-1);//从全满就行了
-        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false, myobserver);// 无尽模式
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false, myobserver);
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
     }
     private  void ResetSomeSceneState(){

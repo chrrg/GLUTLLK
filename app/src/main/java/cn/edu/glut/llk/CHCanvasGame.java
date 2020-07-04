@@ -118,10 +118,12 @@ class GameObject{
     void appendChild(GameObject obj){
         if(obj.parentNode!=null)obj.parentNode.children.remove(obj);
         obj.parentNode=this;
-        children.add(obj);
+        synchronized (children) {
+            children.add(obj);
+        }
     }
     void removeChild(GameObject obj){
-        children.remove(obj);
+     synchronized (children){  children.remove(obj);}
     }
     void init(){
         mModelMatrix = new float[16];
@@ -192,9 +194,10 @@ class GameObject{
             updateTexture();//更新纹理
             game.openGL.drawObj(mModelMatrix, textureId);
         }
+synchronized (children){
         for(GameObject ob:children){
             ob.draw();
-        }
+        }}
     }
     private void updateTexture(){
         if(change||(pic!=null&&pic.length>1)){

@@ -11,9 +11,12 @@ import android.util.Log;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -178,20 +181,20 @@ class Myobserver {
     public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, GameObject canvas, Item[][] items){
         this.data = data;
         this.elimination=new Elimination(game,items);// 消除块用
-        this.Endless=Endless;//无尽模式
+        this.Endless=Endless;//滚动模式
         this.canvas=canvas;
         this.game=game;
         this.item=items;//持有一个引用 ,好像暂时没有什么用
         score=0;//重置分数
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
-        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));
-        boolean  isCanPingYi= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否要平移
+        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));//测试用
+        boolean  isEliminate= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否能消掉
 //         Remove(b);//点击消除，测试用
 //        elimination.doaRRAY();//测试用
 //        elimination.test();//测试用
-        if(isCanPingYi){score+=100; game.getGameObject().getElementById("gameScore").setText("分数："+score);}
-        if(Endless==true && isCanPingYi) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
+        if(isEliminate){score+=100; game.getGameObject().getElementById("gameScore").setText("分数："+score);}//消掉记录分数
+        if(Endless==true && isEliminate) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
         game.getGameObject().getElementById("gameScore").setText("TouchBlock"+data.get(b));//测试用
@@ -254,6 +257,9 @@ class Myobserver {
 class Elimination{
     private final CHCanvasGame game;
     private final Item[][] item;
+    private final int Column1Y;
+    private final int Column1W;
+    private final int LeftMargin;
     boolean One=false;
     boolean Two=false;
     GameObject OneObj;
@@ -264,6 +270,9 @@ class Elimination{
     public Elimination(CHCanvasGame game, Item[][] items) {
         this.game=game;
         this.item=items;
+        Column1Y= game.getGameObject().getElementById("Column1").getY();
+        Column1W= game.getGameObject().getElementById("Column1").getW();
+        LeftMargin = (int) (game.getWidth() * 0.025);
     }
 
     public  boolean click(GameObject b,boolean Endless){
@@ -321,12 +330,33 @@ class Elimination{
     @TargetApi(Build.VERSION_CODES.N)
     public boolean TellAlgorithsMatrixRemoveBlock(GameObject one, GameObject two, boolean Endless){
         //告诉矩阵消掉两个block
-       /* if(!Endless)
-            one.getId() to i,j
-            two.getId() to i,j
-                send(i,j;i,j)
-        else
-        // 无尽模式。平移的话，id 是没有用的 。*/
+        if(Endless){//移动模式
+            //id
+            int srcI;int srcJ;int dirI;int dirJ;// 无尽模式。平移的话，id 是没有用的 。*/
+            srcI=(one.getY()-Column1Y+Column1W/2)/Column1W;
+            srcJ=(one.getX()-LeftMargin+Column1W/2)/Column1W;
+            dirI=(two.getY()-Column1Y+Column1W/2)/Column1W;
+            dirJ=(two.getX()-LeftMargin+Column1W/2)/Column1W;
+            if( item[srcI][srcJ].bitmap==item[dirI][dirJ].bitmap)
+            {
+
+                List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI,srcJ),new Point(dirI,dirJ));
+                if(path!=null)
+                {
+                    path.forEach((k)-> System.out.println("path为："+k.x+k.y));
+                    item[srcI][srcJ].setEmpty();//设为没有被占领
+                    item[dirI][dirJ].setEmpty();  // 还要清空格子为em
+                    ToLine(path,srcI,srcJ,dirI,dirJ);//连线
+                        //平移要更新棋盘
+                    //记录分数
+                    return  true;
+                }//可以 isempty??
+                else  return false;
+            }
+            else  return false;//两个图片不是同一个
+
+        }
+
 //       return Math.random() < 0.5;//  return result;
 //        one.getPic();//返回的是一个数组
         if(!Endless){
@@ -372,7 +402,7 @@ class Elimination{
     /*分段函数,递归
      * 数组 int[]
      * */
-    class ij{
+    static class ij{
         public int dir;
 
         public ij(int i, int j) {
@@ -406,9 +436,9 @@ class Elimination{
         LINES.appendChild(line);
 
         // 定义些常量,列宽度
-       final int Column1W= game.getGameObject().getElementById("Column1").getW();
-        final int Column1H= game.getGameObject().getElementById("Column1").getH();
-       final  int Column1Y=game.getGameObject().getElementById("Column1").getY();
+//       final int Column1W= game.getGameObject().getElementById("Column1").getW();
+//        final int Column1H= game.getGameObject().getElementById("Column1").getH();
+//       final  int Column1Y=game.getGameObject().getElementById("Column1").getY();
        final  int WH=Column1W/2;//默认宽高1/2colw
 
    for (int i=1;i<points.size();i++) {
@@ -469,12 +499,20 @@ class Elimination{
        srcI = point.x;
        srcJ = point.y;
    }
-        try {
-            Thread.sleep(500);//显示效果
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LINES.getChildren().remove(line);
+        new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(500);//显示效果,不要让主线程睡眠，current之类的
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.e("执行","没有执行");
+                LINES.getChildren().remove(line);
+            }
+        }.run();
+
+
 
 
     }
@@ -618,3 +656,5 @@ private static void turnOverDrop(){
 //        });
         }
 }
+
+//Gradle plugin  341  Gradle 4 0 0

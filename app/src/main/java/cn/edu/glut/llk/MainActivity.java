@@ -2,6 +2,7 @@ package cn.edu.glut.llk;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -59,28 +60,65 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 //        game.getGameObject().parentNode.removeChild(game.getGameObject());
 //        game.getGameObject().getChildren().add(game.getGameObjectFromXML("4.xml"));
 //        game.getGameObject().getChildren().get(0).getChildren().add(new GameObject())
+//        =========================================================================================================
+//        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            while (true) {
+//
+//                GenerateChessboard.GenerateGameBlock(game, game.getGameObject().getElementById("gameBarrier").getChildren().get(0), 8, 6, EmptyColumn, false, -1, null);//Endless 普通模式 ,pathRanom物体类型
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                GameObject gameBlock = game.getGameObject().getElementById("gameBlock");
+//                game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+//                gameBlock.Destory();
+//            }}}.run();
 
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                while (true) {
+//                    GameObject gameBlock = new GameObject(game);
+//                    game.getGameObject().getElementById("gameBarrierMenu").appendChild(gameBlock);
+//                    try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                    game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+//                    gameBlock.Destory();
+//                }}}.run();
+
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                while (true) {
+//                    GameObject gameBlock = new GameObject(game);
+////                    gameBlock.setId("gameBlock");
+//                    gameBlock.setW(500);
+//                    gameBlock.setH(500);
+////                    gameBlock.setY(500 / 10 * 2);// 乘二 是 与上面的 距顶10% 相关联
+////                    gameBlock.setText("游戏区域");
+////                    gameBlock.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
+//                    game.getGameObject().getElementById("gameBarrierMenu").appendChild(gameBlock);
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+//                    gameBlock.Destory();
+//                }}}.run();
+//======================================================================================================
         MainLogical util = new MainLogical(game);
         util.Init();//显示游戏开始页面
-//        //生成游戏方块矩阵：
-//        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-//        Myobserver myobserver = new Myobserver();
-//        GenerateChessboard.GenerateGameBlock(game,game.getGameObject().getElementById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
-
-//        game.getGameObject().getElementById("input").onTouchStart(new OnTouchListener(){
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.e("点击了！","2");
-////                AlertDialog.Builder builder=;
-//                game.getInput(new GameInput(){
-//                    @Override
-//                    public void finish(String inputText) {
-//                        Log.e("输入了",inputText);
-//                    }
-//                });
-//            }
-//        });
-
 //        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
 //            @Override
 //            public void onTouchEvent(MotionEvent event) {

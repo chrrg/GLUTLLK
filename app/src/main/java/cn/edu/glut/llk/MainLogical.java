@@ -257,14 +257,15 @@ public class MainLogical {
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
       GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
-
+        setDisplay("currentBarrier",false);//当前关卡不显示
     }
 
     private void startGame2(CHCanvasGame game) {
         // 开始游戏
         setDisplay("gameBarrier", true);//显示游戏关卡
         setDisplay("gamePauseMaskLayer", false);//不显示暂停层
-
+        setDisplay("currentBarrier",true);//显示关卡层
+        setText("currentBarrier","当前关卡第1关");
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
         GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,true, myobserver);//Endless 无尽模式
@@ -275,6 +276,8 @@ public class MainLogical {
         // 开始游戏
         setDisplay("gameBarrier", true);//显示游戏关卡
         setDisplay("gamePauseMaskLayer", false);//不显示暂停层
+        setDisplay("currentBarrier",false);//当前关卡不显示
+
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Collections.singletonList(-1);//从全满就行了
         GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false, myobserver);

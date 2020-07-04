@@ -80,9 +80,9 @@ public class suanfa {//算法静态化，不用实例化
         //不要有重复的图片
 
 
-        Item[][] item= new Item[8][6];
-        for(int i=0;i<8;i++){
-            for(int j=0;j<6;j++){
+        Item[][] item= new Item[Row][Column];
+        for(int i=0;i<Row;i++){
+            for(int j=0;j<Column;j++){
                 item[i][j]=new Item();//初始化
             }
         }

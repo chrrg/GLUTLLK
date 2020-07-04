@@ -11,6 +11,7 @@ import android.util.Log;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -176,9 +177,10 @@ class Myobserver {
     private GameObject canvas;
     private CHCanvasGame game;
     private Item[][] item;//这次游戏的图片属于哪个方块
+    int currentBarrier=1;
     int  score=0;
 
-    public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, GameObject canvas, Item[][] items){
+    public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, boolean repeat,GameObject canvas, Item[][] items){
         this.data = data;
         this.elimination=new Elimination(game,items);// 消除块用
         this.Endless=Endless;//滚动模式
@@ -193,31 +195,24 @@ class Myobserver {
 //         Remove(b);//点击消除，测试用
 //        elimination.doaRRAY();//测试用
 //        elimination.test();//测试用
-        if(isEliminate){score+=100; game.getGameObject().getElementById("gameScore").setText("分数："+score);}//消掉记录分数
+        if (isEliminate) {
+            score += 100;
+            game.getGameObject().getElementById("gameScore").setText("分数：" + score);
+            remaining-=2;//偶数减
+            if(remaining==0)//下一关
+            {       currentBarrier++;//关卡加一
+                game.getGameObject().getElementById("currentBarrier").setText("当前关卡 第"+currentBarrier+"关");
+                GameObject gameBlock = game.getGameObject().getElementById("gameBlock");
+                game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+                gameBlock.Destory();
+                GenerateChessboard.GenerateGameBlock(game,game.getGameObject().getElementById("gameBarrier").getChildren().get(0),8,6,null,false,true,-1, this);//Endless 无尽模式
+            }
+        }//消掉记录分数
         if(Endless==true && isEliminate) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
         game.getGameObject().getElementById("gameScore").setText("TouchBlock"+data.get(b));//测试用
         //调用Elimination 进行效果显示，因为涉及到释放 两个
-    }
-    public void  BlockMove(){}
-    @TargetApi(Build.VERSION_CODES.N)
-    public void PingYi(CHCanvasGame game, int number){//左右移动
-        data.forEach((k,v)->  {
-            k.setX(k.getX()+ k.getW());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
-            if(k.getX()+k.getW()>game.getWidth())
-            {
-//                    Remove(k.parentNode);//移除父列  不用了
-                k.setX((int)(game.getWidth()*0.025));//重用，回左边
-//                    k.parentNode.setDisplay(true);//重新显示这一列,没事，多true几次而已，相当每一个列块元素都显示 不行，
-                k.setDisplay(true);//统一true 有依赖，这句不能删除 ，列模式下是没有问题的。不只是出格的。 行模式下就有问题吗？
-
-                //k.setText();也可以在这里，初始化随机性
-
-            }
-        });
-        //                    onInit() 重新初始化这一列
-        TellAlgorithmsMatrixPermutation();
     }
     @TargetApi(Build.VERSION_CODES.N)
     public void PingYi(CHCanvasGame game){//上下移动
@@ -234,21 +229,6 @@ class Myobserver {
 
             }
         });
-    }
-    public  void TellAlgorithmsMatrixPermutation(){
-//        重新初始化我的数据 如图片，能被消的属性
-        //告诉矩阵转换最后一列到前面，并告诉它 转换的列新的随机初始化数据
-    }
-    //    public void TellAlgorithsMatrixRemoveBlock(GameObject b){
-//        //告诉矩阵消掉两个block
-//         b.getId();//发送Id
-//
-//    }
-    static   public void Remove(GameObject b){
-//        TellAlgorithsMatrixRemoveBlock(b);//在移除之前，告诉算法，消掉的块
-//        data.remove(b);//更新数据//即然重用，就不能删除了
-        b.setDisplay(false);
-//        b.parentNode.removeChild(b);//即然重用，就不能删除了
     }
 
     /*Block处理Hold状态 再点击取消hold状态， 下一个事件 然后通知算法 两个块 处理返回结果 不成功 取消Hold 状态 成功则连线消除 */

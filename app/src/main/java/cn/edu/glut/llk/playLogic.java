@@ -18,7 +18,7 @@ import cn.edu.glut.llk.zhu.suanfa.*;
 
 import cn.edu.glut.llk.zhu.suanfa.main;
 
-class GenerateChessboard{
+ class GenerateChessboard{
 
  static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn,boolean Endless, boolean repeat,int pathRandom ,Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
 //       synchronized (GameObject.class) {
@@ -84,7 +84,7 @@ class GenerateChessboard{
                a.appendChild(b);
                    // 事件
                    items[i+1][j].setBlocksIDI(i);
-                   items[i+1][j].setBlocksIDI(j);
+                   items[i+1][j].setBlocksIDJ(j);
                    idAndLocation.put("Block" + i + j, "Block" + i + j);
                    b.onTouchStart(event -> myobserver.BlockTouch(game, b)).onClick(event -> myobserver.BlockOnclick(game, b));
                }
@@ -162,18 +162,12 @@ class Myobserver {
                 game.getGameObject().getElementById(k).setDisplay(true);//统一true 有依赖，这句不能删除
             }
         });
-
-
-        for(int j=0;j< item[1].length;j++){
-            if(!item[1][j].isEmpty())
-            game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setPic(item[1][j].bitmap);
-        }
     }
 
     /*Block处理Hold状态 再点击取消hold状态， 下一个事件 然后通知算法 两个块 处理返回结果 不成功 取消Hold 状态 成功则连线消除 */
     /*队列 满的时候清空*/
 }
-class Elimination{
+ class Elimination{
     private final CHCanvasGame game;
     private final Item[][] item;
     private final int Column1Y;
@@ -267,6 +261,10 @@ class Elimination{
                     item[dirI+1][dirJ].setEmpty();  // 还要清空格子为em
                     ToLine(path,srcI,srcJ,dirI,dirJ);//连线
                      main.updateChessBoard(item);  //平移要更新棋盘
+                    for(int j=0;j< item[1].length;j++){
+                        if(!item[1][j].isEmpty())
+                            game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setPic(item[1][j].bitmap);
+                    }
                     //记录分数
                     return  true;
                 }

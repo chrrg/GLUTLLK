@@ -117,7 +117,7 @@ class GameObject{
         return children;
     }
     protected void finalize(){
-        int[] a=new int[0];
+        int[] a=new int[1];
         a[0]=textureId;
         GLES30.glDeleteTextures(1,a,0);
     }

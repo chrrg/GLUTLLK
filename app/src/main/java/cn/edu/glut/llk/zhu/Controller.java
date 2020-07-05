@@ -4,19 +4,24 @@ import android.os.Handler;
 import android.os.Message;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.TimerTask;
-
-import cn.edu.glut.llk.CHCanvasGame;
 import cn.edu.glut.llk.MainLogical;
 
 public class Controller {
 
 
+    public int Login() {
+        return 0;
+    }
 
+    public int SignUp() {
+        return 0;
+    }
 
-
-
-
+    public ArrayList<String> sortRank() {
+        return null;
+    }
 
 class  GameTime extends TimerTask{
 int time;

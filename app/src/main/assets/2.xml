@@ -3,13 +3,13 @@
     <box id="menu0"  w="80%" h="60vh" l="10%" y="26vh" text="游戏主菜单" style="fontSize:5vh;color:#FFFAFA;backColor:#CC008B8B;textY:bottom;" >
         <box id="startGame"   w="50vw" h="5vh" x="30%" y="+10vh" text="startGame" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png"/>
         <box id="EndlessMenu"   w="50vw" h="5vh" x="30%" y="+20vh" text="Endless" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#10000000;image:stretch;" src="menubtn1.png" /><!--透明度 遮罩,argb 前面加-->
-        <box id="FullCell"   w="50vw" h="5vh" x="30%" y="55vh" text="FullCell" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png" />
-        <box id="PingYi"   w="50vw" h="5vh" x="30%" y="65vh" text="PingYi" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png"/>
-        <box id="testmem"   w="50vw" h="5vh" x="30%" y="75vh" style="backColor:#008080;image:stretch;" src="menubtn1.png" />
+        <box id="About"   w="50vw" h="5vh" x="30%" y="55vh" text="About" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png" />
+        <box id="ExitGame"   w="50vw" h="5vh" x="30%" y="65vh" text="ExitGame" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png"/>
+        <box id="FullCell"   w="50vw" h="5vh" x="30%" y="75vh" text="FullCell" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png" />
     </box>
     <box id="BottomButton" w="100%" h="13vh"  y="87vh" text="底部按键" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CC778899;" >
         <box id="Rank" w="15%" h="15vw" x="10%" y="87vh" text="排行" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;image:stretch;" src="Rankbtn.png"/>
-        <box id="share" w="15%" h="15vw" x="32%" y="87vh" text="关于" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;image:stretch;" src="About.png"/>
+        <box id="share" w="15%" h="15vw" x="32%" y="87vh" text="分享" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;image:stretch;" src="About.png"/>
         <box id="Sound" w="15%" h="15vw" x="53%" y="87vh" text="声音开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;image:stretch;" src="SoundOn.png"/>
         <box id="Account"  w="15%" h="15vw" x="75%" y="87vh" text="账号" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
     </box>

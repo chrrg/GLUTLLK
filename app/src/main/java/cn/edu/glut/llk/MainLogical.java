@@ -7,6 +7,7 @@ import android.util.Log;
 
 import cn.edu.glut.llk.zhu.Controller;
 
+import java.security.interfaces.DSAPublicKey;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class MainLogical {
         this.SoundOn = game.getImage("SoundOn.png");
         this.SoundOff= game.getImage("SoundOff.png");
     }
+
     public interface ListerLogicCallBack {
         void ListerDoSomething();
     }//   接口
@@ -41,6 +43,7 @@ public class MainLogical {
             callBack.ListerDoSomething();//实现逻辑
         });
     }
+    public int getYById(String id) {return game.getGameObject().getElementById(id).getY(); }
     public GameObject getObjectById(String id){return game.getGameObject().getElementById(id);}
     public void setText(String id,String text){game.getGameObject().getElementById(id).setText(text);}
     public  void setCanTouch(String id,boolean Touch){game.getGameObject().getElementById(id).setCanTouch(Touch);}
@@ -77,8 +80,26 @@ public class MainLogical {
         addGameExitSwitch();
         addGamePuaseHandle();//暂停处理
         addGameContinue();//继续游戏处理
+        addGameRestartGame();
+        addGameReturnMenu();
     }
 /*====================================================================================================*/
+private  void addGameRestartGame(){
+    CreateLister("RestartGame",()->{
+        setDisplay("gamePauseMaskLayer", false);
+        setCanTouch("gameBarrierMenu", true);//激活可选种顶部和底部菜单
+        ReCreateChessboard();
+        myHandler.starGameTimeCount(1000*60);//重新计时
+    });
+}
+private void addGameReturnMenu(){
+    CreateLister("gameReturnMenu",()->{
+        setCanTouch("gameBarrierMenu", true);//顶部和底部菜单不能被选中
+        setDisplay("gameBarrier",false);
+        setDisplay("menu",true);//回主菜单
+        removeGameBlockChessboard();//移动游戏块
+    });
+}
 
     private void addGameContinue() {
         CreateLister("gameContinue", () -> {
@@ -120,26 +141,28 @@ public class MainLogical {
             setDisplay("menu", false);// 关闭menu菜单
             startGame3(game);
         });
-        CreateLister("PingYi",()->{
-            setDisplay("menu", false);// 关闭menu菜单
-            startGame4(game);
-        });
-        CreateLister("NextBarrierTest",()->{
-            //先移除
-            removeGameBlockChessboard();
-            //生成新的棋盘
-            List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-    GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,-1,myobserver);//Endless 普通模式 ,pathRanom物体类型
-        });
+//        CreateLister("PingYi",()->{
+//            setDisplay("menu", false);// 关闭menu菜单
+//            startGame4(game);
+//        });
+        CreateLister("NextBarrierTest", this::ReCreateChessboard);
+        CreateLister("About",()->{
 
-CreateLister("testmem",()->{
-    GameObject gameBlock = new GameObject(game);
-    game.getGameObject().getElementById("gameBarrierMenu").appendChild(gameBlock);
-    game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
-    gameBlock.Destory();
-});
+        });
+        CreateLister("ExitGame",()->{
+            System.exit(0);//正常退出
+        });
 //menu end
 
+
+    }
+
+    private void ReCreateChessboard() {
+
+        removeGameBlockChessboard();//先移除原先的
+        //生成新的棋盘
+        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,-1,myobserver);//Endless 普通模式 ,pathRanom物体类型
 
     }
 

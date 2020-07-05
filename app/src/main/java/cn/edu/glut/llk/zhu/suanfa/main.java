@@ -24,6 +24,7 @@ public class main {//算法静态化，不用实例化
                 ArrayList<Bitmap>   bs = new ArrayList<>();
                 String[] files = game.getActivity().getAssets().list(pathName[x]);
                 assert files != null;
+                Log.e("图片个数","长度为"+files.length);
                 for (int i = 0; i < files.length; i++) {
                     Bitmap bitmap = BitmapFactory.decodeStream(game.getActivity().getAssets().open(pathName[x] + "/" + files[i]));
                     bs.add(bitmap);
@@ -64,23 +65,24 @@ public class main {//算法静态化，不用实例化
         return item;
     }
 public static void updateChessBoard(Item[][] items){
-          Item[] temp=new Item[items[1].length];
+    Item[] temp = new Item[items[1].length];//长度一样的
 
-          for(int j=0;j<items[1].length;j++){
-           temp[j]=items[items.length-1][j];
-             if(items[0][0].emptyColumn.contains(j+1))temp[j].setEmpty();
-                 else
-             {temp[j].bitmap = bitmaps.get(blocksType).get((int) (Math.random() * bitmaps.size()));
-                 temp[j].setNonEmpty();//不为空
-             }
-          }
-        for(int i=items.length-2;i>0;i--){
-            for (int j=items[i].length-1;j>=0;j--){
-               items[i][j]=items[i-1][j];//下移
-            }
+    for (int j = 0; j < items[1].length; j++) {
+        temp[j] = items[items.length - 2][j];//减二
+        if (items[0][0].emptyColumn.contains(j + 1)) temp[j].setEmpty();
+        else {
+            temp[j].bitmap = bitmaps.get(blocksType).get((int) (Math.random() * bitmaps.size()));
+            temp[j].setNonEmpty();//不为空
+
         }
-        items[1]=temp;
-      }
+    }
+
+    for (int i = items.length - 2; i > 0; i--) {
+        items[i] = items[i - 1];//下移
+    }
+
+    items[1] = temp;
+}
 }
 
 

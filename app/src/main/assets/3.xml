@@ -19,6 +19,11 @@
     <box id="Line" w="100vw" h="100vh" x="9vw" y="10vh" text="test">
     </box>
     <box id="gamePauseMaskLayer" w="100vw" h="100vh" text="暂停选项层" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C800BFFF;">
-        <box id="gameContinue" l="10vw" r="10vw" t="30vh" b="30vh" text="继续游戏" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#000080;"/>
+        <box id="gameChooseLayer"  l="10vw" r="10vw" t="30vh" b="40vh" text="选择层" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#000080;">
+            <box id="CurrentScore" l="20vw" r="20vw" t="32vh" b="58vh" text="当前分数" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
+            <box id="gameContinue" l="15vw" r="65vw" t="45vh" b="45vh" text="继续游戏" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
+            <box id="gameReturnMenu" l="40vw" r="40vw" t="45vh" b="45vh" text="回主菜单" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
+            <box id="RestartGame" l="65vw" r="15vw" t="45vh" b="45vh" text="重玩" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
+        </box>
     </box>
 </box>

@@ -4,7 +4,9 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
-import cn.edu.glut.llk.GenerateChessboard;
+
+import cn.edu.glut.llk.zhu.Controller;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,17 +17,16 @@ public class MainLogical {
     private String UsernameTest;
     private String PasswordTest;
 
-    private int MusicSwitch=1;//1为开
-    private int Sound=1;
+    private int Sound=1;//1为开
     Bitmap SoundOn;
     Bitmap SoundOff;
     CHCanvasGame game;
-    private MyHandler myHandler;
+    private Controller.MyHandler myHandler;
     private Myobserver myobserver;
     MainLogical(CHCanvasGame game) {
         this.myobserver =new Myobserver();
         this.game=game;
-        this.myHandler=new MyHandler(this.game);
+        this.myHandler=new Controller.MyHandler(this);
         this.SoundOn = game.getImage("SoundOn.png");
         this.SoundOff= game.getImage("SoundOff.png");
     }
@@ -53,6 +54,7 @@ public class MainLogical {
         setGameStartUI();//设置开始界面
         addListerLogic();//增加监听逻辑
 //        myHandler.sendEmptyMessage(2);//云漂浮
+
     }
 
     public void setGameStartUI() {

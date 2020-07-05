@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Vector;
 
 import cn.edu.glut.llk.CHCanvasGame;
-import cn.edu.glut.llk.zhu.suanfa.Item;
-import cn.edu.glut.llk.zhu.suanfa.LinkSearch;
 
 public class main {//算法静态化，不用实例化
   private static Vector<ArrayList<Bitmap>> bitmaps;
@@ -50,7 +48,6 @@ public class main {//算法静态化，不用实例化
 
         Row+=2;//行多两行
 
-
         Item[][] item= new Item[Row][Column];
         for(int i=0;i<Row;i++){
             for(int j=0;j<Column;j++){
@@ -67,7 +64,6 @@ public class main {//算法静态化，不用实例化
         return item;
     }
 public static void updateChessBoard(Item[][] items){
-      synchronized (items){
           Item[] temp=new Item[items[1].length];
 
           for(int j=0;j<items[1].length;j++){
@@ -86,5 +82,5 @@ public static void updateChessBoard(Item[][] items){
         items[1]=temp;
       }
 }
-}
+
 

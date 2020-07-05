@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
     private GameCamera camera;

@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import java.lang.ref.WeakReference;
+import java.util.TimerTask;
 
 import cn.edu.glut.llk.CHCanvasGame;
 import cn.edu.glut.llk.MainLogical;
@@ -12,13 +13,27 @@ public class Controller {
 
 
 
+
+
+
+
+
+class  GameTime extends TimerTask{
+int time;
+
+    @Override
+    public void run() {
+
+    }
+}
+
     public static class MyHandler extends Handler {
         static int GameTime = 1000 * 60 * 2;//默认2分钟
         static int PauseTime=-1;
         private WeakReference<MainLogical> ref;
 
         public MyHandler(MainLogical mainLogical) {
-            this.ref = new WeakReference(mainLogical);
+            this.ref = new WeakReference<>(mainLogical);
         }
 
         @Override

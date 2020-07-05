@@ -91,7 +91,7 @@ class GenerateChessboard{
            }
 
            Node.appendChild(Canvas);//加在关卡一下
-           myobserver.setData(game, idAndLocation, Endless,repeat, Canvas, items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
+           myobserver.setData(game, idAndLocation, Endless,repeat, CanvasHeight, items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
        } }
 // }
 
@@ -103,7 +103,7 @@ class Myobserver {
     private HashMap<String, String> data;
     private Elimination elimination;
     boolean Endless=false;//无尽模式 默认 false
-    private GameObject canvas;//TODO 内存泄露 Memory Leak
+    private int canvasH;
     private CHCanvasGame game;
     private Item[][] item;//这次游戏的图片属于哪个方块
     int currentBarrier=1;
@@ -113,11 +113,11 @@ class Myobserver {
     private int LeftMargin;
     private int Column1Y;
 
-    public void setData(CHCanvasGame game, HashMap<String, String> data, boolean Endless, boolean repeat,GameObject canvas, Item[][] items){
+    public void setData(CHCanvasGame game, HashMap<String, String> data, boolean Endless, boolean repeat,int canvasH, Item[][] items){
         this.data = data;
         this.elimination=new Elimination(game,items);// 消除块用
         this.Endless=Endless;//滚动模式
-        this.canvas=canvas;
+        this.canvasH=canvasH;
         this.game=game;
         this.item=items;//持有一个引用 ,
       if(!repeat) {currentBarrier=1; score=0;}// 不是重复模式 则重置分数
@@ -130,9 +130,7 @@ class Myobserver {
     public void BlockOnclick(CHCanvasGame game, GameObject b){
         game.getGameObject().getElementById("gameScore").setText("ClickBlock"+b.getId());//测试用
         boolean  isEliminate= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否能消掉
-//         Remove(b);//点击消除，测试用
-//        elimination.doaRRAY();//测试用
-//        elimination.test();//测试用
+
         if (isEliminate) {
             score += 100;
             game.getGameObject().getElementById("gameScore").setText("分数：" + score);
@@ -158,9 +156,9 @@ class Myobserver {
 
         data.forEach((k,v)->  {
             game.getGameObject().getElementById(k).setY(game.getGameObject().getElementById(k).getY()+ game.getGameObject().getElementById(k).getH());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
-            if( game.getGameObject().getElementById(k).getY()+ game.getGameObject().getElementById(k).getH()>(canvas.getY()+canvas.getH()))//到底部了
+            if( game.getGameObject().getElementById(k).getY()+ game.getGameObject().getElementById(k).getH()>(game.getHeight() / 10 * 2+canvasH))//到底部了
             {
-                game.getGameObject().getElementById(k).setY(canvas.getY());//重用，
+                game.getGameObject().getElementById(k).setY(game.getHeight() / 10 * 2);//重用，
                 game.getGameObject().getElementById(k).setDisplay(true);//统一true 有依赖，这句不能删除
             }
         });
@@ -199,7 +197,7 @@ class Elimination{
     public  boolean click(GameObject b,boolean Endless){
 
         //只有满的时候发送，并清空，先判断满没满先
-        if(One==true&&Two==true){
+        if(One && Two){
             if(OneObj==TwoObj){ Two=false;//清空一个
                 return false;}//自己不能点击同一个物体两次来消
 

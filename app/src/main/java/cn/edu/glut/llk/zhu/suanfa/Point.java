@@ -1,4 +1,4 @@
-package cn.edu.glut.llk.zhu;
+package cn.edu.glut.llk.zhu.suanfa;
 
 public class Point {
     public int x;

@@ -1,17 +1,12 @@
 package cn.edu.glut.llk;
 
 
-/*========================================= 动画========================================================*/
 
 import android.util.Log;
 
-import cn.edu.glut.llk.AnimateCallback;
-import cn.edu.glut.llk.CHAnimateTool;
-import cn.edu.glut.llk.CHCanvasGame;
-import cn.edu.glut.llk.GameAnimation;
-import cn.edu.glut.llk.GameObject;
+/*========================================= 动画========================================================*/
 
-class AnimateLib{
+public class AnimateLib{
     public static void PopUpAnimate(CHCanvasGame game, String id, boolean isAll, int runDuration, int nextDuration){
 
         game.getGameObject().getElementById(id).animate(isAll).run(runDuration, new AnimateCallback() {

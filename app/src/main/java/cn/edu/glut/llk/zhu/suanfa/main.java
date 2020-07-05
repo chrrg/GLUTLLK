@@ -1,17 +1,18 @@
-package cn.edu.glut.llk.zhu;
+package cn.edu.glut.llk.zhu.suanfa;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
 import cn.edu.glut.llk.CHCanvasGame;
+import cn.edu.glut.llk.zhu.suanfa.Item;
+import cn.edu.glut.llk.zhu.suanfa.LinkSearch;
 
-public class suanfa {//算法静态化，不用实例化
+public class main {//算法静态化，不用实例化
   private static Vector<ArrayList<Bitmap>> bitmaps;
   private static int blocksType;
    static ArrayList<Bitmap> getBlocksImage(CHCanvasGame game, int pathRandom) throws IOException {
@@ -44,7 +45,7 @@ public class suanfa {//算法静态化，不用实例化
        }
         else return null;
     }
-    public static Item[][] main(CHCanvasGame game, int pathRandom,int Row, int Column, List<Integer> emptyColumn){
+    public static Item[][] init(CHCanvasGame game, int pathRandom, int Row, int Column, List<Integer> emptyColumn){
         //不要有重复的图片
 
         Row+=2;//行多两行

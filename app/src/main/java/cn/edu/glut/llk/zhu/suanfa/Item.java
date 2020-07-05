@@ -1,4 +1,4 @@
-package cn.edu.glut.llk.zhu;
+package cn.edu.glut.llk.zhu.suanfa;
 
 import android.graphics.Bitmap;
 
@@ -9,7 +9,7 @@ public class  Item implements LinkInterface<Bitmap>{
  public    Bitmap bitmap;
   public    int  blocksIDI;
   public   int blocksIDJ;
-    List<Integer> emptyColumn;//更新棋盘的时候用
+  public   List<Integer> emptyColumn;//更新棋盘的时候用
     public int getBlocksIDI() {
         return blocksIDI;
     }

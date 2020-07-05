@@ -14,10 +14,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.edu.glut.llk.zhu.Item;
-import cn.edu.glut.llk.zhu.LinkSearch;
-import cn.edu.glut.llk.zhu.Point;
-import cn.edu.glut.llk.zhu.suanfa;
+import cn.edu.glut.llk.zhu.suanfa.*;
+
+import cn.edu.glut.llk.zhu.suanfa.main;
 
 class GenerateChessboard{
 
@@ -47,7 +46,7 @@ class GenerateChessboard{
 
            // 生成棋盘
            //静态方法，不用实例化类
-           Item[][] items = suanfa.main(game, pathRandom,row,column, EmptyColumn);//一个矩阵，包含了贴哪张图片,blocks是assets目录下的所有文件
+           Item[][] items = main.init(game, pathRandom,row,column, EmptyColumn);//一个矩阵，包含了贴哪张图片,blocks是assets目录下的所有文件
 
            HashMap<String, String> idAndLocation = new HashMap<>();
            for (int j = 0; j < column; j++) {
@@ -336,7 +335,7 @@ class Elimination{
                     item[srcI+1][srcJ].setEmpty();//设为没有被占领
                     item[dirI+1][dirJ].setEmpty();  // 还要清空格子为em
                     ToLine(path,srcI,srcJ,dirI,dirJ);//连线
-                     suanfa.updateChessBoard(item);  //平移要更新棋盘
+                     main.updateChessBoard(item);  //平移要更新棋盘
                     //记录分数
                     return  true;
                 }
@@ -406,7 +405,7 @@ class Elimination{
         int i;int j;}
 
     @TargetApi(Build.VERSION_CODES.N)
-    public void  ToLine(List<Point> points,int srcI,int srcJ,int dirI,int dirJ)  {
+    public void  ToLine(List<Point> points, int srcI, int srcJ, int dirI, int dirJ)  {
 
             // 不是null 才进来，最多 空集
 //        if(!points.isEmpty())//null和空集合isEmpty不是同一个东西

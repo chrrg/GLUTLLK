@@ -9,9 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Movie;
 import android.graphics.Paint;
-import android.opengl.GLES20;
+import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
@@ -101,12 +100,13 @@ class GameObject{
     private Bitmap[] pic=null;
     private Map<String,String> style=new HashMap<>();
     private long startTime=android.os.SystemClock.uptimeMillis();
-    private int textureId=0;
+    private int c=0;
     private int backColor=0;
     private boolean display=true;
     private float[] mModelMatrix;
     private float textX;
     private float textY;
+    private int textureId=0;
     private GameObject(){
 
     }
@@ -115,6 +115,11 @@ class GameObject{
     }
     Vector<GameObject> getChildren(){
         return children;
+    }
+    protected void finalize(){
+        int[] a=new int[0];
+        a[0]=textureId;
+        GLES30.glDeleteTextures(1,a,0);
     }
     void Destory(){
         this.parentNode=null;
@@ -709,17 +714,12 @@ public class CHCanvasGame {
     Bitmap[] getGif(String filename){
         AssetManager am=activity.getAssets();
         try {
-            Movie gif=Movie.decodeStream(am.open(filename));
-            int duration=gif.duration();
-            if(duration<=0)duration=1000;
+            GifOpenHelper gHelper=new GifOpenHelper();
+            gHelper.read(am.open(filename));
+            int duration=gHelper.frameCount;
             Bitmap[] frames = new Bitmap[duration];
-            for(int i=0;i<duration;i++){
-                Bitmap bmp = Bitmap.createBitmap(gif.width(), gif.height(), Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bmp);
-                gif.setTime(i);
-                gif.draw(canvas, 0, 0);
-                frames[i]=bmp;
-            }
+            for(int i=0;i<duration;i++)
+                frames[i]=gHelper.nextBitmap();
             return frames;
         } catch (IOException e) {
             e.printStackTrace();

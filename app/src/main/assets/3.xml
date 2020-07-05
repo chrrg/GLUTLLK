@@ -7,6 +7,7 @@
             <box id="gameTime" l="+20vw" h="6vh"  t="3vh" r="+17vw" text="时间" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
             <box id="gameExit" w="15%" h="6vh" x="+85vw" t="3vh" r="+2vw" text="退出" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
         </box>
+        <box id="currentBarrier" l="30vw" w="100vw" h="6vh" t="12vh" r="30vw" text="当前关卡" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#008080;"/>
         <!--底部菜单-->
         <box id="gameBottomMenu"  w="100vw" h="10vh" text="游戏底部选项" y="90vh" b="2vh" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#C8A0522D;">
             <box id="NextBarrierTest" w="20vw" x="+2vw"  y="90vh" b="2vh" text="next level" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>

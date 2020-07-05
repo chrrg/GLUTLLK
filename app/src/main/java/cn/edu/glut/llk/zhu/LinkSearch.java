@@ -1,127 +1,13 @@
-package cn.edu.glut.llk;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+package cn.edu.glut.llk.zhu;
 
-import java.io.IOException;
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-interface LinkInterface<T> {
-
-    public boolean isEmpty();
-
-    public void setEmpty();
-
-    public void setNonEmpty();
-
-    public T getContent();
-
-    public void setContent(Bitmap content);
-}
-
-class Point {
-    public int x;
-    public int y;
-    public Point(){}
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-class  Item implements LinkInterface<Bitmap>{
-    boolean Empty=true;
-    Bitmap bitmap;
-    int  blocksIDI;
-    int blocksIDJ;
-    List<Integer> emptyColumn;//更新棋盘的时候用
-    public int getBlocksIDI() {
-        return blocksIDI;
-    }
-
-    public void setBlocksIDI(int blocksIDI) {
-        this.blocksIDI = blocksIDI;
-    }
-
-    public int getBlocksIDJ() {
-        return blocksIDJ;
-    }
-
-    public void setBlocksIDJ(int blocksIDJ) {
-        this.blocksIDJ = blocksIDJ;
-    }
-
-
-
-    @Override
-    public boolean isEmpty() {
-        return Empty;
-    }
-
-    @Override
-    public void setEmpty() {
-this.Empty=true;
-    }
-
-    @Override
-    public void setNonEmpty() {
-Empty=false;
-    }
-
-    @Override
-    public Bitmap getContent() {
-        return bitmap;
-    }
-
-    @Override
-    public void setContent(Bitmap content) {
-        this.bitmap=content;
-    }
-
-}
-public class suanfa {//算法静态化，不用实例化
-  private static ArrayList<Bitmap> bitmaps;
-  private static String blocksType;
-   static ArrayList<Bitmap> getBlocksImage(CHCanvasGame game, String pathName) throws IOException {
-        if(bitmaps==null || !blocksType.equals(pathName)) {//单例
-            blocksType=pathName;//方块图片类型,第一次为空，不等于，第二次不为空，这样就可进行类型选择了
-        ArrayList<Bitmap>   b = new ArrayList<>();
-            String[] files = game.getActivity().getAssets().list(pathName);
-            assert files != null;
-            for (int i = 0; i < files.length; i++) {
-                Bitmap bitmap = BitmapFactory.decodeStream(game.getActivity().getAssets().open(pathName + "/" + files[i]));
-                b.add(bitmap);
-            }
-         bitmaps=b;//应该没问题
-        }
-        return bitmaps;
-    }
-    public static Item[][] main(CHCanvasGame game, String pathNameCell, List<Integer> emptyColumn){
-        //不要有重复的图片
-
-        Row+=2;//行多两行
-
-
-        Item[][] item= new Item[Row][Column];
-        for(int i=0;i<Row;i++){
-            for(int j=0;j<Column;j++){
-                item[i][j]=new Item();//初始化
-            }
-        }
-        item[0][0].emptyColumn=emptyColumn;
-        try {
-            LinkSearch.generateBoard(item, getBlocksImage(game,pathNameCell),emptyColumn);//好像要自己清空格子，
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return item;
-    }
-
-}
 //算法静态，不用实例化
-class LinkSearch {
+ public class LinkSearch {
     private static <T>  boolean MatchBolck(LinkInterface[][] datas,
                                       final Point srcPt, final Point destPt) {
 
@@ -185,7 +71,7 @@ class LinkSearch {
     }
 
     public static <T> List<Point> MatchBolckTwo(LinkInterface[][] datas,
-                                            final Point srcPt, final Point destPt) {
+                                                final Point srcPt, final Point destPt) {
         if(datas == null || datas.length == 0)
             return null;
 

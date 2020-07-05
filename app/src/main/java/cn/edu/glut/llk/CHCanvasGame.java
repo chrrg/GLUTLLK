@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Movie;
 import android.graphics.Paint;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
@@ -114,6 +115,16 @@ class GameObject{
     }
     Vector<GameObject> getChildren(){
         return children;
+    }
+    void Destory(){
+        this.parentNode=null;
+        synchronized (children){   for(GameObject obj:children){
+            obj.Destory();
+        }
+//        GLES20.glDeleteTextures（1，&id）；//函数释放内存
+    }
+        children.clear();
+        children=null;
     }
     void appendChild(GameObject obj){
         if(obj.parentNode!=null)obj.parentNode.children.remove(obj);
@@ -639,7 +650,7 @@ class GameAnimation{
         return this;
     }
 }
-class CHCanvasGame {
+public class CHCanvasGame {
     private GameObject root=null;
     private GameCamera camera;
     private Canvas canvas;
@@ -683,7 +694,7 @@ class CHCanvasGame {
     CHCanvasGame(){
 
     }
-    Activity getActivity(){
+    public Activity getActivity(){
         return activity;
     }
     Bitmap getImage(String filename){

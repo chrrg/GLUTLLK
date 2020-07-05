@@ -58,7 +58,6 @@ public class MainLogical {
     public void setGameStartUI() {
 //设置默认显示方式
         Map<String, Boolean> setShow = new HashMap<>();
-        setShow.put("submenu", false);
         setShow.put("RankPage", false);
         setShow.put("gameBarrier", false);
         setShow.put("inputFrame", false);//输入重用框？？？
@@ -107,47 +106,36 @@ public class MainLogical {
 
     private void addMainListerLogic() {
         //menu start
-        CreateLister("menu1", () -> {
-//            anLib.PopUpAnimate(game, "submenu", true, 400, 400);//添加弹窗效果
-//            anLib.fadeIn(game,"submenu");
-            setDisplay("submenu", true);// 显示二级菜单
-
-            setCanTouch("menu0",false);
-            setCanTouch("BottomButton",false);
-
-        });
-
-        CreateLister("submenuClose", () -> {
-//            anLib.fadeOut(game,"submenu");
-            setDisplay("submenu", false);
-
-            setCanTouch("menu0", true);
-            setCanTouch("BottomButton", true);
-        });// 关闭二级菜单
-        //二级菜单
-        //startGame
         CreateLister("startGame", () -> {
             setDisplay("menu", false);// 关闭menu菜单
-
-            startGame1(game);//开始游戏
+            startGame(game);//开始游戏
         });
         CreateLister("EndlessMenu",()->{
-
             setDisplay("menu", false);// 关闭menu菜单
             startGame2(game);
+        });
+        CreateLister("FullCell",()->{
+            setDisplay("menu", false);// 关闭menu菜单
+            startGame3(game);
+        });
+        CreateLister("PingYi",()->{
+            setDisplay("menu", false);// 关闭menu菜单
+            startGame4(game);
         });
         CreateLister("NextBarrierTest",()->{
             //先移除
             removeGameBlockChessboard();
             //生成新的棋盘
             List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-    GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);//Endless 普通模式
-        });
-        CreateLister("FullCell",()->{
-            setDisplay("menu", false);// 关闭menu菜单
-            startGame3(game);
+    GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,-1,myobserver);//Endless 普通模式 ,pathRanom物体类型
         });
 
+CreateLister("testmem",()->{
+    GameObject gameBlock = new GameObject(game);
+    game.getGameObject().getElementById("gameBarrierMenu").appendChild(gameBlock);
+    game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+    gameBlock.Destory();
+});
 //menu end
 
 
@@ -223,16 +211,6 @@ public class MainLogical {
     }
 
     public  void addAudioLogic(){
-        //音乐声音开关start
-        CreateLister("Music", () -> {
-            if (MusicSwitch == 1) {
-                setText("Music","音乐关");
-                MusicSwitch = 0;
-            } else {
-                setText("Music","音乐开");
-                MusicSwitch = 1;
-            }
-        });
 
         CreateLister("Sound", () -> {
             if (Sound == 1) {
@@ -247,7 +225,7 @@ public class MainLogical {
         });
     }
 /*====================starGamePlay=====================================*/
-  synchronized   private void startGame1(CHCanvasGame game) {
+    private void startGame(CHCanvasGame game) {
 
         // 开始游戏
         setDisplay("gameBarrier", true);//显示游戏关卡
@@ -255,7 +233,7 @@ public class MainLogical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-      GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,myobserver);
+      GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,0, myobserver);
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
         setDisplay("currentBarrier",false);//当前关卡不显示
     }
@@ -268,7 +246,7 @@ public class MainLogical {
         setText("currentBarrier","当前关卡第1关");
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,true, myobserver);//Endless 无尽模式
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,true,1, myobserver);//重复模式
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
 //状态转换
     }
@@ -280,15 +258,31 @@ public class MainLogical {
 
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Collections.singletonList(-1);//从全满就行了
-        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false, myobserver);
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,2, myobserver);//满格模式
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
     }
+
+    private void startGame4(CHCanvasGame game){
+        // 开始游戏
+        setDisplay("gameBarrier", true);//显示游戏关卡
+        setDisplay("gamePauseMaskLayer", false);//不显示暂停层
+        setDisplay("currentBarrier",false);//当前关卡不显示
+        //生成游戏方块矩阵：
+        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),6,6,EmptyColumn,true,false,-1, myobserver);//Endless 平移模式
+        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
+    }
+
     private  void ResetSomeSceneState(){
 //        恢复场景初始状态，比如 退出游戏 再进
     }
     private void removeGameBlockChessboard(){
-      game.getGameObject().getElementById("gameBarrierMenu").removeChild(game.getGameObject().getElementById("gameBlock"));
+//      synchronized (GameObject.class){
+        GameObject gameBlock = game.getGameObject().getElementById("gameBlock");
+        game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+        gameBlock.Destory();
 //        getObjectById("gameBlock").parentNode.removeChild(getObjectById("gameBlock"));//移除gameBlock
-    }
+//    }
+  }
 
 }

@@ -2,102 +2,99 @@ package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
 import android.content.res.Resources;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
-import org.w3c.dom.Node;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-class  Gameobj extends GameObject{
-    Gameobj(CHCanvasGame game) {
-        super(game);
-    }
-}
+
+import cn.edu.glut.llk.zhu.Item;
+import cn.edu.glut.llk.zhu.LinkSearch;
+import cn.edu.glut.llk.zhu.Point;
+import cn.edu.glut.llk.zhu.suanfa;
+
 class GenerateChessboard{
 
- static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn, boolean Endless, Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
-          GameObject Canvas = new GameObject(game);
-     int BlockWidthAndHeight= (int)(game.getWidth()-game.getWidth()*0.05)/column;//宽//默认正方形
-        int CanvasWidth=game.getWidth();//默认100%
-        int CanvasHeight=(int)(game.getHeight()-game.getHeight()*0.2);//默认80%
-        CanvasHeight-= game.getHeight() /10;//再距顶10%
+ static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn,boolean Endless, boolean repeat,int pathRandom ,Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
+//       synchronized (GameObject.class) {
+           GameObject Canvas = new GameObject(game);
+           int BlockWidthAndHeight = (int) (game.getWidth() - game.getWidth() * 0.05) / column;//宽//默认正方形
+           int CanvasWidth = game.getWidth();//默认100%
+           int CanvasHeight = (int) (game.getHeight() - game.getHeight() * 0.2);//默认80%
+           CanvasHeight -= game.getHeight() / 10;//再距顶10%
 
-        if (row*BlockWidthAndHeight>CanvasHeight)Log.e("创建方块矩阵","长度不够，行太多，");
-        //高度够的情况下：使Canvas高度合适 游戏块的大小
-        CanvasHeight=row*BlockWidthAndHeight;
+           if (row * BlockWidthAndHeight > CanvasHeight) Log.e("创建方块矩阵", "长度不够，行太多，");
+           //高度够的情况下：使Canvas高度合适 游戏块的大小
+           CanvasHeight = row * BlockWidthAndHeight;
 
-        final int gameWidth=game.getWidth();// 全部定为int final ,不要动态去获取
-        final int gameHeight=game.getHeight();// 全部定为int final ,不要动态去获取
-        final int CanvasY=gameHeight/10*2;
+           final int gameWidth = game.getWidth();// 全部定为int final ,不要动态去获取
+           final int gameHeight = game.getHeight();// 全部定为int final ,不要动态去获取
+           final int CanvasY = gameHeight / 10 * 2;
 
-        Canvas.setId("gameBlock");
-        Canvas.setW(CanvasWidth);
-        Canvas.setH(CanvasHeight);
-        Canvas.setY(gameHeight/10*2);// 乘二 是 与上面的 距顶10% 相关联
-        Canvas.setText("游戏区域");
-        Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
+           Canvas.setId("gameBlock");
+           Canvas.setW(CanvasWidth);
+           Canvas.setH(CanvasHeight);
+           Canvas.setY(gameHeight / 10 * 2);// 乘二 是 与上面的 距顶10% 相关联
+           Canvas.setText("游戏区域");
+           Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
 
 
-        // 生成棋盘
-        //静态方法，不用实例化类
-        Item[][] items = suanfa.main(game,"blocks", EmptyColumn);//一个矩阵，包含了贴哪张图片,blocks是assets目录下的所有文件
+           // 生成棋盘
+           //静态方法，不用实例化类
+           Item[][] items = suanfa.main(game, pathRandom,row,column, EmptyColumn);//一个矩阵，包含了贴哪张图片,blocks是assets目录下的所有文件
 
-        HashMap<GameObject,String> idAndGameObject=new HashMap<>();
-        for (int j=0;j<column;j++){
-            /*生成列*/
-            if( EmptyColumn.contains(j+1))continue;//如果此列为空，则不生成此列
+           HashMap<String, String> idAndLocation = new HashMap<>();
+           for (int j = 0; j < column; j++) {
+               /*生成列*/
+               if (EmptyColumn.contains(j + 1)) continue;//如果此列为空，则不生成此列
 
-            GameObject a = new GameObject(game);
-            a.setId("Column"+j);
-            a.setW(BlockWidthAndHeight);
-            a.setH(CanvasHeight);//与
-            a.setText("col"+j);
-            a.setX((int)(gameWidth*0.025+j*BlockWidthAndHeight));
-            a.setY(Canvas.getY());//距Canvas 0%
-            a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#0000FF;");
-            if(j%2==0)a.setStyle("backColor","#CC7FFF00");
-            else a.setStyle("backColor","#CCFFFF00");//颜色区分
-            Canvas.appendChild(a);
+               GameObject a = new GameObject(game);
+               a.setId("Column" + j);
+               a.setW(BlockWidthAndHeight);
+               a.setH(CanvasHeight);//与
+               a.setText("col" + j);
+               a.setX((int) (gameWidth * 0.025 + j * BlockWidthAndHeight));
+               a.setY(Canvas.getY());//距Canvas 0%
+               a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#0000FF;");
+               if (j % 2 == 0) a.setStyle("backColor", "#CC7FFF00");
+               else a.setStyle("backColor", "#CCFFFF00");//颜色区分
+               Canvas.appendChild(a);
 
-            for (int i=0;i<row;i++) {
-                GameObject b = new GameObject(game);
-                b.setId("Block" + i + j);//id为block
-                b.setW(BlockWidthAndHeight);
-                b.setH(BlockWidthAndHeight);
-                b.setX((int) (gameWidth * 0.025) + j * BlockWidthAndHeight);//与列相同
-                b.setY(CanvasY + i * BlockWidthAndHeight);
-                b.setText(String.valueOf(i) + j);
-                b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;image:stretch;");//设置图片之前设置图片样式
-                if (i % 2 == 0)//偶数
-                    b.setStyle("backColor", "#CCD2691E");
-                else b.setStyle("backColor", "#CC556B2F");
+               for (int i = 0; i < row; i++) {
+                   GameObject b = new GameObject(game);
+                   b.setId("Block" + i + j);//id为block
+                   b.setW(BlockWidthAndHeight);
+                   b.setH(BlockWidthAndHeight);
+                   b.setX((int) (gameWidth * 0.025) + j * BlockWidthAndHeight);//与列相同
+                   b.setY(CanvasY + i * BlockWidthAndHeight);
+                   b.setText(String.valueOf(i) + j);
+                   b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;image:stretch;");//设置图片之前设置图片样式
+                   if (i % 2 == 0)//偶数
+                       b.setStyle("backColor", "#CCD2691E");
+                   else b.setStyle("backColor", "#CC556B2F");
 
 //                 设置图片
-                b.setPic(items[i][j].bitmap);
-                a.appendChild(b);
-                // 事件
-                idAndGameObject.put(b,String.valueOf(i)+j);
-                b.onTouchStart(event ->myobserver.BlockTouch(game,b)).onClick(event -> myobserver.BlockOnclick(game,b));
-            }
-        }
+                   if(items[i+1][j].bitmap!=null)
+                   b.setPic(items[i+1][j].bitmap);//外围多两行加一是多两层
+               a.appendChild(b);
+                   // 事件
+                   items[i+1][j].setBlocksIDI(i);
+                   items[i+1][j].setBlocksIDI(j);
+                   idAndLocation.put("Block" + i + j, "Block" + i + j);
+                   b.onTouchStart(event -> myobserver.BlockTouch(game, b)).onClick(event -> myobserver.BlockOnclick(game, b));
+               }
+           }
 
-     Node.appendChild(Canvas);//加在关卡一下
-        myobserver.setData(game, idAndGameObject,Endless,Canvas,items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
-    }
- }
+           Node.appendChild(Canvas);//加在关卡一下
+           myobserver.setData(game, idAndLocation, Endless,repeat, Canvas, items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
+       } }
+// }
 
 class MyHandler extends Handler {
 
@@ -179,6 +176,10 @@ class Myobserver {
     private Item[][] item;//这次游戏的图片属于哪个方块
     int currentBarrier=1;
     int  score=0;
+    private int Column1W;
+    private int remaining=-1;//剩余的数量
+    private int LeftMargin;
+    private int Column1Y;
 
     public void setData(CHCanvasGame game, HashMap<String, String> data, boolean Endless, boolean repeat,GameObject canvas, Item[][] items){
         this.data = data;
@@ -186,8 +187,13 @@ class Myobserver {
         this.Endless=Endless;//滚动模式
         this.canvas=canvas;
         this.game=game;
-        this.item=items;//持有一个引用 ,好像暂时没有什么用
-        score=0;//重置分数
+        this.item=items;//持有一个引用 ,
+      if(!repeat) {currentBarrier=1; score=0;}// 不是重复模式 则重置分数
+       else this.remaining=data.size();//否则 剩余的数量
+
+        Column1W= game.getGameObject().getElementById("Column1").getW();
+        Column1Y= game.getGameObject().getElementById("Column1").getY();
+        LeftMargin = (int) (game.getWidth() * 0.025);
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
         game.getGameObject().getElementById("gameScore").setText("ClickBlock"+b.getId());//测试用
@@ -218,17 +224,19 @@ class Myobserver {
     @TargetApi(Build.VERSION_CODES.N)
     public void PingYi(CHCanvasGame game){//上下移动
 
+        data.forEach((k,v)->  {
+            game.getGameObject().getElementById(k).setY(game.getGameObject().getElementById(k).getY()+ game.getGameObject().getElementById(k).getH());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
+            if( game.getGameObject().getElementById(k).getY()+ game.getGameObject().getElementById(k).getH()>(canvas.getY()+canvas.getH()))//到底部了
+            {
+                game.getGameObject().getElementById(k).setY(canvas.getY());//重用，
+                game.getGameObject().getElementById(k).setDisplay(true);//统一true 有依赖，这句不能删除
+            }
+        });
+
+
         for(int j=0;j< item[1].length;j++){
             if(!item[1][j].isEmpty())
-           {
-               game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setY(game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getY()+ game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getH());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
-               if( game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getY()+ game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getH()>(canvas.getY()+canvas.getH()))//到底部了
-               {
-                   game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setY(canvas.getY());//重用，
-                   game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setDisplay(true);//统一true 有依赖，这句不能删除
-               }
-
-               game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setPic(item[1][j].bitmap);}
+            game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setPic(item[1][j].bitmap);
         }
     }
 
@@ -328,7 +336,7 @@ class Elimination{
                     item[srcI+1][srcJ].setEmpty();//设为没有被占领
                     item[dirI+1][dirJ].setEmpty();  // 还要清空格子为em
                     ToLine(path,srcI,srcJ,dirI,dirJ);//连线
-                        //平移要更新棋盘
+                     suanfa.updateChessBoard(item);  //平移要更新棋盘
                     //记录分数
                     return  true;
                 }
@@ -469,7 +477,9 @@ class Elimination{
        
 
 
-       LINE.setBackColor(Color.BLACK);
+//       LINE.setBackColor(Color.BLACK);
+       LINE.setStyle("image","stretch");
+       LINE.setPic( game.getGif("line.gif"));
        line.appendChild(LINE);
 
        //下次循环
@@ -490,149 +500,8 @@ class Elimination{
             }
         }.run();
 
-
-
-
     }
    
 
 }
 
-
-
-/*========================================= 动画========================================================*/
-
-class AnimateLib{
-public static void PopUpAnimate(CHCanvasGame game,String id,boolean isAll,int runDuration,int nextDuration){
-
-        game.getGameObject().getElementById(id).animate(isAll).run(runDuration, new AnimateCallback() {
-@Override
-public int beforeAnimate(Object ob) {
-        GameObject gameObject=(GameObject)ob;
-        Log.d("animate Start","ok");
-        return gameObject.getY();
-        }
-@Override
-public void callback(Object ob, int old, int time) {
-        GameObject gameObject=(GameObject)ob;
-        gameObject.setY(old-time/5);
-        }
-@Override
-public void afterAnimate(Object ob) {
-        GameObject gameObject=(GameObject)ob;
-        Log.d("animate Finish","ok");
-        }
-        }).next(nextDuration, new AnimateCallback() {
-@Override
-public int beforeAnimate(Object ob) {
-        GameObject gameObject=(GameObject)ob;
-        Log.d("animate Start","ok");
-        return gameObject.getY();
-        }
-@Override
-public void callback(Object ob, int old, int time) {
-        GameObject gameObject=(GameObject)ob;
-        gameObject.setY(old+time/5);
-        }
-@Override
-public void afterAnimate(Object ob) {
-        GameObject gameObject=(GameObject)ob;
-        Log.d("animate Finish","ok");
-        }
-        });
-        }
-public  static void fadeIn(CHCanvasGame game,String id){
-        CHAnimateTool tool=new CHAnimateTool();
-        GameAnimation ani = game.getGameObject().getElementById(id).animate(true);
-        tool.fadeIn(ani);
-        ani.next(() -> {
-        Log.e("ok","okfadeIn");
-        });
-        }
-public static void fadeOut(CHCanvasGame game,String id){
-        CHAnimateTool tool=new CHAnimateTool();
-        GameAnimation ani = game.getGameObject().getElementById(id).animate(true);
-        tool.fadeOut(ani);
-        ani.next(() -> {
-        Log.e("ok","okfadeIn");
-        });
-        }
-public static void  fade(CHCanvasGame game){
-        game.getGameObject().setDisplay(false);
-        CHAnimateTool tool=new CHAnimateTool();
-        GameAnimation ani = game.getGameObject().animate(true).delay(1000);
-
-        tool.fadeIn(ani);
-        tool.fadeOut(ani);
-        tool.fadeIn(ani);
-        tool.fadeOut(ani);
-        tool.fadeIn(ani);
-        tool.fadeOut(ani);
-        tool.fadeIn(ani);
-        tool.fadeOut(ani);
-        tool.fadeIn(ani);
-        tool.fadeOut(ani);
-        tool.fadeIn(ani);
-        tool.fadeOut(ani);
-        tool.fadeIn(ani);
-
-        ani.next(() -> {
-        Log.e("ok","ok");
-        });
-        }
-private static void turnOverDrop(){
-        //camara翻转180 向下 display
-
-//        camera.animate().run(1000, new AnimateCallback() {
-//            @Override
-//            public int beforeAnimate(Object ob) {
-//                return (int) ((GameCamera) ob).getValue(0);
-//            }
-//            @Override
-//            public void callback(Object ob, int old, int time) {
-//                ((GameCamera) ob).setValue(0,(float)time/1000+old);
-//            }
-//            @Override
-//            public void afterAnimate(Object ob) {
-//                Log.e("摄像头转动完成","camera finish");
-//            }
-//        });
-//        game.getGameObject().animate(true).run(1000, new AnimateCallback() {
-//            @Override
-//            public int beforeAnimate(Object ob) {
-//                GameObject gameObject=(GameObject)ob;
-//                Log.d("animate Start","ok");
-//                return gameObject.getY();
-//            }
-//            @Override
-//            public void callback(Object ob, int old, int time) {
-//                GameObject gameObject=(GameObject)ob;
-//                gameObject.setY(old+time/5);
-//            }
-//            @Override
-//            public void afterAnimate(Object ob) {
-//                GameObject gameObject=(GameObject)ob;
-//                Log.d("animate Finish","ok");
-//            }
-//        }).next(1000, new AnimateCallback() {
-//            @Override
-//            public int beforeAnimate(Object ob) {
-//                GameObject gameObject=(GameObject)ob;
-//                Log.d("animate Start","ok");
-//                return gameObject.getY();
-//            }
-//            @Override
-//            public void callback(Object ob, int old, int time) {
-//                GameObject gameObject=(GameObject)ob;
-//                gameObject.setY(old-time/5);
-//            }
-//            @Override
-//            public void afterAnimate(Object ob) {
-//                GameObject gameObject=(GameObject)ob;
-//                Log.d("animate Finish","ok");
-//            }
-//        });
-        }
-}
-
-//Gradle plugin  341  Gradle 4 0 0

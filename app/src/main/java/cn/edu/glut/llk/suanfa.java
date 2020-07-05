@@ -33,6 +33,27 @@ class Point {
 class  Item implements LinkInterface<Bitmap>{
     boolean Empty=true;
     Bitmap bitmap;
+    int  blocksIDI;
+    int blocksIDJ;
+    List<Integer> emptyColumn;//更新棋盘的时候用
+    public int getBlocksIDI() {
+        return blocksIDI;
+    }
+
+    public void setBlocksIDI(int blocksIDI) {
+        this.blocksIDI = blocksIDI;
+    }
+
+    public int getBlocksIDJ() {
+        return blocksIDJ;
+    }
+
+    public void setBlocksIDJ(int blocksIDJ) {
+        this.blocksIDJ = blocksIDJ;
+    }
+
+
+
     @Override
     public boolean isEmpty() {
         return Empty;
@@ -79,6 +100,8 @@ public class suanfa {//算法静态化，不用实例化
     public static Item[][] main(CHCanvasGame game, String pathNameCell, List<Integer> emptyColumn){
         //不要有重复的图片
 
+        Row+=2;//行多两行
+
 
         Item[][] item= new Item[Row][Column];
         for(int i=0;i<Row;i++){
@@ -86,6 +109,7 @@ public class suanfa {//算法静态化，不用实例化
                 item[i][j]=new Item();//初始化
             }
         }
+        item[0][0].emptyColumn=emptyColumn;
         try {
             LinkSearch.generateBoard(item, getBlocksImage(game,pathNameCell),emptyColumn);//好像要自己清空格子，
         } catch (IOException e) {
@@ -246,6 +270,7 @@ class LinkSearch {
     public static <T> void generateBoard(LinkInterface<T>[][] datas, ArrayList<Bitmap> optConts, List<Integer> emptyColumn) {
         List<Point> list = new LinkedList<>();
         for(int i = 0; i < datas.length; i++) {
+            if(i==0||i==datas.length-1)continue;//外围两行不生成
             for(int j = 0; j < datas[i].length; j++) {
                 if(emptyColumn.contains(j+1))continue;//去掉相应列 传来是 从0开始的
                 list.add(new Point(i, j));//根据datas 的长度生成 列表list point类 为下面的随机做准备

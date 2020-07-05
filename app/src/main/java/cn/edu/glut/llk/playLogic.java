@@ -171,7 +171,7 @@ class Myobserver {
 
     //点击事件，销毁事件，平移事件，退出事件，暂停事件。触摸移动事件 HashMap 为注册为观察者（） 暂时没有注册观察者，因为棋盘固定了。Remove 是隐藏
     //点击事件全部注册  复用 GameObjet 本身的点击事件接口 也作为 被观察者。
-    private HashMap<GameObject, String> data;
+    private HashMap<String, String> data;
     private Elimination elimination;
     boolean Endless=false;//无尽模式 默认 false
     private GameObject canvas;
@@ -180,7 +180,7 @@ class Myobserver {
     int currentBarrier=1;
     int  score=0;
 
-    public void setData(CHCanvasGame game, HashMap<GameObject, String> data, boolean Endless, boolean repeat,GameObject canvas, Item[][] items){
+    public void setData(CHCanvasGame game, HashMap<String, String> data, boolean Endless, boolean repeat,GameObject canvas, Item[][] items){
         this.data = data;
         this.elimination=new Elimination(game,items);// 消除块用
         this.Endless=Endless;//滚动模式
@@ -190,7 +190,7 @@ class Myobserver {
         score=0;//重置分数
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
-        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+data.get(b));//测试用
+        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+b.getId());//测试用
         boolean  isEliminate= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否能消掉
 //         Remove(b);//点击消除，测试用
 //        elimination.doaRRAY();//测试用
@@ -205,30 +205,31 @@ class Myobserver {
                 GameObject gameBlock = game.getGameObject().getElementById("gameBlock");
                 game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
                 gameBlock.Destory();
-                GenerateChessboard.GenerateGameBlock(game,game.getGameObject().getElementById("gameBarrier").getChildren().get(0),8,6,null,false,true,-1, this);//Endless 无尽模式
+                List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+                GenerateChessboard.GenerateGameBlock(game,game.getGameObject().getElementById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,true,-1, this);//Endless 无尽模式
             }
         }//消掉记录分数
         if(Endless==true && isEliminate) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
-        game.getGameObject().getElementById("gameScore").setText("TouchBlock"+data.get(b));//测试用
+        game.getGameObject().getElementById("gameScore").setText("TouchBlock"+b.getId());//测试用
         //调用Elimination 进行效果显示，因为涉及到释放 两个
     }
     @TargetApi(Build.VERSION_CODES.N)
     public void PingYi(CHCanvasGame game){//上下移动
-        data.forEach((k,v)->  {
-            k.setY(k.getY()+ k.getH());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
-            if(k.getY()+k.getH()>(canvas.getY()+canvas.getH()))//到底部了
-            {
-//                    Remove(k.parentNode);//移除父列  不用了
-                k.setY(canvas.getY());//重用，回左边
-//                    k.parentNode.setDisplay(true);//重新显示这一列,没事，多true几次而已，相当每一个列块元素都显示 不行，
-                k.setDisplay(true);//统一true 有依赖，这句不能删除 ，列模式下是没有问题的。不只是出格的。 行模式下就有问题吗？
 
-                //k.setText();也可以在这里，初始化随机性
+        for(int j=0;j< item[1].length;j++){
+            if(!item[1][j].isEmpty())
+           {
+               game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setY(game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getY()+ game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getH());//平移一个Block单位 //不用平移 块所属的列，因为，xml里还是是从属关系
+               if( game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getY()+ game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).getH()>(canvas.getY()+canvas.getH()))//到底部了
+               {
+                   game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setY(canvas.getY());//重用，
+                   game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setDisplay(true);//统一true 有依赖，这句不能删除
+               }
 
-            }
-        });
+               game.getGameObject().getElementById("Block"+item[1][j].blocksIDI+item[1][j].blocksIDJ).setPic(item[1][j].bitmap);}
+        }
     }
 
     /*Block处理Hold状态 再点击取消hold状态， 下一个事件 然后通知算法 两个块 处理返回结果 不成功 取消Hold 状态 成功则连线消除 */
@@ -317,20 +318,20 @@ class Elimination{
             srcJ=(one.getX()-LeftMargin+Column1W/2)/Column1W;
             dirI=(two.getY()-Column1Y+Column1W/2)/Column1W;
             dirJ=(two.getX()-LeftMargin+Column1W/2)/Column1W;
-            if( item[srcI][srcJ].bitmap==item[dirI][dirJ].bitmap)
+            if( item[srcI+1][srcJ].bitmap==item[dirI+1][dirJ].bitmap)
             {
 
-                List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI,srcJ),new Point(dirI,dirJ));
+                List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI+1,srcJ),new Point(dirI+1,dirJ));
                 if(path!=null)
                 {
                     path.forEach((k)-> System.out.println("path为："+k.x+k.y));
-                    item[srcI][srcJ].setEmpty();//设为没有被占领
-                    item[dirI][dirJ].setEmpty();  // 还要清空格子为em
+                    item[srcI+1][srcJ].setEmpty();//设为没有被占领
+                    item[dirI+1][dirJ].setEmpty();  // 还要清空格子为em
                     ToLine(path,srcI,srcJ,dirI,dirJ);//连线
                         //平移要更新棋盘
                     //记录分数
                     return  true;
-                }//可以 isempty??
+                }
                 else  return false;
             }
             else  return false;//两个图片不是同一个
@@ -353,15 +354,15 @@ class Elimination{
 
             int dirI= Integer.parseInt(Objects.requireNonNull(matcher1Dir.group(1)));
             int dirJ= Integer.parseInt(Objects.requireNonNull(matcher1Dir.group(2)));
-           if( item[srcI][srcJ].bitmap==item[dirI][dirJ].bitmap)
+           if( item[srcI+1][srcJ].bitmap==item[dirI+1][dirJ].bitmap)
            {
 
-              List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI,srcJ),new Point(dirI,dirJ));
+              List<Point> path= LinkSearch.MatchBolckTwo(item,new Point(srcI+1,srcJ),new Point(dirI+1,dirJ));
               if(path!=null)
                   {
                       path.forEach((k)-> System.out.println("path为："+k.x+k.y));
-                      item[srcI][srcJ].setEmpty();//设为没有被占领
-                      item[dirI][dirJ].setEmpty();  // 还要清空格子为em
+                      item[srcI+1][srcJ].setEmpty();//设为没有被占领
+                      item[dirI+1][dirJ].setEmpty();  // 还要清空格子为em
                       ToLine(path,srcI,srcJ,dirI,dirJ);//连线
                       //记录分数
                       return  true;
@@ -401,9 +402,9 @@ class Elimination{
 
             // 不是null 才进来，最多 空集
 //        if(!points.isEmpty())//null和空集合isEmpty不是同一个东西
-            points.add(0,new Point(srcI,srcJ));//不是空集则 加上源消掉的物块
+            points.add(0,new Point(srcI+1,srcJ));//不是空集则 加上源消掉的物块
         //最后的dir考虑吗  paints不空则说明 至少一条直线 （一个格子算吗？）
-        points.add(new Point(dirI,dirJ));
+        points.add(new Point(dirI+1,dirJ));
 
         GameObject line=new GameObject(game);
         line.setW(500);
@@ -415,10 +416,6 @@ class Elimination{
         LINES.setDisplay(true);
         LINES.appendChild(line);
 
-        // 定义些常量,列宽度
-//       final int Column1W= game.getGameObject().getElementById("Column1").getW();
-//        final int Column1H= game.getGameObject().getElementById("Column1").getH();
-//       final  int Column1Y=game.getGameObject().getElementById("Column1").getY();
        final  int WH=Column1W/2;//默认宽高1/2colw
 
    for (int i=1;i<points.size();i++) {
@@ -430,8 +427,8 @@ class Elimination{
        int dir=0;
        if( point.y-srcJ>0)dir=1;//向右
        if(point.y-srcJ<0) dir=2;////向左
-       if(srcI-point.x>0)dir=3;//向上
-       if(srcI-point.x<0) dir=4;//向下
+       if(srcI-(point.x-1)>0)dir=3;//向上
+       if(srcI-(point.x-1)<0) dir=4;//向下
        //x*y*w应该是两点的距离
        switch (dir){
            case 1:
@@ -439,7 +436,7 @@ class Elimination{
                LINE.setW(Math.abs(point.y - srcJ) * Column1W +WH/2);
                LINE.setX((int) ( game.getWidth() * 0.025)+srcJ * Column1W +WH);//直线结束端点在右,默认在 结束端点加长一点1/4
 
-               LINE.setY(Column1Y + point.x * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
+               LINE.setY(Column1Y +  (point.x-1) * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
                break;
            }
            case 2:{
@@ -447,20 +444,20 @@ class Elimination{
                LINE.setW(WH/2+Math.abs(point.y - srcJ) * Column1W);
                LINE.setX((int) (game.getWidth() * 0.025+point.y * Column1W+WH/2));//直线结束端点在左
 
-               LINE.setY(Column1Y + point.x * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
+               LINE.setY(Column1Y +  (point.x-1) * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
                break;
            }
            case 3:{
                //纵 上
-               LINE.setH(WH+Math.abs(point.x - srcI) * Column1W);
-               LINE.setY(Column1Y+point.x * Column1W +WH/2);//直线结束端点在上
+               LINE.setH(WH+Math.abs( (point.x-1) - srcI) * Column1W);
+               LINE.setY(Column1Y+ (point.x-1) * Column1W +WH/2);//直线结束端点在上
 
                LINE.setX((int) (game.getWidth() * 0.025+ point.y * Column1W +Column1W/4));
                break;
            }
            case 4:{
                //纵下
-               LINE.setH(Math.abs(point.x - srcI) * Column1W+WH/2);
+               LINE.setH(Math.abs( (point.x-1) - srcI) * Column1W+WH/2);
                LINE.setY( Column1Y+srcI * Column1W +WH);//直线结束端点在下
 
                LINE.setX((int) (game.getWidth() * 0.025+ point.y * Column1W +Column1W/4));
@@ -476,7 +473,7 @@ class Elimination{
        line.appendChild(LINE);
 
        //下次循环
-       srcI = point.x;
+       srcI =  (point.x-1);
        srcJ = point.y;
    }
         new Runnable() {
@@ -487,8 +484,9 @@ class Elimination{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Log.e("执行","没有执行");
+                Log.e("执行","synchronization");
                 LINES.getChildren().remove(line);
+                line.Destory();
             }
         }.run();
 

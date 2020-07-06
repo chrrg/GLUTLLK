@@ -28,8 +28,8 @@ text      文本样算  示例 text:center   center（XY居中 将会覆盖textX
 注意事项：
 需注意属性或样式具有顺序性
 -->
-<box w="100vw" h="100vh" id="root" style="backColor:#308030;" src="game.jpg">
-    <box id="yun" w="40vw" h="10vh" x="10vw" y="20vh" style="image:stretch;" src="yun1.png"/>
+<box w="100vw" h="100vh" id="root" style="backColor:#308030;image:stretch;" src="界面.jpg">
+<!--    <box id="yun" w="40vw" h="10vh" x="10vw" y="20vh" style="image:stretch;" src="yun1.png"/>-->
     <box l="10%" w="80%" t="10%" h="11vh" style="fontSize:7vh;color:#218081;textX:center;textY:center;image:stretch;" src="title.png" />
     <box w="100vw" h="11vh" id="fps" style="fontSize:5vh;color:#218081;textX:right;textY:top;"/>
 </box>

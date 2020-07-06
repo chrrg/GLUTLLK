@@ -140,10 +140,10 @@ private void addGameReturnMenu(){
             setDisplay("menu", false);// 关闭menu菜单
             startGame2(game);
         });
-        CreateLister("FullCell",()->{
-            setDisplay("menu", false);// 关闭menu菜单
-            startGame3(game);
-        });
+//        CreateLister("FullCell",()->{
+//            setDisplay("menu", false);// 关闭menu菜单
+//            startGame3(game);
+//        });
 //        CreateLister("PingYi",()->{
 //            setDisplay("menu", false);// 关闭menu菜单
 //            startGame4(game);
@@ -180,8 +180,8 @@ private void addGameReturnMenu(){
         });
 
         CreateLister("RankPageClose", () -> {
-            AnimateLib.fadeOut(game,"RankPage");
-//            setDisplay("RankPage", false);
+//            AnimateLib.fadeOut(game,"RankPage");
+            setDisplay("RankPage", false);
             //恢复
             setCanTouch("menu0", true);
             setCanTouch("BottomButton", true);

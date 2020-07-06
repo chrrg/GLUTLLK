@@ -3,6 +3,7 @@ package cn.edu.glut.llk;
 import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -21,9 +22,10 @@ import cn.edu.glut.llk.zhu.suanfa.*;
 import cn.edu.glut.llk.zhu.suanfa.main;
 
 class GenerateChessboard{
-
+//static Bitmap gameChessboardBackground;
  static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn,boolean Endless, boolean repeat,int pathRandom ,Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
 //       synchronized (GameObject.class) {
+//     if(gameChessboardBackground==null)gameChessboardBackground=game.getImage("gameChessboardBackground.png");
            GameObject Canvas = new GameObject(game);
            int BlockWidthAndHeight = (int) (game.getWidth() - game.getWidth() * 0.05) / column;//宽//默认正方形
            int CanvasWidth = game.getWidth();//默认100%
@@ -43,7 +45,8 @@ class GenerateChessboard{
            Canvas.setH(CanvasHeight);
            Canvas.setY(gameHeight / 10 * 2);// 乘二 是 与上面的 距顶10% 相关联
            Canvas.setText("游戏区域");
-           Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
+           Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;");
+//           Canvas.setPic(gameChessboardBackground);
 
 
            // 生成棋盘
@@ -62,7 +65,7 @@ class GenerateChessboard{
                a.setText("col" + j);
                a.setX((int) (gameWidth * 0.025 + j * BlockWidthAndHeight));
                a.setY(Canvas.getY());//距Canvas 0%
-               a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#0000FF;");
+               a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#260000FF;");
                if (j % 2 == 0) a.setStyle("backColor", "#CC7FFF00");
                else a.setStyle("backColor", "#CCFFFF00");//颜色区分
                Canvas.appendChild(a);
@@ -75,7 +78,7 @@ class GenerateChessboard{
                    b.setX((int) (gameWidth * 0.025) + j * BlockWidthAndHeight);//与列相同
                    b.setY(CanvasY + i * BlockWidthAndHeight);
                    b.setText(String.valueOf(i) + j);
-                   b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;image:stretch;");//设置图片之前设置图片样式
+                   b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#26D2691E;image:stretch;");//设置图片之前设置图片样式
                    if (i % 2 == 0)//偶数
                        b.setStyle("backColor", "#CCD2691E");
                    else b.setStyle("backColor", "#CC556B2F");

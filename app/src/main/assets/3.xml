@@ -1,30 +1,30 @@
-<box id="gameBarrier" w="100vw" h="100vh" text="关卡一" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C88B0000;">
+<box id="gameBarrier" w="100vw" h="100vh" text="关卡一" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#33FFFFFF;">
 
     <box id="gameBarrierMenu">
         <!--    顶部菜单-->
-        <box id="gameTopMenu" w="100vw" h="10vh" text="游戏顶部选项" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C8DCDCDC;">
-            <box id="gamePause" w="15%" h="6vh" x="+2vw" t="3vh" text="暂停" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-            <box id="gameTime" l="+20vw" h="6vh"  t="3vh" r="+17vw" text="时间" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
-            <box id="gameExit" w="15%" h="6vh" x="+85vw" t="3vh" r="+2vw" text="退出" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
+        <box id="gameTopMenu" w="100vw" h="10vh"  style="image:stretch;" src="木板一号.png">
+            <box id="gamePause" w="15%" h="6vh" x="+2vw" t="3vh" text="暂停" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="暂停.png"/>
+            <box id="gameTime" l="+20vw" h="6vh"  t="3vh" r="+17vw" text="时间" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#DC143C;"/>
+            <box id="gameExit" w="15%" h="6vh" x="+85vw" t="3vh" r="+2vw" text="退出" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="退出.png"/>
         </box>
         <box id="currentBarrier" l="30vw" w="100vw" h="6vh" t="12vh" r="30vw" text="当前关卡" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#008080;"/>
         <!--底部菜单-->
-        <box id="gameBottomMenu"  w="100vw" h="10vh" text="游戏底部选项" y="90vh" b="2vh" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#C8A0522D;">
-            <box id="NextBarrierTest" w="20vw" x="+2vw"  y="90vh" b="2vh" text="next level" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>
-            <box id="gameScore" w="42vw" x="+29vw"  y="90vh" b="2vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>
-            <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#CCCD853F;"/>
+        <box id="gameBottomMenu"  w="100vw" h="10vh" text="游戏底部选项" y="90vh" b="2vh" style="fontSize:2vh;color:#FFFAFA;textY:bottom;image:stretch;" src="木板一号.png">
+            <box id="NextBarrierTest" w="20vw" x="+2vw"  y="90vh" b="2vh" text="next level" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
+            <box id="gameScore" w="42vw" x="+29vw"  y="90vh" b="2vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
+            <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
         </box>
     </box>
     <box id="MaskBlock" w="10vw" h="10vh" style="backColor:#80000000;"/>
     <!--    一定要设置宽高，whxy 动态创建的也是 否则会报错，-->
     <box id="Line" w="100vw" h="100vh" x="9vw" y="10vh" text="test">
     </box>
-    <box id="gamePauseMaskLayer" w="100vw" h="100vh" text="暂停选项层" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#C800BFFF;">
-        <box id="gameChooseLayer"  l="10vw" r="10vw" t="30vh" b="40vh" text="选择层" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#000080;">
-            <box id="CurrentScore" l="20vw" r="20vw" t="32vh" b="58vh" text="当前分数" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
-            <box id="gameContinue" l="15vw" r="65vw" t="45vh" b="45vh" text="继续游戏" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
-            <box id="gameReturnMenu" l="40vw" r="40vw" t="45vh" b="45vh" text="回主菜单" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
-            <box id="RestartGame" l="65vw" r="15vw" t="45vh" b="45vh" text="重玩" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#1E90FF;"/>
+    <box id="gamePauseMaskLayer" w="100vw" h="100vh" text="暂停选项层" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#80000000;">
+        <box id="gameChooseLayer"  l="10vw" r="10vw" t="30vh" b="40vh" text="选择层" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#26000080;">
+            <box id="CurrentScore" l="20vw" r="20vw" t="32vh" b="58vh" text="当前分数" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#261E90FF;"/>
+            <box id="gameContinue" l="15vw" r="65vw" t="45vh" b="45vh" text="继续游戏" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#261E90FF;image:stretch;" src="继续.png"/>
+            <box id="gameReturnMenu" l="40vw" r="40vw" t="45vh" b="45vh" text="回主菜单" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#261E90FF;"/>
+            <box id="RestartGame" l="65vw" r="15vw" t="45vh" b="45vh" text="重玩" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#261E90FF;image:stretch;" src="重玩.png"/>
         </box>
     </box>
 </box>

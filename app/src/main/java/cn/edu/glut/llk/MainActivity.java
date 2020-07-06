@@ -15,8 +15,6 @@ import java.util.TimerTask;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
-import leakcanary.AppWatcher;
-import leakcanary.LeakCanary;
 
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码

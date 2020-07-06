@@ -19,7 +19,6 @@ import cn.edu.glut.llk.zhu.Controller;
 import cn.edu.glut.llk.zhu.suanfa.*;
 
 import cn.edu.glut.llk.zhu.suanfa.main;
-import leakcanary.AppWatcher;
 
 class GenerateChessboard{
 

@@ -20,9 +20,13 @@
         <box id="Submit" l="+60%" y="+75%" r="+5%" b="+5%" text="提交" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
     </box>
     <!--同级的，写在上面的优先响应-->
-    <box id="RankPage" w="80vw" h="66vh" x="10vw" r="10vw" y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
-        <box id="RankPageClose" l="+83%" h="7vh" r="-2%" t="-8vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
-        <box id="Rank1" l="+5%" h="10vh" r="+5%" t="2vh" text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
+    <box id="RankPage" w="80vw" h="66vh" x="10vw"  y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
+        <box id="RankPageClose"  w="15vw" h="7vh" x="75vw"  y="20vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
+        <box id="Rank1" w="70vw" h="6vh"  x="15vw" y="28vh"    text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
+        <box id="Rank2" w="70vw" h="6vh"  x="15vw" y="38vh"    text="rank2" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
+        <box id="Rank3" w="70vw" h="6vh"  x="15vw" y="48vh"    text="rank3" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
+        <box id="Rank4" w="70vw" h="6vh"  x="15vw" y="58vh"    text="rank4" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
+        <box id="Rank5" w="70vw" h="6vh"  x="15vw" y="68vh"    text="rank5" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
     </box>
     <!--    加减不是百分比-->
 </box>

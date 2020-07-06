@@ -172,7 +172,7 @@ private void addGameReturnMenu(){
     private void addRankListerLogic() {
         //排行start
         CreateLister("Rank", () -> {
-            AnimateLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
+//            AnimateLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
             setDisplay("RankPage", true);// 显示排行
 
             setCanTouch( "menu0",false);

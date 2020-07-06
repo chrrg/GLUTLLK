@@ -32,6 +32,11 @@ public class MainLogical {
         this.SoundOff= game.getImage("SoundOff.png");
     }
 
+    public void setProgressBar(int progressBarTime, int gameTime) {
+        getObjectById("ProgressBar").setW(getObjectById("gameTime").getW()*gameTime/progressBarTime);
+        getObjectById("ProgressBar2").setW(getObjectById("gameTime").getW()*gameTime/progressBarTime);
+    }
+
     public interface ListerLogicCallBack {
         void ListerDoSomething();
     }//   接口

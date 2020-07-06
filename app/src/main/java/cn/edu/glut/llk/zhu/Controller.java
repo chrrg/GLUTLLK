@@ -40,6 +40,7 @@ int time;
         public static int GameTime = 1000 * 60 * 2;//默认2分钟
         static int PauseTime=-1;
         private WeakReference<MainLogical> ref;
+        private int ProgressBarTime= 1000 * 60 ;//默认1分钟;
 
         public MyHandler(MainLogical mainLogical) {
             this.ref = new WeakReference<>(mainLogical);
@@ -61,6 +62,7 @@ int time;
                         if (GameTime >= 1000) {
                             int remain = GameTime / 1000;
                             GameTime -= 1000;
+                            mainLogical.setProgressBar(ProgressBarTime,GameTime);
                             // 再次发出msg，循环更新
                             remain -= 1;
                             mainLogical.setText("gameTime", Integer.toString(remain));
@@ -94,6 +96,7 @@ int time;
 
         public void starGameTimeCount(int gameTime) {
             GameTime = gameTime;
+            ProgressBarTime=gameTime;
             sendEmptyMessage(0);// 0 消息会减秒娄直到少于1000毫秒
         }
 

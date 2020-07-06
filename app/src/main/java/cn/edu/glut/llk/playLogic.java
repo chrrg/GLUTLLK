@@ -135,7 +135,7 @@ class Myobserver {
         LeftMargin = (int) (game.getWidth() * 0.025);
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
-        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+b.getId());//测试用
+//        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+b.getId());//测试用
         boolean  isEliminate= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否能消掉
 
         if (isEliminate) {
@@ -161,7 +161,7 @@ class Myobserver {
         if(Endless==true && isEliminate) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
-        game.getGameObject().getElementById("gameScore").setText("TouchBlock"+b.getId());//测试用
+//        game.getGameObject().getElementById("gameScore").setText("TouchBlock"+b.getId());//测试用
         //调用Elimination 进行效果显示，因为涉及到释放 两个
     }
     @TargetApi(Build.VERSION_CODES.N)

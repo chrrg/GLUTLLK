@@ -22,10 +22,10 @@ import cn.edu.glut.llk.zhu.suanfa.*;
 import cn.edu.glut.llk.zhu.suanfa.main;
 
 class GenerateChessboard{
-//static Bitmap gameChessboardBackground;
+static Bitmap gameChessboardBackground;
  static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn,boolean Endless, boolean repeat,int pathRandom ,Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
 //       synchronized (GameObject.class) {
-//     if(gameChessboardBackground==null)gameChessboardBackground=game.getImage("gameChessboardBackground.png");
+     if(gameChessboardBackground==null)gameChessboardBackground=game.getImage("gameChessboardBackground.png");
            GameObject Canvas = new GameObject(game);
            int BlockWidthAndHeight = (int) (game.getWidth() - game.getWidth() * 0.05) / column;//宽//默认正方形
            int CanvasWidth = game.getWidth();//默认100%
@@ -45,8 +45,8 @@ class GenerateChessboard{
            Canvas.setH(CanvasHeight);
            Canvas.setY(gameHeight / 10 * 2);// 乘二 是 与上面的 距顶10% 相关联
            Canvas.setText("游戏区域");
-           Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;");
-//           Canvas.setPic(gameChessboardBackground);
+           Canvas.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#260000FF;");
+           Canvas.setPic(gameChessboardBackground);
 
 
            // 生成棋盘
@@ -254,10 +254,10 @@ class Myobserver {
 //        b.setBackColor(Color.RED);
        GameObject  Mask=game.getGameObject().getElementById("MaskBlock");
 //      synchronized ( game.getGameObject()) {
-          Mask.setW(b.getW());
-          Mask.setH(b.getH());
-          Mask.setY(b.getY());
-          Mask.setX(b.getX());
+          Mask.setW(b.getW()+50);
+          Mask.setH(b.getH()+40);
+          Mask.setY(b.getY()-10);
+          Mask.setX(b.getX()-20);
 //      }
         Mask.setDisplay(true);//显示
 //        Bitmap[] bitmap={ b.getPic()[0],game.getImage("输入框-透明底.png")};

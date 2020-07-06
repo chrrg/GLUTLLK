@@ -1,5 +1,4 @@
 <box id="gameBarrier" w="100vw" h="100vh" text="关卡一" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#33FFFFFF;">
-
     <box id="gameBarrierMenu">
         <!--    顶部菜单-->
         <box id="gameTopMenu" w="100vw" h="10vh"  style="image:stretch;" src="木板一号.png">
@@ -15,7 +14,7 @@
             <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
         </box>
     </box>
-    <box id="MaskBlock" w="10vw" h="10vh" style="backColor:#80000000;"/>
+    <box id="MaskBlock" w="10vw" h="10vh" style="image:stretch;" src="blockMask.png"/>
     <!--    一定要设置宽高，whxy 动态创建的也是 否则会报错，-->
     <box id="Line" w="100vw" h="100vh" x="9vw" y="10vh" text="test">
     </box>

@@ -15,6 +15,9 @@ import java.util.TimerTask;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import leakcanary.AppWatcher;
+import leakcanary.LeakCanary;
+
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
@@ -230,6 +233,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        AppWatcher.INSTANCE.getObjectWatcher().watch(this);
+
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

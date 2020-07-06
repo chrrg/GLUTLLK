@@ -1,6 +1,6 @@
     <!--    menu start-->
 <box id="menu"  w="100%" h="75vh" y="25vh"  text="游戏开始界面" style="fontSize:5vh;color:#FFFAFA;backColor:#CC2F4F4F;textY:bottom;">
-    <box id="menu0"  w="80%" h="60vh" l="10%" y="26vh" text="游戏主菜单" style="fontSize:5vh;color:#FFFAFA;backColor:#CC008B8B;textY:bottom;" >
+    <box id="menu0"  w="80%" h="60vh" l="10%" y="26vh" text="游戏主菜单" style="fontSize:5vh;color:#FFFAFA;backColor:#4D008B8B;textY:bottom;" >
         <box id="startGame"   w="50vw" h="5vh" x="30%" y="+10vh" text="startGame" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png"/>
         <box id="EndlessMenu"   w="50vw" h="5vh" x="30%" y="+20vh" text="Endless" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#10000000;image:stretch;" src="menubtn1.png" /><!--透明度 遮罩,argb 前面加-->
         <box id="About"   w="50vw" h="5vh" x="30%" y="55vh" text="About" style="fontSize:3vh;color:#FFFAFA;text:center;backColor:#008080;image:stretch;" src="menubtn1.png" />
@@ -20,8 +20,9 @@
         <box id="Submit" l="+60%" y="+75%" r="+5%" b="+5%" text="提交" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
     </box>
     <!--同级的，写在上面的优先响应-->
-    <box id="RankPage" w="80vw" h="70vh" x="10vw" r="10vw" y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
-        <box id="RankPageClose" l="+85%" h="7vh" r="-4%" t="-8vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
+    <box id="RankPage" w="80vw" h="66vh" x="10vw" r="10vw" y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
+        <box id="RankPageClose" l="+83%" h="7vh" r="-2%" t="-8vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
+        <box id="Rank1" l="+5%" h="10vh" r="+5%" t="2vh" text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
     </box>
     <!--    加减不是百分比-->
 </box>

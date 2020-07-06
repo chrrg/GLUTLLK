@@ -2,6 +2,7 @@ package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -14,11 +15,13 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.edu.glut.llk.zhu.Controller;
 import cn.edu.glut.llk.zhu.suanfa.*;
 
 import cn.edu.glut.llk.zhu.suanfa.main;
+import leakcanary.AppWatcher;
 
- class GenerateChessboard{
+class GenerateChessboard{
 
  static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn,boolean Endless, boolean repeat,int pathRandom ,Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
 //       synchronized (GameObject.class) {
@@ -89,7 +92,7 @@ import cn.edu.glut.llk.zhu.suanfa.main;
                    b.onTouchStart(event -> myobserver.BlockTouch(game, b)).onClick(event -> myobserver.BlockOnclick(game, b));
                }
            }
-
+//     AppWatcher.INSTANCE.getObjectWatcher().watch(Canvas);
            Node.appendChild(Canvas);//加在关卡一下
            myobserver.setData(game, idAndLocation, Endless,repeat, CanvasHeight, items);//GameOver时或者退出重进，必须重新初始化传这个过去，上面重新生成矩阵。一次游戏不会有问题 .Canvas上下平移用到高度
        } }
@@ -110,6 +113,7 @@ class Myobserver {
     int  score=0;
     private int Column1W;
     private int remaining=-1;//剩余的数量
+    private boolean repeat=false;
     private int LeftMargin;
     private int Column1Y;
 
@@ -120,8 +124,9 @@ class Myobserver {
         this.canvasH=canvasH;
         this.game=game;
         this.item=items;//持有一个引用 ,
+        this.repeat=repeat;
       if(!repeat) {currentBarrier=1; score=0;}// 不是重复模式 则重置分数
-       else this.remaining=data.size();//否则 剩余的数量
+        this.remaining=data.size();// 剩余的数量
 
         Column1W= game.getGameObject().getElementById("Column1").getW();
         Column1Y= game.getGameObject().getElementById("Column1").getY();
@@ -134,8 +139,14 @@ class Myobserver {
         if (isEliminate) {
             score += 100;
             game.getGameObject().getElementById("gameScore").setText("分数：" + score);
+            game.getGameObject().getElementById("CurrentScore").setText("当前分数：" + score);
             remaining-=2;//偶数减
-            if(remaining==0)//下一关
+            if(remaining==0 && !repeat) {//不是无尽模式下 才结束
+                Controller.RecordScore = score;
+                Controller.MyHandler.GameTime=0;//触发 gameOver事件函数方法
+                game.getGameObject().getElementById("CurrentScore").setText("win ! 分数：" + score);
+            }
+            if(remaining==0&&repeat)//无尽模式 下一关
             {       currentBarrier++;//关卡加一
                 game.getGameObject().getElementById("currentBarrier").setText("当前关卡 第"+currentBarrier+"关");
                 GameObject gameBlock = game.getGameObject().getElementById("gameBlock");
@@ -189,7 +200,6 @@ class Myobserver {
     }
 
     public  boolean click(GameObject b,boolean Endless){
-
         //只有满的时候发送，并清空，先判断满没满先
         if(One && Two){
             if(OneObj==TwoObj){ Two=false;//清空一个
@@ -238,7 +248,18 @@ class Myobserver {
     }
 
     private void hold(GameObject b) {
-        b.setBackColor(Color.RED);
+        Log.e("消块","进来多少次");//调试用
+//        b.setBackColor(Color.RED);
+       GameObject  Mask=game.getGameObject().getElementById("MaskBlock");
+//      synchronized ( game.getGameObject()) {
+          Mask.setW(b.getW());
+          Mask.setH(b.getH());
+          Mask.setY(b.getY());
+          Mask.setX(b.getX());
+//      }
+        Mask.setDisplay(true);//显示
+//        Bitmap[] bitmap={ b.getPic()[0],game.getImage("输入框-透明底.png")};
+//        b.setPic(bitmap);
     }
     @TargetApi(Build.VERSION_CODES.N)
     public boolean TellAlgorithsMatrixRemoveBlock(GameObject one, GameObject two, boolean Endless){
@@ -312,8 +333,11 @@ class Myobserver {
     }
 
     private void sendNoHold(GameObject one, GameObject two) {
-        one.setBackColor(OneBackColor);//恢复原来的颜色	测试用
-        two .setBackColor(TwoBackColor);//恢复原来的颜色	测试用
+       game.getGameObject().getElementById("MaskBlock").setDisplay(false);//不显示
+
+//        a.Destory();
+//        one.setBackColor(OneBackColor);//恢复原来的颜色	测试用
+//        two .setBackColor(TwoBackColor);//恢复原来的颜色	测试用
     }
 
     /*分段函数,递归

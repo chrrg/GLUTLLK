@@ -10,6 +10,7 @@ import cn.edu.glut.llk.MainLogical;
 
 public class Controller {
 
+    public static  int RecordScore;
 
     public int Login() {
         return 0;
@@ -23,6 +24,9 @@ public class Controller {
         return null;
     }
 
+    public static void writeScore(){
+        //写入分数
+    }
 class  GameTime extends TimerTask{
 int time;
 
@@ -33,7 +37,7 @@ int time;
 }
 
     public static class MyHandler extends Handler {
-        static int GameTime = 1000 * 60 * 2;//默认2分钟
+        public static int GameTime = 1000 * 60 * 2;//默认2分钟
         static int PauseTime=-1;
         private WeakReference<MainLogical> ref;
 
@@ -101,11 +105,13 @@ int time;
             sendEmptyMessage(0);//发送0消息，继续
         }
 
-        public void gameOver() {
+        public  void gameOver() {
             MainLogical mainLogical = ref.get();
             if (mainLogical != null) {
                 sendEmptyMessage(1);//清空0消息
                 mainLogical.setText("gameTime", "GameOver");
+                mainLogical.GameOver();//通知结束
+                writeScore();//记录分数
             }
         }
     }

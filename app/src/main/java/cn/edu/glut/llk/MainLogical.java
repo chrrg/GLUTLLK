@@ -67,6 +67,7 @@ public class MainLogical {
         setShow.put("gameBarrier", false);
         setShow.put("inputFrame", false);//输入重用框？？？
         setShow.put("Line",false);//line
+        setShow.put("MaskBlock",false);//物块点击遮罩
         setDisplay(setShow);
     }
 
@@ -89,7 +90,7 @@ private  void addGameRestartGame(){
         setDisplay("gamePauseMaskLayer", false);
         setCanTouch("gameBarrierMenu", true);//激活可选种顶部和底部菜单
         ReCreateChessboard();
-        myHandler.starGameTimeCount(1000*60);//重新计时
+        myHandler.starGameTimeCount(1000*60*2);//重新计时
     });
 }
 private void addGameReturnMenu(){
@@ -113,6 +114,8 @@ private void addGameReturnMenu(){
         //时间暂停
         CreateLister("gamePause", () -> {
             setDisplay("gamePauseMaskLayer", true);
+            if(myHandler.GameTime>0)setDisplay("gameContinue",true);
+            else setDisplay("gameContinue",false);
             setCanTouch("gameBarrierMenu", false);//顶部和底部菜单不能被选中
             myHandler.PauseGameCountDown();//暂停倒计时
         });
@@ -272,7 +275,7 @@ private void addGameReturnMenu(){
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
         GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,true,1, myobserver);//重复模式
-        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
+        myHandler.starGameTimeCount(1000*60*2);//开启定时器，1秒每步减少时间
 //状态转换
     }
     private void startGame3(CHCanvasGame game){
@@ -298,7 +301,10 @@ private void addGameReturnMenu(){
         myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
     }
 
-    private  void ResetSomeSceneState(){
+    public   void GameOver(){
+        setDisplay("gamePauseMaskLayer", true);
+        setCanTouch("gameBarrierMenu", false);//顶部和底部菜单不能被选中
+        setDisplay("gameContinue",false);//不能继续
 //        恢复场景初始状态，比如 退出游戏 再进
     }
     private void removeGameBlockChessboard(){

@@ -184,13 +184,14 @@ private void addGameReturnMenu(){
             setCanTouch("BottomButton",false);
         });
 
-        CreateLister("RankPageClose", () -> {
+        CreateLister("RankPage", () -> {//空白即关闭
 //            AnimateLib.fadeOut(game,"RankPage");
             setDisplay("RankPage", false);
             //恢复
             setCanTouch("menu0", true);
             setCanTouch("BottomButton", true);
         });// 关闭排行
+        CreateLister("RankPagepng",()->{});//空响应，拦截 rankpage
         //排行end
 
     }

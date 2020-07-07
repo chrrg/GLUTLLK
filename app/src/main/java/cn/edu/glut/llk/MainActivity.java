@@ -220,7 +220,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
-        game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
+//        game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
 //        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
 //        Log.e("asdasd",""+imm.isActive());

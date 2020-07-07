@@ -1,40 +1,94 @@
 package cn.edu.glut.llk.zhu;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
-import android.os.Message;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.TimerTask;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import cn.edu.glut.llk.MainLogical;
+import cn.edu.glut.llk.wang.UserService;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Controller {
-
+    private final  UserService UserService;
+    private WeakReference<MainLogical> ref;
+    SharedPreferences sp ;
     public static  int RecordScore;
-
-    public int Login() {
-        return 0;
+    public String Username;//登录注册用而已
+    public String Password;
+    public Controller(MainLogical mainLogical, Activity activity) {
+            this.ref = new WeakReference<>(mainLogical);
+            this.UserService=new UserService(activity);
+            this.sp=activity.getPreferences(MODE_PRIVATE);
+            this.Username=sp.getString("CurrentUser",null);//默认为null
     }
 
-    public int SignUp() {
-        return 0;
+    public boolean Login() {
+        MainLogical mainLogical = ref.get();
+        if(mainLogical==null)throw new NullPointerException();
+        if(Username==null||Username.equals("")) {mainLogical.setText("NoLoggedIn","用户名为空");return false;}
+        if(Password==null||Password.equals("")){mainLogical.setText("NoLoggedIn","密码为空");return false;}
+
+        if (UserService.CheckUsername(Username)) {//用户名存在
+            if (UserService.login(Username, Password))
+           { mainLogical.setText("inputFrame","登录成功");
+            rememberMe();//下一次不登录
+            return  true;}
+            else
+                {mainLogical.setText("inputFrame","密码错误");return false;}
+        }
+        else {
+            UserService.register(Username,Password);
+            mainLogical.setText("inputFrame","注册-登录成功");
+            rememberMe();//下一次不登录
+            return true;
+        }
     }
 
-    public ArrayList<String> sortRank() {
-        return null;
-    }
-
-    public static void writeScore(){
-        //写入分数
-    }
-class  GameTime extends TimerTask{
-int time;
-
-    @Override
-    public void run() {
-
-    }
+public void rememberMe(){
+    SharedPreferences.Editor ed = sp.edit();
+    ed.putString("CurrentUser",Username);//修改数据,当前用户
+    ed.apply();
 }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public void sortRank() {
+        MainLogical mainLogical = ref.get();
+        if (mainLogical == null) {
+            Log.e("mainlogical", "为空");
+            return;
+        }
+
+            Map<String, String> getdata = UserService.getdata();
+            AtomicInteger i = new AtomicInteger(1);
+            getdata.forEach((k, v) -> {
+                if (i.get() <= 5) {
+                    mainLogical.setText("Rank" + i, "用户："+k+"  分数："+ v);
+                    i.getAndIncrement();
+                }
+            });
+        }
+
+
+    public  void writeScore(){
+        Log.i("写入分数","writeScore");
+        //写入分数?只保存最高分？
+        String Curruser = sp.getString("CurrentUser", "");
+
+        if (!Curruser.equals("")) { //已登录状态
+           String maxScore=UserService.getdata().get(Curruser);
+//            if(maxScore !=null)
+                if(maxScore==null|| Integer.parseInt(maxScore)<RecordScore)//记录最高分
+                UserService.savedata(Curruser,String.valueOf(RecordScore));
+        }
+    }
 
     public static class MyHandler extends Handler {
         public static int GameTime = 1000 * 60 * 2;//默认2分钟
@@ -114,7 +168,7 @@ int time;
                 sendEmptyMessage(1);//清空0消息
                 mainLogical.setText("gameTime", "GameOver");
                 mainLogical.GameOver();//通知结束
-                writeScore();//记录分数
+               mainLogical.writeScore();//记录分数
             }
         }
     }

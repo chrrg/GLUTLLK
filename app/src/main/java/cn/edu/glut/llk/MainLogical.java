@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainLogical {
-    private String UsernameTest;
-    private String PasswordTest;
+    private final Controller MyController;
 
     private int Sound=1;//1为开
     Bitmap SoundOn;
@@ -28,6 +27,7 @@ public class MainLogical {
         this.myobserver =new Myobserver();
         this.game=game;
         this.myHandler=new Controller.MyHandler(this);
+        this.MyController=new Controller(this,game.getActivity());
         this.SoundOn = game.getImage("SoundOn.png");
         this.SoundOff= game.getImage("SoundOff.png");
     }
@@ -35,6 +35,10 @@ public class MainLogical {
     public void setProgressBar(int progressBarTime, int gameTime) {
         getObjectById("ProgressBar").setW(getObjectById("gameTime").getW()*gameTime/progressBarTime);
         getObjectById("ProgressBar2").setW(getObjectById("gameTime").getW()*gameTime/progressBarTime);
+    }
+
+    public void writeScore() {
+        MyController.writeScore();
     }
 
     public interface ListerLogicCallBack {
@@ -149,10 +153,7 @@ private void addGameReturnMenu(){
 //            setDisplay("menu", false);// 关闭menu菜单
 //            startGame3(game);
 //        });
-//        CreateLister("PingYi",()->{
-//            setDisplay("menu", false);// 关闭menu菜单
-//            startGame4(game);
-//        });
+
         CreateLister("NextBarrierTest", this::ReCreateChessboard);
         CreateLister("About",()->{
 
@@ -178,6 +179,7 @@ private void addGameReturnMenu(){
         //排行start
         CreateLister("Rank", () -> {
 //            AnimateLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
+            MyController.sortRank();
             setDisplay("RankPage", true);// 显示排行
 
             setCanTouch( "menu0",false);
@@ -198,10 +200,25 @@ private void addGameReturnMenu(){
 
     private void addAccountListerLogic() {
         // 输入框start
+        CreateLister("inputFrame",()->{
+            setDisplay("inputFrame",false);
+            setCanTouch("menu0", true);
+            setCanTouch("BottomButton", true);//允许底部
+        });//遮罩层关闭，同时作为拦截响应
+        CreateLister("NoLoggedIn",()->{});//空响应
         CreateLister("Account", () -> {
-            setDisplay("inputFrame", true);
-            setCanTouch("menu0",false);
-            setCanTouch("BottomButton",false);//不允许底部
+            if(MyController.Username!=null){
+                setDisplay("inputFrame", true);
+                setDisplay("NoLoggedIn",false);
+                setDisplay("LoggedIn",true);//显示已登录页
+                setText("LoggedIn","用户："+MyController.Username);
+            }else {
+                setDisplay("inputFrame", true);
+                setDisplay("LoggedIn",true);//显示登录层
+                setText("LoggedIn","登录页");
+                setCanTouch("menu0", false);
+                setCanTouch("BottomButton", false);//不允许底部
+            }
         });//显示输入框
         getObjectById("inputUsername").onTouchStart(event -> {
             Log.e("账号点击了！", "2");
@@ -209,7 +226,7 @@ private void addGameReturnMenu(){
                 if (inputText == null) Log.i("输入框", "没有输入内容");
                 else {
                     Log.e("输入了", inputText);
-                    UsernameTest = inputText;
+                    MyController.Username= inputText;
                 }
                 getObjectById("inputUsername").setText(inputText);
             });
@@ -220,9 +237,10 @@ private void addGameReturnMenu(){
                 if (inputText == null) Log.i("输入框", "没有输入内容");
                 else {
                     Log.e("输入了", inputText);
-                    PasswordTest = inputText;
-                    getObjectById("inputPass").setText(inputText);
+                    MyController.Password = inputText;
+//                    getObjectById("inputPass").setText(inputText);
                 }
+                getObjectById("inputPass").setText(inputText);
             });
         });
         CreateLister("Cancel", () -> {
@@ -233,8 +251,8 @@ private void addGameReturnMenu(){
         });//不登录
         CreateLister("Submit", () -> {
             Log.i("提交登录", "登录判断待TODO");
-            if (UsernameTest.equals("user1") && PasswordTest.equals("123456")) {
-                Log.i("登录成功", UsernameTest + PasswordTest);
+            if (MyController.Login()) {
+//                Log.i("登录成功", UsernameTest + PasswordTest);
                 setDisplay("inputFrame", false);//登录判断，成功则关闭登录框
                 setCanTouch("menu",true);//退出登录框后可触摸
                 setCanTouch("BottomButton",true);//激活底部
@@ -268,7 +286,7 @@ private void addGameReturnMenu(){
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
       GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,0, myobserver);
-        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
+        myHandler.starGameTimeCount(1000*6);//开启定时器，1秒每步减少时间
         setDisplay("currentBarrier",false);//当前关卡不显示
     }
 

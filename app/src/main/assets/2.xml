@@ -21,13 +21,13 @@
     </box>
     <!--同级的，写在上面的优先响应-->
     <box id="RankPage" w="100vw" h="100vh"  text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#80000000;image:stretch;" src="rank.jpg">
-        <box id="RankPagepng" w="80vw" h="66vh" x="10vw"  y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;image:stretch;" src="rank1.png">
+        <box id="RankPagepng" w="80vw" h="66vh" x="10vw"  y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;image:stretch;" src="rank2.png">
 <!--        <box id="RankPageClose"  w="15vw" h="7vh" x="75vw"  y="20vh" text="关闭" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />-->
-<!--        <box id="Rank1" w="70vw" h="6vh"  x="15vw" y="28vh"    text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>-->
-<!--        <box id="Rank2" w="70vw" h="6vh"  x="15vw" y="38vh"    text="rank2" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>-->
-<!--        <box id="Rank3" w="70vw" h="6vh"  x="15vw" y="48vh"    text="rank3" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>-->
-<!--        <box id="Rank4" w="70vw" h="6vh"  x="15vw" y="58vh"    text="rank4" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>-->
-<!--        <box id="Rank5" w="70vw" h="6vh"  x="15vw" y="68vh"    text="rank5" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>-->
+        <box id="Rank1" w="70vw" h="6vh"  x="15vw" y="42vh"    text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 6.png"/>
+        <box id="Rank2" w="70vw" h="6vh"  x="15vw" y="50vh"    text="rank2" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 7.png"/>
+        <box id="Rank3" w="70vw" h="6vh"  x="15vw" y="58vh"    text="rank3" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 8.png"/>
+        <box id="Rank4" w="70vw" h="6vh"  x="15vw" y="66vh"    text="rank4" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 9.png"/>
+        <box id="Rank5" w="70vw" h="6vh"  x="15vw" y="74vh"    text="rank5" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 10.png"/>
     </box>
     </box>
     <!--    加减不是百分比-->

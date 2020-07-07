@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -186,78 +187,68 @@ class Myobserver {
     private final int Column1Y;
     private final int Column1W;
     private final int LeftMargin;
-    boolean One=false;
-    boolean Two=false;
     GameObject OneObj;
-    GameObject TwoObj;
-    int OneBackColor;
-    int TwoBackColor;
+   WeakReference<GameObject>  MaskRef;
 
     public Elimination(CHCanvasGame game, Item[][] items) {
         this.game=game;
         this.item=items;
         Column1Y= game.getGameObject().getElementById("Column1").getY();
         Column1W= game.getGameObject().getElementById("Column1").getW();
+        this.MaskRef=new WeakReference<>(game.getGameObject().getElementById("MaskBlock"));
+
         LeftMargin = (int) (game.getWidth() * 0.025);
     }
 
     public  boolean click(GameObject b,boolean Endless){
-        //只有满的时候发送，并清空，先判断满没满先
-        if(One && Two){
-            if(OneObj==TwoObj){ Two=false;//清空一个
-                return false;}//自己不能点击同一个物体两次来消
-
-            One=Two=false;//清空
-            sendNoHold(OneObj,TwoObj);
-            //逻辑判断
-            if( TellAlgorithsMatrixRemoveBlock(OneObj,TwoObj,Endless))
-            {
-                OneObj.setDisplay(false);// 平不平移false就行了。平移的后面会重新true的。
-                TwoObj.setDisplay(false);
-
-                return true; //不要向下执行了，因为下面会执行一个 返回 true 告诉物体可以被消，可以平移了
+        //只有满的时候发送，并清空，先判断满没满先  只hold一个效果
+        if (OneObj == null)
+        {
+            OneObj = b;
+            hold(b);//点击效果
+        }
+        else if (OneObj == b) {
+            sendNoHold(b);
+            OneObj=null;//因为false了
+            return false;
+            } else {
+                //逻辑判断
+                if (TellAlgorithsMatrixRemoveBlock(OneObj, b, Endless)) {
+                    OneObj.setDisplay(false);// 平不平移false就行了。平移的后面会重新true的。
+                    b.setDisplay(false);
+                    sendNoHold(OneObj); //成功关闭效果
+                    OneObj=null;
+                    return true; //不要向下执行了，因为下面会执行一个 返回 true 告诉物体可以被消，可以平移了
+                }
+                sendNoHold(OneObj);//不成功取消
+                 OneObj=null;
+            return false;//不能被消，不平移？
             }
-            return  false;//不能被消，不平移？
-        }
-        if(One==true)//一位满，占二位
-        { Two=true;
-            TwoObj=b;
-            TwoBackColor=b.getBackColor();//测试用，保存
-            hold(b);//hold效果
-        }
-        else {
-            One=true;//占一位
-            OneObj=b;
-            OneBackColor=b.getBackColor();//测试用
-            hold(b);
-        }
-        //再判断一次满没满没满。因为进来了一个
-        if(One==true&&Two==true){
-            if(OneObj==TwoObj){ Two=false;//清空一个
-                return false;}//自己不能点击同一个物体两次来消
 
-            One=Two=false;//清空
-            sendNoHold(OneObj,TwoObj);
-            //逻辑判断
-            if( TellAlgorithsMatrixRemoveBlock(OneObj,TwoObj,Endless))
-            {
-                OneObj.setDisplay(false);// 平不平移false就行了。平移的后面会重新true的。
-                TwoObj.setDisplay(false);
-                return true;//再判断一次
-            }
-        }
         return  false;//还没点够两个物体
     }
 
-    private void hold(GameObject b) {
+     private void sendNoHold(GameObject b) {
+         game.getGameObject().getElementById("MaskBlock").setDisplay(false);//不显示
+
+         b.setY(b.getY()+20);
+         b.setX(b.getX()+20);
+     }
+
+
+     private void hold(GameObject b) {
         Log.e("消块","进来多少次");//调试用
 //        b.setBackColor(Color.RED);
-       GameObject  Mask=game.getGameObject().getElementById("MaskBlock");
 //      synchronized ( game.getGameObject()) {
-          Mask.setW(b.getW()+50);
-          Mask.setH(b.getH()+40);
-          Mask.setY(b.getY()-10);
-          Mask.setX(b.getX()-20);
+         GameObject Mask=MaskRef.get();
+         if(Mask==null) throw new NullPointerException();
+          Mask.setW(Column1W+40);
+          Mask.setH(Column1W+35);
+          Mask.setY(b.getY()-30);
+          Mask.setX(b.getX()-30);
+
+         b.setY(b.getY()-20);
+         b.setX(b.getX()-20);
 //      }
         Mask.setDisplay(true);//显示
 //        Bitmap[] bitmap={ b.getPic()[0],game.getImage("输入框-透明底.png")};
@@ -334,13 +325,6 @@ class Myobserver {
         return false;
     }
 
-    private void sendNoHold(GameObject one, GameObject two) {
-       game.getGameObject().getElementById("MaskBlock").setDisplay(false);//不显示
-
-//        a.Destory();
-//        one.setBackColor(OneBackColor);//恢复原来的颜色	测试用
-//        two .setBackColor(TwoBackColor);//恢复原来的颜色	测试用
-    }
 
     /*分段函数,递归
      * 数组 int[]

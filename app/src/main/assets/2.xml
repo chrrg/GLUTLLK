@@ -13,15 +13,15 @@
         <box id="Sound" w="15%" h="15vw" x="53%" y="87vh" text="声音开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;image:stretch;" src="SoundOn.png"/>
         <box id="Account"  w="15%" h="15vw" x="75%" y="87vh" text="账号" style="fontSize:2vh;color:#FFFAFA;textY:bottom;image:stretch;" src="账号.png"/>
     </box>
-    <box id="inputFrame" l="10vw" h="35vh" r="10vw" y="30vh" text="输入框" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#C85F9EA0;">
-        <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+5vh" text="用户名" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;image:stretch;" src="输入框-白底.png"/>
-        <input id="inputPass" l="+15%" h="7vh" r="+15%" y="+15vh" text="密码" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;image:stretch;" src="输入框-白底.png"/>
-        <box id="Cancel" l="+5%" y="+75%" r="+60%" b="+5%" text="取消" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
-        <box id="Submit" l="+60%" y="+75%" r="+5%" b="+5%" text="提交" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
+    <box id="inputFrame" l="10vw" h="40vh" r="10vw" y="30vh" text="输入框" style="fontSize:3vh;color:#FFFAFA;textY:bottom;image:stretch;" src="Login.png">
+        <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+5vh" text="用户名" style="fontSize:2vh;color:#FFFFFF;text:center;image:stretch;" src="输入框-透明底.png"/>
+        <input id="inputPass" l="+15%" h="7vh" r="+15%" y="+15vh" text="密码" style="fontSize:2vh;color:#FFFFFF;text:center;image:stretch;" src="输入框-透明底.png"/>
+        <box id="Cancel" l="+8%" y="+70%" r="+60%" b="+10%" text="取消" style="fontSize:2vh;color:#000000;text:center;backColor:#FFFAFA;image:stretch;" src="btn3.png" />
+        <box id="Submit" l="+60%" y="+70%" r="+5%" b="+10%" text="提交" style="fontSize:2vh;color:#000000;text:center;backColor:#FFFAFA;image:stretch;" src="btn3.png" />
     </box>
     <!--同级的，写在上面的优先响应-->
     <box id="RankPage" w="80vw" h="66vh" x="10vw"  y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
-        <box id="RankPageClose"  w="15vw" h="7vh" x="75vw"  y="20vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
+        <box id="RankPageClose"  w="15vw" h="7vh" x="75vw"  y="20vh" text="关闭" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
         <box id="Rank1" w="70vw" h="6vh"  x="15vw" y="28vh"    text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
         <box id="Rank2" w="70vw" h="6vh"  x="15vw" y="38vh"    text="rank2" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>
         <box id="Rank3" w="70vw" h="6vh"  x="15vw" y="48vh"    text="rank3" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#FF1493;"/>

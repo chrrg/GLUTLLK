@@ -1,19 +1,12 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import java.util.Arrays;
-import java.util.List;
+import cn.edu.glut.llk.LLKGame;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import android.util.Log;
-import android.view.inputmethod.InputMethodManager;
 
 
 
@@ -236,7 +229,7 @@ public class MainActivity extends Activity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        if(game==null) game = new CHCanvasGame(this, new LLKGame());//初始化游戏引擎
+        if(game==null) game = new CHCanvasGame(this, new cn.edu.glut.llk.LLKGame());//初始化游戏引擎
         setContentView(game.getContentView());
     }
     @Override

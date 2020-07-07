@@ -4,10 +4,8 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
-
+import cn.edu.glut.llk.Myobserver;
 import cn.edu.glut.llk.zhu.Controller;
-
-import java.security.interfaces.DSAPublicKey;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +20,10 @@ public class MainLogical {
     Bitmap SoundOff;
     CHCanvasGame game;
     private Controller.MyHandler myHandler;
-    private Myobserver myobserver;
+    private cn.edu.glut.llk.Myobserver myobserver;
+    private String Username;
+    private String Password;
+
     MainLogical(CHCanvasGame game) {
         this.myobserver =new Myobserver();
         this.game=game;
@@ -205,28 +206,37 @@ private void addGameReturnMenu(){
             setCanTouch("menu0", true);
             setCanTouch("BottomButton", true);//允许底部
         });//遮罩层关闭，同时作为拦截响应
-        CreateLister("NoLoggedIn",()->{});//空响应
+CreateLister("LoggedIn",()->{});
         CreateLister("Account", () -> {
-            if(MyController.Username!=null){
+            if(MyController.CurrentUser!=null&&!MyController.CurrentUser.equals("")){
                 setDisplay("inputFrame", true);
                 setDisplay("NoLoggedIn",false);
                 setDisplay("LoggedIn",true);//显示已登录页
-                setText("LoggedIn","用户："+MyController.Username);
+                setText("LoggedIn","用户："+MyController.CurrentUser);
+                setCanTouch("menu0", false);
+                setCanTouch("BottomButton", false);//不允许底部
             }else {
                 setDisplay("inputFrame", true);
-                setDisplay("LoggedIn",true);//显示登录层
+                setDisplay("NoLoggedIn",true);//显示登录层
+                setDisplay("LoggedIn",false);//关闭已登录层
                 setText("LoggedIn","登录页");
                 setCanTouch("menu0", false);
                 setCanTouch("BottomButton", false);//不允许底部
             }
         });//显示输入框
+        CreateLister("logout",()->{
+            MyController.logout();
+            setDisplay("inputFrame",false);
+            setCanTouch("menu0", true);
+            setCanTouch("BottomButton", true);//允许底部
+        });
         getObjectById("inputUsername").onTouchStart(event -> {
             Log.e("账号点击了！", "2");
             game.getInput(inputText -> {
-                if (inputText == null) Log.i("输入框", "没有输入内容");
+                if (inputText == null || inputText.equals("") ) Log.i("输入框", "没有输入内容");
                 else {
                     Log.e("输入了", inputText);
-                    MyController.Username= inputText;
+                    this.Username= inputText;
                 }
                 getObjectById("inputUsername").setText(inputText);
             });
@@ -234,10 +244,10 @@ private void addGameReturnMenu(){
         getObjectById("inputPass").onTouchStart(event -> {
             Log.e("点击了密码框", "2");
             game.getInput(inputText -> {
-                if (inputText == null) Log.i("输入框", "没有输入内容");
+                if (inputText == null || inputText.equals("")) Log.i("输入框", "没有输入内容");
                 else {
                     Log.e("输入了", inputText);
-                    MyController.Password = inputText;
+                    this.Password = inputText;
 //                    getObjectById("inputPass").setText(inputText);
                 }
                 getObjectById("inputPass").setText(inputText);
@@ -251,7 +261,7 @@ private void addGameReturnMenu(){
         });//不登录
         CreateLister("Submit", () -> {
             Log.i("提交登录", "登录判断待TODO");
-            if (MyController.Login()) {
+            if (MyController.Login(this.Username,this.Password)) {
 //                Log.i("登录成功", UsernameTest + PasswordTest);
                 setDisplay("inputFrame", false);//登录判断，成功则关闭登录框
                 setCanTouch("menu",true);//退出登录框后可触摸

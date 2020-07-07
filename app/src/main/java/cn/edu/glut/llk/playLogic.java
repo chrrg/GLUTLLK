@@ -113,7 +113,6 @@ class Myobserver {
     private CHCanvasGame game;
     private Item[][] item;//这次游戏的图片属于哪个方块
     int currentBarrier=1;
-    int  score=0;
     private int Column1W;
     private int remaining=-1;//剩余的数量
     private boolean repeat=false;
@@ -128,7 +127,7 @@ class Myobserver {
         this.game=game;
         this.item=items;//持有一个引用 ,
         this.repeat=repeat;
-      if(!repeat) {currentBarrier=1; score=0;}// 不是重复模式 则重置分数
+      if(!repeat) {currentBarrier=1; Controller.RecordScore=0;}// 不是重复模式 则重置分数
         this.remaining=data.size();// 剩余的数量
 
         Column1W= game.getGameObject().getElementById("Column1").getW();
@@ -140,14 +139,14 @@ class Myobserver {
         boolean  isEliminate= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否能消掉
 
         if (isEliminate) {
-            score += 100;
-            game.getGameObject().getElementById("gameScore").setText("分数：" + score);
-            game.getGameObject().getElementById("CurrentScore").setText("当前分数：" + score);
+            Controller.RecordScore+= 100;
+            game.getGameObject().getElementById("gameScore").setText("分数：" + Controller.RecordScore);
+            game.getGameObject().getElementById("CurrentScore").setText("当前分数：" + Controller.RecordScore);
             remaining-=2;//偶数减
             if(remaining==0 && !repeat) {//不是无尽模式下 才结束
-                Controller.RecordScore = score;
+//                Controller.RecordScore = score;
                 Controller.MyHandler.GameTime=0;//触发 gameOver事件函数方法
-                game.getGameObject().getElementById("CurrentScore").setText("win ! 分数：" + score);
+                game.getGameObject().getElementById("CurrentScore").setText("win ! 分数：" + Controller.RecordScore);
             }
             if(remaining==0&&repeat)//无尽模式 下一关
             {       currentBarrier++;//关卡加一

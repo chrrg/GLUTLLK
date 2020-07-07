@@ -24,6 +24,7 @@ public class main {//算法静态化，不用实例化
                 ArrayList<Bitmap>   bs = new ArrayList<>();
                 String[] files = game.getActivity().getAssets().list(pathName[x]);
                 assert files != null;
+                Log.e("bitmap"+"得到长度之前","/Perf: Fail to get file list cn.edu.glut.llk");
                 Log.e("图片个数","长度为"+files.length);
                 for (int i = 0; i < files.length; i++) {
                     Bitmap bitmap = BitmapFactory.decodeStream(game.getActivity().getAssets().open(pathName[x] + "/" + files[i]));

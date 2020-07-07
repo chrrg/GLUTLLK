@@ -10,6 +10,8 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.edu.glut.llk.MainLogical;
 import cn.edu.glut.llk.wang.UserService;
@@ -21,40 +23,47 @@ public class Controller {
     private WeakReference<MainLogical> ref;
     SharedPreferences sp ;
     public static  int RecordScore;
-    public String Username;//登录注册用而已
-    public String Password;
+    public String CurrentUser;//登录注册用而已
     public Controller(MainLogical mainLogical, Activity activity) {
             this.ref = new WeakReference<>(mainLogical);
             this.UserService=new UserService(activity);
             this.sp=activity.getPreferences(MODE_PRIVATE);
-            this.Username=sp.getString("CurrentUser",null);//默认为null
+            this.CurrentUser=sp.getString("CurrentUser",null);//默认为null
     }
 
-    public boolean Login() {
+    public boolean Login(String username,String password ) {
         MainLogical mainLogical = ref.get();
         if(mainLogical==null)throw new NullPointerException();
-        if(Username==null||Username.equals("")) {mainLogical.setText("NoLoggedIn","用户名为空");return false;}
-        if(Password==null||Password.equals("")){mainLogical.setText("NoLoggedIn","密码为空");return false;}
+        /*=======为空效验=======*/
+        if(username==null||username.equals("")) {mainLogical.setText("NoLoggedIn","用户名为空");return false;}
+        if(password==null||password.equals("")){mainLogical.setText("NoLoggedIn","密码为空");return false;}
+        /*========正则匹配============*/
 
-        if (UserService.CheckUsername(Username)) {//用户名存在
-            if (UserService.login(Username, Password))
+        if (!Pattern.matches("^(?!_)(?!.*?_$)[a-zA-Z0-9_\\u4e00-\\u9fa5]+$",username)) {mainLogical.setText("NoLoggedIn", "用户名（汉字、字母、数字）格式不对");return false;}
+
+        if(!Pattern.matches("[a-zA-Z0-9]{1,16}",password)){mainLogical.setText("NoLoggedIn","密码（字母、数字）格式不对");return false;}
+
+        if (UserService.CheckUsername(username)) {//用户名存在
+            if (UserService.login(username, password))
            { mainLogical.setText("inputFrame","登录成功");
-            rememberMe();//下一次不登录
+            rememberMe(username);//下一次不登录
+            this.CurrentUser=username;
             return  true;}
             else
                 {mainLogical.setText("inputFrame","密码错误");return false;}
         }
         else {
-            UserService.register(Username,Password);
+            UserService.register(username,password);
             mainLogical.setText("inputFrame","注册-登录成功");
-            rememberMe();//下一次不登录
+            rememberMe(username);//下一次不登录
+            this.CurrentUser=username;
             return true;
         }
     }
 
-public void rememberMe(){
+public void rememberMe(String RememberUser){
     SharedPreferences.Editor ed = sp.edit();
-    ed.putString("CurrentUser",Username);//修改数据,当前用户
+    ed.putString("CurrentUser",RememberUser);//修改数据,当前用户
     ed.apply();
 }
 
@@ -80,9 +89,9 @@ public void rememberMe(){
     public  void writeScore(){
         Log.i("写入分数","writeScore");
         //写入分数?只保存最高分？
-        String Curruser = sp.getString("CurrentUser", "");
+        String Curruser = sp.getString("CurrentUser", null);
 
-        if (!Curruser.equals("")) { //已登录状态
+        if (Curruser!=null) { //已登录状态
            String maxScore=UserService.getdata().get(Curruser);
 //            if(maxScore !=null)
                 if(maxScore==null|| Integer.parseInt(maxScore)<RecordScore)//记录最高分
@@ -90,6 +99,15 @@ public void rememberMe(){
         }
     }
 
+    public void   logout(){//注销
+        this.CurrentUser=null;//置空
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();//清除所有
+        editor.apply();//提交更改
+        //删除SharedPreferences
+
+    }
+    /*===========计量=========*/
     public static class MyHandler extends Handler {
         public static int GameTime = 1000 * 60 * 2;//默认2分钟
         static int PauseTime=-1;

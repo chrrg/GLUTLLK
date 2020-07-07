@@ -1,7 +1,9 @@
 package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import cn.edu.glut.llk.Myobserver;
@@ -153,12 +155,24 @@ private void addGameReturnMenu(){
 //        CreateLister("FullCell",()->{
 //            setDisplay("menu", false);// 关闭menu菜单
 //            startGame3(game);
+
 //        });
+        CreateLister("About",()->{
+              Uri uri = Uri.parse("https://www.baidu.com");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            game.getActivity().getApplicationContext().startActivity(intent);
+        });
+        CreateLister("Share",()->{
+            Intent textIntent = new Intent(Intent.ACTION_SEND);
+            textIntent.setType("text/plain");
+            textIntent.putExtra(Intent.EXTRA_TEXT, "这是一段分享的文字");
+            Intent send=Intent.createChooser(textIntent, "分享");
+            send.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+            game.getActivity().getApplicationContext().startActivity(send);
+        });
 
         CreateLister("NextBarrierTest", this::ReCreateChessboard);
-        CreateLister("About",()->{
-
-        });
         CreateLister("ExitGame",()->{
             System.exit(0);//正常退出
         });
@@ -296,7 +310,7 @@ CreateLister("LoggedIn",()->{});
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
       GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,0, myobserver);
-        myHandler.starGameTimeCount(1000*6);//开启定时器，1秒每步减少时间
+        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
         setDisplay("currentBarrier",false);//当前关卡不显示
     }
 
@@ -321,7 +335,7 @@ CreateLister("LoggedIn",()->{});
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Collections.singletonList(-1);//从全满就行了
         GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,2, myobserver);//满格模式
-        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
+        myHandler.starGameTimeCount(1000*60*2);//开启定时器，1秒每步减少时间
     }
 
     private void startGame4(CHCanvasGame game){

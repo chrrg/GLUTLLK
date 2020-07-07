@@ -1,21 +1,21 @@
     <!--    menu start-->
-<box id="menu"  w="100%" h="75vh" y="25vh"  >
-    <box id="menu0"  w="80%" h="60vh" l="10%" y="26vh"  >
+<box id="menu"  w="100%" h="75vh" y="25vh" >
+    <box id="menu0"  w="80%" h="60vh" l="10%" y="26vh" >
         <box id="startGame"   w="50vw" h="5vh" x="30%" y="+10vh" text="开始游戏" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png"/>
         <box id="EndlessMenu"   w="50vw" h="5vh" x="30%" y="+20vh" text="无尽模式" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" /><!--透明度 遮罩,argb 前面加-->
-        <box id="About"   w="50vw" h="5vh" x="30%" y="55vh" text="关于" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" />
+        <box id="Share"   w="50vw" h="5vh" x="30%" y="55vh" text="分享" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" />
         <box id="ExitGame"   w="50vw" h="5vh" x="30%" y="65vh" text="退出游戏" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png"/>
 <!--        <box id="FullCell"   w="50vw" h="5vh" x="30%" y="75vh" text="FullCell" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" />-->
     </box>
     <box id="BottomButton" w="100%" h="13vh"  y="87vh"   >
         <box id="Rank" w="15%" h="15vw" x="10%" y="87vh" style="image:stretch;" src="Rankbtn.png"/>
-        <box id="share" w="15%" h="15vw" x="32%" y="87vh"  style="image:stretch;" src="About.png"/>
+        <box id="About" w="15%" h="15vw" x="32%" y="87vh"  style="image:stretch;" src="About.png"/>
         <box id="Sound" w="15%" h="15vw" x="53%" y="87vh"  style="image:stretch;" src="SoundOn.png"/>
-        <box id="Account"  w="15%" h="15vw" x="75%" y="87vh"  style="textY:bottom;image:stretch;" src="账号.png"/>
+        <box id="Account"  w="15%" h="15vw" x="75%" y="87vh"  style="image:stretch;" src="账号.png"/>
     </box>
     <box id="inputFrame" w="100vw" h="100vh"  style="image:stretch;" src="rank.jpg">
             <box id="LoggedIn" l="10vw" h="40vh" r="10vw" y="30vh" text="当前用户" style="fontSize:3vh;text:center;image:stretch;" src="已登录.png">
-                <box id="logout" l="45vw" h="5vh" r="45vw" y="55vh" text="注销" style="fontSize:2vh;text:center;backColor:#A0522D;image:stretch;" src="注销登录.png"/>
+                <box id="logout" l="45vw" h="5vh" r="45vw" y="55vh" text="注销" style="fontSize:2vh;text:center;image:stretch;" src="注销登录.png"/>
             </box>
             <box id="NoLoggedIn" l="10vw" h="40vh" r="10vw" y="30vh" text="登录页" style="fontSize:3vh;color:#FF0000;textX:center;textY:bottom;image:stretch;" src="Login.png">
                 <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+11vh" text="用户名" style="fontSize:2vh;color:#000000;textX:center;textY:bottom"/>

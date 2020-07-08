@@ -26,6 +26,7 @@ class GenerateChessboard{
 static Bitmap gameChessboardBackground;
  static    void   GenerateGameBlock(CHCanvasGame game, GameObject Node, int row, int column, List<Integer> EmptyColumn,boolean Endless, boolean repeat,int pathRandom ,Myobserver myobserver){ /* n 为 空第几列  squares 为正方形  从一开始函数*/
 //       synchronized (GameObject.class) {
+     game.getGameObject().getElementById("MaskBlock").setDisplay(false);
      if(gameChessboardBackground==null)gameChessboardBackground=game.getImage("gameChessboardBackground.png");
            GameObject Canvas = new GameObject(game);
            int BlockWidthAndHeight = (int) (game.getWidth() - game.getWidth() * 0.05) / column;//宽//默认正方形

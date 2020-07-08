@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -75,7 +76,7 @@ public void rememberMe(String RememberUser){
             return;
         }
 
-            Map<String, String> getdata = UserService.getdata();
+          LinkedHashMap<String,String> getdata = UserService.getdata();
             AtomicInteger i = new AtomicInteger(1);
             getdata.forEach((k, v) -> {
                 if (i.get() <= 5) {

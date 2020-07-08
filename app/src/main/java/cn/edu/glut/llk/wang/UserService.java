@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class UserService {
@@ -48,8 +49,8 @@ public class UserService {
         sdb.execSQL(sql, obj);
         return true;
     }
-    public Map<String,String> getdata(){
-        Map<String,String> result= new HashMap<>();
+    public LinkedHashMap<String, String> getdata(){
+        LinkedHashMap<String,String> result = new LinkedHashMap<>();
         int i=0;
         SQLiteDatabase sdb=dbHelper.getReadableDatabase();
         String sql="select * from user order by maxscore desc";

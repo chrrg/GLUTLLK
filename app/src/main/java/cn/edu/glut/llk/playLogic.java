@@ -81,6 +81,7 @@ static Bitmap gameChessboardBackground;
                    b.setX((int) (gameWidth * 0.025) + j * BlockWidthAndHeight);//与列相同
                    b.setY(CanvasY + i * BlockWidthAndHeight);
 //                   b.setText(String.valueOf(i) + j);
+                   b.setStyleText("image:stretch;");//设置图片之前设置图片样式
 //                   b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#26D2691E;image:stretch;");//设置图片之前设置图片样式
 //                   if (i % 2 == 0)//偶数
 //                       b.setStyle("backColor", "#CCD2691E");

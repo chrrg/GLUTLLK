@@ -49,8 +49,25 @@ public class UserService {
         sdb.execSQL(sql, obj);
         return true;
     }
-    public LinkedHashMap<String,String> getdata(){
-        LinkedHashMap<String,String> result = new LinkedHashMap<>();
+    public ArrayList<String[]> getdata(){
+        ArrayList<String[]> result = new ArrayList<>();
+        SQLiteDatabase sdb=dbHelper.getReadableDatabase();
+        String sql="select * from user order by maxscore desc";
+        Cursor cursor = sdb.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(1);//获取第二列的值
+            String score = cursor.getString(3);//获取第三列的值
+            String[] list=new String[2];
+            list[0]=name;
+            list[1]=score;
+            result.add(list);
+        }
+        cursor.close();
+        return result;
+    }
+    public Map<String,String> getScore(){
+        Map<String,String> result= new HashMap<>();
+        int i=0;
         SQLiteDatabase sdb=dbHelper.getReadableDatabase();
         String sql="select * from user order by maxscore desc";
         Cursor cursor = sdb.rawQuery(sql, null);

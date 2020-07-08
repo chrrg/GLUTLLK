@@ -1,4 +1,4 @@
-package cn.edu.glut.llk;
+package cn.edu.glut.llk.wang2;
 
 import java.util.ArrayList;
 

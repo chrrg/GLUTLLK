@@ -11,7 +11,7 @@
         </box>
         <box id="currentBarrier" l="30vw" w="100vw" h="6vh" t="12vh" r="30vw" text="当前关卡" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#008080;"/>
         <!--底部菜单-->
-        <box id="gameBottomMenu"  w="100vw" h="10vh" text="游戏底部选项" y="90vh" b="2vh" style="fontSize:2vh;color:#FFFAFA;textY:bottom;image:stretch;" src="木板一号.png">
+        <box id="gameBottomMenu"  w="100vw" h="10vh"  y="90vh" b="2vh" style="image:stretch;" src="木板一号.png">
             <box id="NextBarrierTest" w="20vw" x="+2vw"  y="90vh" b="2vh" text="next level" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
             <box id="gameScore" w="42vw" x="+29vw"  y="90vh" b="2vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
             <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>

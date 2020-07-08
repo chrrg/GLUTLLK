@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        String sql="create table user(id integer primary key autoincrement,username varchar(20),password varchar(20),maxscore varchar(20))";
+        String sql="create table user(id integer primary key autoincrement,username varchar(20),password varchar(20),maxscore INT)";
         db.execSQL(sql);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

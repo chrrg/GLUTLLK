@@ -146,7 +146,7 @@ class Myobserver {
             game.getGameObject().getElementById("CurrentScore").setText("当前分数：" + Controller.RecordScore);
             remaining-=2;//偶数减
             if(remaining==0 && !repeat) {//不是无尽模式下 才结束
-//                Controller.RecordScore = score;
+                Controller.RecordScore +=(Controller.MyHandler.GameTime*500)/(1000*60) ;//300分的奖励分
                 Controller.MyHandler.GameTime=0;//触发 gameOver事件函数方法
                 game.getGameObject().getElementById("CurrentScore").setText("win ! 分数：" + Controller.RecordScore);
             }

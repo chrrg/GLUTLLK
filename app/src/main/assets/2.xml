@@ -15,7 +15,7 @@
     </box>
     <box id="inputFrame" w="100vw" h="100vh"  style="image:stretch;" src="rank.jpg">
             <box id="LoggedIn" l="10vw" h="40vh" r="10vw" y="30vh" text="当前用户" style="fontSize:3vh;text:center;image:stretch;" src="已登录.png">
-                <box id="logout" l="45vw" h="5vh" r="45vw" y="55vh" text="注销" style="fontSize:2vh;text:center;image:stretch;" src="注销登录.png"/>
+                <box id="logout" l="45vw" h="5vh" r="45vw" y="55vh"  style="image:stretch;" src="注销登录.png"/>
             </box>
             <box id="NoLoggedIn" l="10vw" h="40vh" r="10vw" y="30vh" text="登录页" style="fontSize:3vh;color:#FF0000;textX:center;textY:bottom;image:stretch;" src="Login.png">
                 <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+11vh" text="用户名" style="fontSize:2vh;color:#000000;textX:center;textY:bottom"/>
@@ -26,8 +26,8 @@
 
     </box>
     <!--同级的，写在上面的优先响应-->
-    <box id="RankPage" w="100vw" h="100vh"  text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#80000000;image:stretch;" src="rank.jpg">
-        <box id="RankPagepng" w="80vw" h="66vh" x="10vw"  y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;image:stretch;" src="rank2.png">
+    <box id="RankPage" w="100vw" h="100vh"  text="桂工榜" style="fontSize:3vh;color:#FFFAFA;textY:bottom;textX:center;backColor:#80000000;image:stretch;" src="rank.jpg">
+        <box id="RankPagepng" w="80vw" h="66vh" x="10vw"  y="20vh"  style="image:stretch;" src="rank2.png">
             <box id="Rank1" w="70vw" h="6vh"  x="15vw" y="42vh"    text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 6.png"/>
             <box id="Rank2" w="70vw" h="6vh"  x="15vw" y="50vh"    text="rank2" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 7.png"/>
             <box id="Rank3" w="70vw" h="6vh"  x="15vw" y="58vh"    text="rank3" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 8.png"/>

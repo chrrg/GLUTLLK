@@ -1,4 +1,4 @@
-package cn.edu.glut.llk;
+package cn.edu.glut.llk.wang2;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

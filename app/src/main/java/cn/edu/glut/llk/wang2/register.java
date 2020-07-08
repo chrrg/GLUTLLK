@@ -1,13 +1,9 @@
-package cn.edu.glut.llk;
+package cn.edu.glut.llk.wang2;
 
 import java.util.ArrayList;
 
 
-
-import java.util.Scanner;
-
-
- class User{
+class User{
 
     long id;
     String code;

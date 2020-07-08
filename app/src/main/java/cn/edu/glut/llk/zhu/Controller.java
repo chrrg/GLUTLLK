@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,11 +77,11 @@ public void rememberMe(String RememberUser){
             return;
         }
 
-          LinkedHashMap<String,String> getdata = UserService.getdata();
+          ArrayList<String[]> getdata = UserService.getdata();
             AtomicInteger i = new AtomicInteger(1);
-            getdata.forEach((k, v) -> {
+            getdata.forEach((k) -> {
                 if (i.get() <= 5) {
-                    mainLogical.setText("Rank" + i, "用户："+k+"  分数："+ v);
+                    mainLogical.setText("Rank" + i, "用户："+k[0]+"  分数："+k[1]);
                     i.getAndIncrement();
                 }
             });
@@ -93,7 +94,7 @@ public void rememberMe(String RememberUser){
         String Curruser = sp.getString("CurrentUser", null);
 
         if (Curruser!=null) { //已登录状态
-           String maxScore=UserService.getdata().get(Curruser);
+           String maxScore=UserService.getScore().get(Curruser);
 //            if(maxScore !=null)
                 if(maxScore==null|| Integer.parseInt(maxScore)<RecordScore)//记录最高分
                 UserService.savedata(Curruser,String.valueOf(RecordScore));

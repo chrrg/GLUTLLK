@@ -111,10 +111,11 @@ public void rememberMe(String RememberUser){
     }
     /*===========计量=========*/
     public static class MyHandler extends Handler {
-        public static int GameTime = 1000 * 60 * 2;//默认2分钟
+        public static int GameTime = 1000 * 60 ;//默认1分钟
         static int PauseTime=-1;
         private WeakReference<MainLogical> ref;
         private int ProgressBarTime= 1000 * 60 ;//默认1分钟;
+       public   boolean EndlessTime=false;
 
         public MyHandler(MainLogical mainLogical) {
             this.ref = new WeakReference<>(mainLogical);
@@ -168,9 +169,10 @@ public void rememberMe(String RememberUser){
             }
         }
 
-        public void starGameTimeCount(int gameTime) {
+        public void starGameTimeCount(int gameTime,boolean Endless) {
             GameTime = gameTime;
             ProgressBarTime=gameTime;
+            this.EndlessTime=Endless;
             sendEmptyMessage(0);// 0 消息会减秒娄直到少于1000毫秒
         }
 

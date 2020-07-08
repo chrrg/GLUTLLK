@@ -1,26 +1,16 @@
 package cn.edu.glut.llk;
 
 import android.annotation.TargetApi;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cn.edu.glut.llk.zhu.Controller;
-import cn.edu.glut.llk.zhu.suanfa.*;
-
+import cn.edu.glut.llk.zhu.suanfa.Item;
 import cn.edu.glut.llk.zhu.suanfa.main;
 
 class GenerateChessboard{

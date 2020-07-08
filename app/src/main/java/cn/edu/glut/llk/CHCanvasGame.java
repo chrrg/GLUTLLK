@@ -101,6 +101,7 @@ class GameObject{
     private Map<String,String> style=new HashMap<>();
     private long startTime=android.os.SystemClock.uptimeMillis();
     private int c=0;
+    private int picDelay=0;
     private int backColor=0;
     private boolean display=true;
     private float[] mModelMatrix;
@@ -210,10 +211,11 @@ class GameObject{
             updateTexture();//更新纹理
             game.openGL.drawObj(mModelMatrix, textureId);
         }
-synchronized (children){
-        for(GameObject ob:children){
-            ob.draw();
-        }}
+        synchronized (children){
+            for(GameObject ob:children){
+                ob.draw();
+            }
+        }
     }
     private void updateTexture(){
         if(change||(pic!=null&&pic.length>1)){
@@ -233,7 +235,8 @@ synchronized (children){
         if (pic != null&&pic.length>0) {
             int index;
             if(pic.length>1){//gif
-                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime) % pic.length);
+                if(picDelay==0)picDelay=1;
+                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime)/picDelay % pic.length);
             }else{
                 index=0;
             }
@@ -480,6 +483,14 @@ synchronized (children){
     public Bitmap[] getPic() {
         return pic;
     }
+
+    public int getPicDelay() {
+        return picDelay;
+    }
+
+    public void setPicDelay(int picDelay) {
+        this.picDelay = picDelay;
+    }
 }
 class GameCamera{
     private float[] pos={0,0,1,0,0,0};//当前摄像机位置
@@ -684,17 +695,22 @@ public class CHCanvasGame {
             }
         }).create().show();
     }
-    void showInputMethod(){
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.showSoftInput(surfaceview, 0);//InputMethodManager.SHOW_FORCED 表示强制显示
-        }
+    void getInput(final GameInput input, String title,String message){
+        final EditText edit=new EditText(getActivity());
+        //增加一个中间的按钮,并增加点击事件
+        new AlertDialog.Builder(getActivity()).setTitle(title).setMessage(message).setView(edit)
+                .setPositiveButton("确定", (dialogInterface, i) -> input.finish(edit.getText().toString()))
+                .setNegativeButton("取消", (dialogInterface, i) -> input.finish(null)).create().show();
     }
-    void hideInputMethod(){
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(surfaceview.getWindowToken(), 0);//InputMethodManager.HIDE_NOT_ALWAYS
+    Bitmap[] CutPic(Bitmap raw,int w,int h,int x,int y){
+        Bitmap[] result=new Bitmap[x*y];
+        int i=0,j=0;
+        for(j=0;j<y;j++) {
+            for (i = 0; i < x; i++) {
+                result[y*x+x]=Bitmap.createBitmap(raw, x*w, y*h,w, h, null, false);
+            }
         }
+        return result;
     }
     CHCanvasGame(){
 

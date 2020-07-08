@@ -707,7 +707,7 @@ public class CHCanvasGame {
         int i=0,j=0;
         for(j=0;j<y;j++) {
             for (i = 0; i < x; i++) {
-                result[y*x+x]=Bitmap.createBitmap(raw, x*w, y*h,w, h, null, false);
+                result[j+i*y]=Bitmap.createBitmap(raw, i*w, j*h,w, h, null, false);
             }
         }
         return result;

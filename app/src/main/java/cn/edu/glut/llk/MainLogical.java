@@ -25,7 +25,8 @@ public class MainLogical {
     private cn.edu.glut.llk.Myobserver myobserver;
     private String Username;
     private String Password;
-
+public static Bitmap[] bitLine;
+public static Bitmap[] bitLine2;
     MainLogical(CHCanvasGame game) {
         this.myobserver =new Myobserver();
         this.game=game;
@@ -33,6 +34,8 @@ public class MainLogical {
         this.MyController=new Controller(this,game.getActivity());
         this.SoundOn = game.getImage("SoundOn.png");
         this.SoundOff= game.getImage("SoundOff.png");
+        bitLine=game.CutPic(game.getImage("闪电.png"),459,757/7,1,7);
+        bitLine2=game.CutPic(game.getImage("闪电竖.png"),757/7,459,7,1);
     }
 
     public void setProgressBar(int progressBarTime, int gameTime) {
@@ -253,7 +256,7 @@ CreateLister("LoggedIn",()->{});
                     this.Username= inputText;
                 }
                 getObjectById("inputUsername").setText(inputText);
-            });
+            },"用户名","汉字，字母，数字");
         });
         getObjectById("inputPass").onTouchStart(event -> {
             Log.e("点击了密码框", "2");
@@ -265,7 +268,7 @@ CreateLister("LoggedIn",()->{});
 //                    getObjectById("inputPass").setText(inputText);
                 }
                 getObjectById("inputPass").setText(inputText);
-            });
+            },"密码","字母，数字");
         });
         CreateLister("Cancel", () -> {
             setDisplay("inputFrame", false);

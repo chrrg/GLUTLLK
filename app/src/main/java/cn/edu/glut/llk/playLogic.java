@@ -12,6 +12,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -417,7 +418,10 @@ class Myobserver {
 
 //       LINE.setBackColor(Color.BLACK);
        LINE.setStyle("image","stretch");
-       LINE.setPic( game.getGif("line.gif"));
+//       LINE.setPic( game.getGif("line.gif"));
+       if(LINE.getW()>LINE.getH())
+       LINE.setPic(MainLogical.bitLine);
+      else LINE.setPic(MainLogical.bitLine2);
        line.appendChild(LINE);
 
        //下次循环
@@ -428,7 +432,7 @@ class Myobserver {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(500);//显示效果,不要让主线程睡眠，current之类的
+                    Thread.sleep(2000);//显示效果,不要让主线程睡眠，current之类的
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

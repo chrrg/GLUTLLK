@@ -49,7 +49,7 @@ public class UserService {
         sdb.execSQL(sql, obj);
         return true;
     }
-    public LinkedHashMap<String, String> getdata(){
+    public LinkedHashMap<String,String> getdata(){
         LinkedHashMap<String,String> result = new LinkedHashMap<>();
         int i=0;
         SQLiteDatabase sdb=dbHelper.getReadableDatabase();

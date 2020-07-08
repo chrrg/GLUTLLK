@@ -65,12 +65,12 @@ static Bitmap gameChessboardBackground;
                a.setId("Column" + j);
                a.setW(BlockWidthAndHeight);
                a.setH(CanvasHeight);//与
-               a.setText("col" + j);
+//               a.setText("col" + j);
                a.setX((int) (gameWidth * 0.025 + j * BlockWidthAndHeight));
                a.setY(Canvas.getY());//距Canvas 0%
-               a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#260000FF;");
-               if (j % 2 == 0) a.setStyle("backColor", "#CC7FFF00");
-               else a.setStyle("backColor", "#CCFFFF00");//颜色区分
+//               a.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#260000FF;");
+//               if (j % 2 == 0) a.setStyle("backColor", "#CC7FFF00");
+//               else a.setStyle("backColor", "#CCFFFF00");//颜色区分
                Canvas.appendChild(a);
 
                for (int i = 0; i < row; i++) {
@@ -80,11 +80,11 @@ static Bitmap gameChessboardBackground;
                    b.setH(BlockWidthAndHeight);
                    b.setX((int) (gameWidth * 0.025) + j * BlockWidthAndHeight);//与列相同
                    b.setY(CanvasY + i * BlockWidthAndHeight);
-                   b.setText(String.valueOf(i) + j);
-                   b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#26D2691E;image:stretch;");//设置图片之前设置图片样式
-                   if (i % 2 == 0)//偶数
-                       b.setStyle("backColor", "#CCD2691E");
-                   else b.setStyle("backColor", "#CC556B2F");
+//                   b.setText(String.valueOf(i) + j);
+//                   b.setStyleText("fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#26D2691E;image:stretch;");//设置图片之前设置图片样式
+//                   if (i % 2 == 0)//偶数
+//                       b.setStyle("backColor", "#CCD2691E");
+//                   else b.setStyle("backColor", "#CC556B2F");
 
 //                 设置图片
                    if(items[i+1][j].bitmap!=null)

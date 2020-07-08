@@ -101,6 +101,7 @@ class GameObject{
     private Map<String,String> style=new HashMap<>();
     private long startTime=android.os.SystemClock.uptimeMillis();
     private int c=0;
+    private int picDelay=0;
     private int backColor=0;
     private boolean display=true;
     private float[] mModelMatrix;
@@ -210,10 +211,11 @@ class GameObject{
             updateTexture();//更新纹理
             game.openGL.drawObj(mModelMatrix, textureId);
         }
-synchronized (children){
-        for(GameObject ob:children){
-            ob.draw();
-        }}
+        synchronized (children){
+            for(GameObject ob:children){
+                ob.draw();
+            }
+        }
     }
     private void updateTexture(){
         if(change||(pic!=null&&pic.length>1)){
@@ -233,7 +235,8 @@ synchronized (children){
         if (pic != null&&pic.length>0) {
             int index;
             if(pic.length>1){//gif
-                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime) % pic.length);
+                if(picDelay==0)picDelay=1;
+                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime)/picDelay % pic.length);
             }else{
                 index=0;
             }
@@ -479,6 +482,14 @@ synchronized (children){
 
     public Bitmap[] getPic() {
         return pic;
+    }
+
+    public int getPicSpeed() {
+        return picDelay;
+    }
+
+    public void setPicSpeed(int picSpeed) {
+        this.picDelay = picSpeed;
     }
 }
 class GameCamera{

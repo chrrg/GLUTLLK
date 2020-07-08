@@ -1,44 +1,39 @@
     <!--    menu start-->
-<box id="menu"  w="100%" h="75vh" y="25vh"  text="游戏开始界面" style="fontSize:5vh;color:#FFFAFA;backColor:#2F4F4F;textY:bottom;">
-
-<box id="menu1"   h="5vh" x="25%" y="+10vh" right="+25%" text="开始游戏" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;" />
-<box id="menu2"   w="50vw" h="5vh" x="25%" y="+20vh" text="模式55" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#10000000;" /><!--透明度 遮罩,argb 前面加-->
-<box id="menu3"   w="50vw" h="5vh" x="25%" y="55vh" style="backColor:#008080;" />
-<box id="menu4"   w="50vw" h="5vh" x="25%" y="65vh" style="backColor:#008080;" />
-<box id="menu5"   w="50vw" h="5vh" x="25%" y="75vh" style="backColor:#008080;" />
-<box id="button1" w="13%" h="8vh" x="5%" y="87vh" text="排行" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;">
-    <!--            排行页面-->
-    <box id="btn1" w="80vw" h="70vh" x="10vw" r="10vw" y="15vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#006400;">
-        <box id="btn1Close" l="+85%" h="7vh" r="-4%" t="-8vh" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF1493;" />
+<box id="menu"  w="100%" h="75vh" y="25vh" >
+    <box id="menu0"  w="80%" h="60vh" l="10%" y="26vh" >
+        <box id="startGame"   w="50vw" h="5vh" x="30%" y="+10vh" text="开始游戏" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png"/>
+        <box id="EndlessMenu"   w="50vw" h="5vh" x="30%" y="+20vh" text="无尽模式" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" /><!--透明度 遮罩,argb 前面加-->
+        <box id="Share"   w="50vw" h="5vh" x="30%" y="55vh" text="分享" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" />
+        <box id="ExitGame"   w="50vw" h="5vh" x="30%" y="65vh" text="退出游戏" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png"/>
+<!--        <box id="FullCell"   w="50vw" h="5vh" x="30%" y="75vh" text="FullCell" style="fontSize:3vh;color:#FFFAFA;text:center;image:stretch;" src="menubtn1.png" />-->
     </box>
-</box>
-<box id="button2" w="13%" h="8vh" x="25%" y="87vh" text="分享" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-<box id="button30" w="13%" h="8vh" x="45%" y="87vh" text="音乐关" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
-<box id="button3" w="13%" h="8vh" x="45%" y="87vh" text="音乐开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-<box id="button40" w="13%" h="8vh" x="65%" y="87vh" text="声音关" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#DC143C;"/>
-<box id="button4" w="13%" h="8vh" x="65%" y="87vh" text="声音开" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;"/>
-<box id="button5"  w="13%" h="8vh" x="85%" y="87vh" text="账号" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#008080;">
-    <box id="inputFrame" l="10vw" h="35vh" r="10vw" y="30vh" text="输入框" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#C85F9EA0;">
-     <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+5vh" text="用户名" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;"/>
-     <input id="inputPass" l="+15%" h="7vh" r="+15%" y="+15vh" text="密码" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;"/>
-     <box id="Cancel" l="+5%" y="+75%" r="+60%" b="+5%" text="取消" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
-     <box id="Submit" l="+60%" y="+75%" r="+5%" b="+5%" text="提交" style="fontSize:3vh;color:#000000;textY:bottom;backColor:#FFFAFA;" />
+    <box id="BottomButton" w="100%" h="13vh"  y="87vh"   >
+        <box id="Rank" w="15%" h="15vw" x="10%" y="87vh" style="image:stretch;" src="Rankbtn.png"/>
+        <box id="About" w="15%" h="15vw" x="32%" y="87vh"  style="image:stretch;" src="About.png"/>
+        <box id="Sound" w="15%" h="15vw" x="53%" y="87vh"  style="image:stretch;" src="SoundOn.png"/>
+        <box id="Account"  w="15%" h="15vw" x="75%" y="87vh"  style="image:stretch;" src="账号.png"/>
     </box>
-</box>
+    <box id="inputFrame" w="100vw" h="100vh"  style="image:stretch;" src="rank.jpg">
+            <box id="LoggedIn" l="10vw" h="40vh" r="10vw" y="30vh" text="当前用户" style="fontSize:3vh;text:center;image:stretch;" src="已登录.png">
+                <box id="logout" l="45vw" h="5vh" r="45vw" y="55vh" text="注销" style="fontSize:2vh;text:center;image:stretch;" src="注销登录.png"/>
+            </box>
+            <box id="NoLoggedIn" l="10vw" h="40vh" r="10vw" y="30vh" text="登录页" style="fontSize:3vh;color:#FF0000;textX:center;textY:bottom;image:stretch;" src="Login.png">
+                <input id="inputUsername" l="+15%" h="7vh" r="+15%" y="+11vh" text="用户名" style="fontSize:2vh;color:#000000;textX:center;textY:bottom"/>
+                <input id="inputPass" l="+15%" h="7vh" r="+15%" y="+20vh" text="密码" style="fontSize:2vh;color:#000000;text:center;"/>
+                <box id="Cancel" l="+8%" y="+75%" r="+60%" b="+10%" text="取消" style="fontSize:2vh;color:#000000;text:center;image:stretch;" src="btn3.png" />
+                <box id="Submit" l="+60%" y="+75%" r="+5%" b="+10%" text="提交" style="fontSize:2vh;color:#000000;text:center;image:stretch;" src="btn3.png" />
+            </box>
 
-
-<!--    menu end-->
-
-<!--       menu1二级菜单 start-->
-<box id="menu10"  w="100vw" h="100vh"  text="二级菜单" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFFAA;">
-    <box id="menu11" l="10vw" h="10vh" y="20vh" r="10vw" text="选择"  style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#556B2F;image:stretch" src="menu11.jpg">
-        <box id="menu10Close" l="80vw" h="7vh" r="5vw" t="-80%" text="关闭" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#558C2F;" />
     </box>
-    <box id="menu12" l="10vw"  h="10vh" y="35vh" r="10vw"  text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF8C00;"/>
-    <box id="menu13" l="10vw"  h="10vh" y="50vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#FF4500;"/>
-    <box id="menu14" l="10vw"  h="10vh" y="65vh" r="10vw" text="选择" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#87CEFA;"/>
-</box>
-<!--       menu1二级菜单 end-->
+    <!--同级的，写在上面的优先响应-->
+    <box id="RankPage" w="100vw" h="100vh"  text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;backColor:#80000000;image:stretch;" src="rank.jpg">
+        <box id="RankPagepng" w="80vw" h="66vh" x="10vw"  y="20vh" text="排行页面" style="fontSize:3vh;color:#FFFAFA;textY:bottom;image:stretch;" src="rank2.png">
+            <box id="Rank1" w="70vw" h="6vh"  x="15vw" y="42vh"    text="rank1" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 6.png"/>
+            <box id="Rank2" w="70vw" h="6vh"  x="15vw" y="50vh"    text="rank2" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 7.png"/>
+            <box id="Rank3" w="70vw" h="6vh"  x="15vw" y="58vh"    text="rank3" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 8.png"/>
+            <box id="Rank4" w="70vw" h="6vh"  x="15vw" y="66vh"    text="rank4" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 9.png"/>
+            <box id="Rank5" w="70vw" h="6vh"  x="15vw" y="74vh"    text="rank5" style="fontSize:2vh;color:#FFFAFA;text:center;image:stretch;" src="图层 10.png"/>
+        </box>
+    </box>
     <!--    加减不是百分比-->
-<!--        <box id="menu11" w="50vw" h="20vh" y="50vh"  style="backColor:#7FFFAA;"  src="1.gif"/>-->
 </box>

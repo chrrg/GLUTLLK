@@ -355,7 +355,7 @@ class CHOpenGL implements GLSurfaceView.Renderer{
         if(game.isPause)return;
         long startMs = System.currentTimeMillis();
         if(startMs>curfpsTime+1000){
-            Log.i("当前FPS:", String.valueOf(curfps));
+//            Log.i("当前FPS:", String.valueOf(curfps));
             curfpsTime=startMs;fps=curfps;curfps=0;
         }
         doDraw(game.getGameObject());

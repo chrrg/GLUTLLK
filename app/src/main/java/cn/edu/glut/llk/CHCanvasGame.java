@@ -9,8 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Movie;
 import android.graphics.Paint;
+import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
@@ -48,7 +48,7 @@ interface GameInput{
 }
 class Animation{
     private long duration=0;//持续时间
-    private int type=0;//1 run 2 next 3delay
+    private int type=0;//1 run 2 next 3delay 4runcode
     private AnimateCallback animateCallback;
     private Map<Object,Integer> old=new HashMap<>();
     Animation(long duration){
@@ -79,6 +79,9 @@ interface AnimateCallback{
     void callback(Object ob,int old,int time);
     void afterAnimate(Object ob);
 }
+interface AnimateNextRun{
+    void run();
+}
 interface AnimationIterator{
     void handle(Object obj);
 }
@@ -88,7 +91,7 @@ class GameObject{
     private String id=null;
     private String Tag="obj";
     private Vector<GameObject> children= new Vector<>();
-    private GameObject parent=null;
+    public GameObject parentNode=null;
     private boolean change=true;//false 说明没有改动 true 需要重绘
     private Bitmap buffer=null;
     private CHCanvasGame game;
@@ -97,17 +100,47 @@ class GameObject{
     private Bitmap[] pic=null;
     private Map<String,String> style=new HashMap<>();
     private long startTime=android.os.SystemClock.uptimeMillis();
-    private int textureId=0;
+    private int c=0;
+    private int picDelay=0;
     private int backColor=0;
     private boolean display=true;
     private float[] mModelMatrix;
     private float textX;
     private float textY;
+    private int textureId=0;
     private GameObject(){
 
     }
+    CHCanvasGame getGame(){
+        return game;
+    }
     Vector<GameObject> getChildren(){
         return children;
+    }
+    protected void finalize(){
+        int[] a=new int[1];
+        a[0]=textureId;
+        GLES30.glDeleteTextures(1,a,0);
+    }
+    void Destory(){
+        this.parentNode=null;
+        synchronized (children){   for(GameObject obj:children){
+            obj.Destory();
+        }
+//        GLES20.glDeleteTextures（1，&id）；//函数释放内存
+    }
+        children.clear();
+        children=null;
+    }
+    void appendChild(GameObject obj){
+        if(obj.parentNode!=null)obj.parentNode.children.remove(obj);
+        obj.parentNode=this;
+        synchronized (children) {
+            children.add(obj);
+        }
+    }
+    void removeChild(GameObject obj){
+     synchronized (children){  children.remove(obj);}
     }
     void init(){
         mModelMatrix = new float[16];
@@ -145,7 +178,7 @@ class GameObject{
         if(o==null)return;
         children.add(o);
     }
-    private GameObject(CHCanvasGame game){
+    GameObject(CHCanvasGame game){
         this();
         this.game=game;
     }
@@ -155,19 +188,19 @@ class GameObject{
     GameAnimation animate(boolean isAll){
         return new GameAnimation(this).setAll(isAll);
     }
-    GameObject(CHCanvasGame game,GameObject parent){
-        this(game);
-        this.parent=parent;
-    }
+//    GameObject(CHCanvasGame game,GameObject parent){
+//        this(game);
+//        parentNode=parent;
+//    }
     void setPaint(Paint paint){
         this.paint=paint;
     }
     Paint getPaint(){
         if(paint==null)
-            if(parent==null)
+            if(parentNode==null)
                 paint=new Paint();
             else
-                paint=new Paint(parent.getPaint());
+                paint=new Paint(parentNode.getPaint());
         return paint;
     }
     void draw(){
@@ -178,8 +211,10 @@ class GameObject{
             updateTexture();//更新纹理
             game.openGL.drawObj(mModelMatrix, textureId);
         }
-        for(GameObject ob:children){
-            ob.draw();
+        synchronized (children){
+            for(GameObject ob:children){
+                ob.draw();
+            }
         }
     }
     private void updateTexture(){
@@ -200,7 +235,8 @@ class GameObject{
         if (pic != null&&pic.length>0) {
             int index;
             if(pic.length>1){//gif
-                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime) % pic.length);
+                if(picDelay==0)picDelay=1;
+                index=(int) ((android.os.SystemClock.uptimeMillis() - startTime)/picDelay % pic.length);
             }else{
                 index=0;
             }
@@ -355,7 +391,7 @@ class GameObject{
                         textX=w;
                         break;
                     default:
-
+                        textX=game.dpx(this,s2);
                 }
 //                if("left".equals(s2)){
 //
@@ -377,6 +413,7 @@ class GameObject{
                         textY=(float)h - fontMetrics1.bottom/2;
                         break;
                     default:
+                        textY=game.dpy(this,s2);
                 }
                 updateView();
                 break;
@@ -390,6 +427,7 @@ class GameObject{
                     textY=(h - fontMetrics.top - fontMetrics.bottom)/2;
                     updateView();
                 }
+                break;
         }
         style.put(s1,s2);
     }
@@ -421,10 +459,37 @@ class GameObject{
         updateView();
     }
     boolean hasParent(){
-        return parent!=null;
+        return parentNode!=null;
     }
     GameObject getParent() {
-        return parent;
+        return parentNode;
+    }
+
+    void setAlpha(int i) {
+        Paint paint=getPaint();
+        paint.setAlpha(i);
+        updateView();
+        for(GameObject ob:children)ob.setAlpha(i);
+    }
+
+     String getId() {
+        return id;
+    }
+
+    public int getBackColor() {
+        return backColor;
+    }
+
+    public Bitmap[] getPic() {
+        return pic;
+    }
+
+    public int getPicDelay() {
+        return picDelay;
+    }
+
+    public void setPicDelay(int picDelay) {
+        this.picDelay = picDelay;
     }
 }
 class GameCamera{
@@ -472,7 +537,9 @@ class GameAnimation{
                 iteratorAll(obj,new AnimationIterator(){
                     @Override
                     public void handle(Object obj) {
-                        ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
+                        long curT=curTime;
+                        if(curT>ani.getDuration())curT=ani.getDuration();
+                        ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curT);
                     }
                 });
 //                ani.getAnimateCallback().callback(obj,ani.getOld().get(obj),(int)curTime);
@@ -511,6 +578,7 @@ class GameAnimation{
                                 if(ani.getAnimateCallback()!=null)
                                     ani.getAnimateCallback().afterAnimate(obj);
                             cur.clear();
+                            continue;
                         }
                     }else if(animation.size()>0){
                         while(true){
@@ -519,8 +587,8 @@ class GameAnimation{
                             if(ani.getAnimateCallback()!=null) {
                                 iteratorAll(obj,new AnimationIterator(){
                                     @Override
-                                    public void handle(Object obj) {
-                                        ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
+                                    public void handle(Object ob1) {
+                                        ani.getOld().put(ob1, ani.getAnimateCallback().beforeAnimate(obj));
                                     }
                                 });
 //                                ani.getOld().put(obj, ani.getAnimateCallback().beforeAnimate(obj));
@@ -535,12 +603,13 @@ class GameAnimation{
                             if(type!=1)break;
                         }
                         time=android.os.SystemClock.uptimeMillis();
+                    }else
+                        isRun=false;
+                    try {
+                        Thread.sleep(16);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                }
-                try {
-                    Thread.sleep(16);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
@@ -548,6 +617,9 @@ class GameAnimation{
     GameAnimation(Object object){
         this.obj=object;
         init();
+    }
+    Object getObj(){
+        return obj;
     }
     void destroy(){
         finalize();
@@ -571,6 +643,22 @@ class GameAnimation{
         animation.add(anim);
         return this;
     }
+    GameAnimation next(AnimateNextRun runCode){
+        AnimateCallback animate = new AnimateCallback() {
+            @Override
+            public int beforeAnimate(Object ob) {return 0;}
+            @Override
+            public void callback(Object ob, int old, int time) {}
+            @Override
+            public void afterAnimate(Object ob) {
+                runCode.run();
+            }
+        };
+        Animation anim=new Animation(0,animate);
+        anim.setType(4);
+        animation.add(anim);
+        return this;
+    }
     GameAnimation delay(long millis){
         Animation animate=new Animation(millis);
         animate.setType(3);
@@ -578,7 +666,7 @@ class GameAnimation{
         return this;
     }
 }
-class CHCanvasGame {
+public class CHCanvasGame {
     private GameObject root=null;
     private GameCamera camera;
     private Canvas canvas;
@@ -607,22 +695,27 @@ class CHCanvasGame {
             }
         }).create().show();
     }
-    void showInputMethod(){
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.showSoftInput(surfaceview, 0);//InputMethodManager.SHOW_FORCED 表示强制显示
-        }
+    void getInput(final GameInput input, String title,String message){
+        final EditText edit=new EditText(getActivity());
+        //增加一个中间的按钮,并增加点击事件
+        new AlertDialog.Builder(getActivity()).setTitle(title).setMessage(message).setView(edit)
+                .setPositiveButton("确定", (dialogInterface, i) -> input.finish(edit.getText().toString()))
+                .setNegativeButton("取消", (dialogInterface, i) -> input.finish(null)).create().show();
     }
-    void hideInputMethod(){
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(surfaceview.getWindowToken(), 0);//InputMethodManager.HIDE_NOT_ALWAYS
+    Bitmap[] CutPic(Bitmap raw,int w,int h,int x,int y){
+        Bitmap[] result=new Bitmap[x*y];
+        int i=0,j=0;
+        for(j=0;j<y;j++) {
+            for (i = 0; i < x; i++) {
+                result[y*x+x]=Bitmap.createBitmap(raw, x*w, y*h,w, h, null, false);
+            }
         }
+        return result;
     }
     CHCanvasGame(){
 
     }
-    Activity getActivity(){
+    public Activity getActivity(){
         return activity;
     }
     Bitmap getImage(String filename){
@@ -637,17 +730,12 @@ class CHCanvasGame {
     Bitmap[] getGif(String filename){
         AssetManager am=activity.getAssets();
         try {
-            Movie gif=Movie.decodeStream(am.open(filename));
-            int duration=gif.duration();
-            if(duration<=0)duration=1000;
+            GifOpenHelper gHelper=new GifOpenHelper();
+            gHelper.read(am.open(filename));
+            int duration=gHelper.frameCount;
             Bitmap[] frames = new Bitmap[duration];
-            for(int i=0;i<duration;i++){
-                Bitmap bmp = Bitmap.createBitmap(gif.width(), gif.height(), Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bmp);
-                gif.setTime(i);
-                gif.draw(canvas, 0, 0);
-                frames[i]=bmp;
-            }
+            for(int i=0;i<duration;i++)
+                frames[i]=gHelper.nextBitmap();
             return frames;
         } catch (IOException e) {
             e.printStackTrace();
@@ -723,7 +811,8 @@ class CHCanvasGame {
     }
     private GameObject parseElement(Element r, GameObject parent){
         if(r==null)return null;
-        GameObject r2=new GameObject(this,parent);
+        GameObject r2=new GameObject(this);
+        if(parent!=null)parent.appendChild(r2);
         String tagName=r.getTagName();
         r2.setTag(tagName);
         NamedNodeMap attris = r.getAttributes();
@@ -928,21 +1017,21 @@ class CHCanvasGame {
         });
     }
     private GameObject objectTouch(float x, float y, GameObject gameObject,int index,MotionEvent event,GameObject target) {
-        if(!gameObject.isDisplay())return null;
+        if(!gameObject.isDisplay()||!gameObject.isCanTouch())return null;
         for(GameObject ob:gameObject.getChildren()) {
             GameObject o;
             o=objectTouch(x, y, ob, index, event,target);
             if (o != null)return o;
         }
         if(target!=null){
-            if(gameObject.isCanTouch())//不为空 说明可以响应
+//            if(gameObject.isCanTouch())//不为空 说明可以响应
                 if(openGL.rayPicking(x,y,gameObject.getModelMatrix())) {//xy在对象范围内
                     if (target != gameObject) return null;
                     if(gameObject.onTouch[index]!=null)gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
                     return gameObject;
                 }
         }else {
-            if (gameObject.isCanTouch() && gameObject.onTouch[index] != null)//不为空 说明可以响应
+            if (gameObject.onTouch[index] != null)//不为空 说明可以响应
                 if (openGL.rayPicking(x, y, gameObject.getModelMatrix())) {//xy在对象范围内
                     gameObject.onTouch[index].onTouchEvent(event);//是否已处理 true为已处理即不继续传递
                     return gameObject;

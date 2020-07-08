@@ -1,9 +1,13 @@
 package cn.edu.glut.llk;
 
+
+
 import android.util.Log;
 
-public class AnimateLib {
-    public void PopUpAnimate(CHCanvasGame game,String id,boolean isAll,int runDuration,int nextDuration){
+/*========================================= 动画========================================================*/
+
+public class AnimateLib{
+    public static void PopUpAnimate(CHCanvasGame game, String id, boolean isAll, int runDuration, int nextDuration){
 
         game.getGameObject().getElementById(id).animate(isAll).run(runDuration, new AnimateCallback() {
             @Override
@@ -41,8 +45,46 @@ public class AnimateLib {
             }
         });
     }
+    public  static void fadeIn(CHCanvasGame game,String id){
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani = game.getGameObject().getElementById(id).animate(true);
+        tool.fadeIn(ani);
+        ani.next(() -> {
+            Log.e("ok","okfadeIn");
+        });
+    }
+    public static void fadeOut(CHCanvasGame game,String id){
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani = game.getGameObject().getElementById(id).animate(true);
+        tool.fadeOut(ani);
+        ani.next(() -> {
+            Log.e("ok","okfadeIn");
+        });
+    }
+    public static void  fade(CHCanvasGame game){
+        game.getGameObject().setDisplay(false);
+        CHAnimateTool tool=new CHAnimateTool();
+        GameAnimation ani = game.getGameObject().animate(true).delay(1000);
 
-    private void turnOverDrop(){
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+        tool.fadeOut(ani);
+        tool.fadeIn(ani);
+
+        ani.next(() -> {
+            Log.e("ok","ok");
+        });
+    }
+    private static void turnOverDrop(){
         //camara翻转180 向下 display
 
 //        camera.animate().run(1000, new AnimateCallback() {
@@ -95,5 +137,6 @@ public class AnimateLib {
 //            }
 //        });
     }
-
 }
+
+//Gradle plugin  341  Gradle 4 0 0

@@ -1,27 +1,14 @@
 package cn.edu.glut.llk;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.opengl.GLU;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
-
-import java.util.Arrays;
+import cn.edu.glut.llk.LLKGame;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.opengl.Matrix;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
-import javax.security.auth.callback.Callback;
+
 
 class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     private CHCanvasGame game;
@@ -38,28 +25,95 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
         game.setMaxFPS(0);//高帧率模式 设置最大帧率 测试最高60 0为不限制
         game.setGameObject(game.getGameObjectFromXML("1.xml"));
 
-        game.getGameObject().getChildren().add(game.getGameObjectFromXML("2.xml"));
-        game.getGameObject().getChildren().add(game.getGameObjectFromXML("3.xml"));
-
-        LogicUtil util = new LogicUtil(game);
-        util.Init();//显示游戏开始页面
+        game.getGameObject().appendChild(game.getGameObjectFromXML("2.xml"));
+        game.getGameObject().appendChild(game.getGameObjectFromXML("3.xml"));
 
 
-
-//        game.getGameObject().getElementById("input").onTouchStart(new OnTouchListener(){
-//            @Override
-//            public void onTouchEvent(MotionEvent event) {
-//                Log.e("点击了！","2");
-////                AlertDialog.Builder builder=;
-//                game.getInput(new GameInput(){
-//                    @Override
-//                    public void finish(String inputText) {
-//                        Log.e("输入了",inputText);
-//                    }
-//                });
-//            }
+//        game.getGameObject().setDisplay(false);
+//        CHAnimateTool tool=new CHAnimateTool();
+//        GameAnimation ani = game.getGameObject().animate(true).delay(1000);
+//
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//        tool.fadeOut(ani);
+//        tool.fadeIn(ani);
+//
+//        ani.next(() -> {
+//            Log.e("ok","ok");
 //        });
+//
 
+//        game.getGameObject().parentNode.removeChild(game.getGameObject());
+//        game.getGameObject().getChildren().add(game.getGameObjectFromXML("4.xml"));
+//        game.getGameObject().getChildren().get(0).getChildren().add(new GameObject())
+//        =========================================================================================================
+//        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            while (true) {
+//
+//                GenerateChessboard.GenerateGameBlock(game, game.getGameObject().getElementById("gameBarrier").getChildren().get(0), 8, 6, EmptyColumn, false, -1, null);//Endless 普通模式 ,pathRanom物体类型
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                GameObject gameBlock = game.getGameObject().getElementById("gameBlock");
+//                game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+//                gameBlock.Destory();
+//            }}}.run();
+
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                while (true) {
+//                    GameObject gameBlock = new GameObject(game);
+//                    game.getGameObject().getElementById("gameBarrierMenu").appendChild(gameBlock);
+//                    try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                    game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+//                    gameBlock.Destory();
+//                }}}.run();
+
+//        new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                while (true) {
+//                    GameObject gameBlock = new GameObject(game);
+////                    gameBlock.setId("gameBlock");
+//                    gameBlock.setW(500);
+//                    gameBlock.setH(500);
+////                    gameBlock.setY(500 / 10 * 2);// 乘二 是 与上面的 距顶10% 相关联
+////                    gameBlock.setText("游戏区域");
+////                    gameBlock.setStyleText("fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;");
+//                    game.getGameObject().getElementById("gameBarrierMenu").appendChild(gameBlock);
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    game.getGameObject().getElementById("gameBarrierMenu").removeChild(gameBlock);
+//                    gameBlock.Destory();
+//                }}}.run();
+//======================================================================================================
+        MainLogical util = new MainLogical(game);
+        util.Init();//显示游戏开始页面
 //        game.getGameObject().getElementById("fps").onTouchStart(new OnTouchListener(){
 //            @Override
 //            public void onTouchEvent(MotionEvent event) {
@@ -159,9 +213,9 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
-        game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
-        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
+//        game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
+//        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
 //        Log.e("asdasd",""+imm.isActive());
     }
 }
@@ -170,10 +224,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        AppWatcher.INSTANCE.getObjectWatcher().watch(this);
+
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        if(game==null) game = new CHCanvasGame(this, new LLKGame());//初始化游戏引擎
+        if(game==null) game = new CHCanvasGame(this, new cn.edu.glut.llk.LLKGame());//初始化游戏引擎
         setContentView(game.getContentView());
     }
     @Override

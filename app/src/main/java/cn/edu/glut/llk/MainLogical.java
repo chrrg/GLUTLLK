@@ -173,7 +173,7 @@ private void addGameReturnMenu(){
         CreateLister("Share",()->{
             Intent textIntent = new Intent(Intent.ACTION_SEND);
             textIntent.setType("text/plain");
-            textIntent.putExtra(Intent.EXTRA_TEXT, "这是一段分享的文字");
+            textIntent.putExtra(Intent.EXTRA_TEXT, "快点开链接，来玩桂工连连看！");
             Intent send=Intent.createChooser(textIntent, "分享");
             send.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
             game.getActivity().getApplicationContext().startActivity(send);

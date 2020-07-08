@@ -333,28 +333,7 @@ CreateLister("LoggedIn",()->{});
         myHandler.starGameTimeCount(1000*60*2,true);//开启定时器，1秒每步减少时间
 //状态转换
     }
-//    private void startGame3(CHCanvasGame game){
-//        // 开始游戏
-//        setDisplay("gameBarrier", true);//显示游戏关卡
-//        setDisplay("gamePauseMaskLayer", false);//不显示暂停层
-//        setDisplay("currentBarrier",false);//当前关卡不显示
-//
-//        //生成游戏方块矩阵：
-//        List<Integer> EmptyColumn = Collections.singletonList(-1);//从全满就行了
-//        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,false,2, myobserver);//满格模式
-//        myHandler.starGameTimeCount(1000*60*2);//开启定时器，1秒每步减少时间
-//    }
 
-//    private void startGame4(CHCanvasGame game){
-//        // 开始游戏
-//        setDisplay("gameBarrier", true);//显示游戏关卡
-//        setDisplay("gamePauseMaskLayer", false);//不显示暂停层
-//        setDisplay("currentBarrier",false);//当前关卡不显示
-//        //生成游戏方块矩阵：
-//        List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
-//        GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),6,6,EmptyColumn,true,false,-1, myobserver);//Endless 平移模式
-//        myHandler.starGameTimeCount(1000*60);//开启定时器，1秒每步减少时间
-//    }
 
     public   void GameOver(){
         setDisplay("gamePauseMaskLayer", true);

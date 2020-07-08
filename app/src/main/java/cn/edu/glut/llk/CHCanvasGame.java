@@ -684,17 +684,22 @@ public class CHCanvasGame {
             }
         }).create().show();
     }
-    void showInputMethod(){
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.showSoftInput(surfaceview, 0);//InputMethodManager.SHOW_FORCED 表示强制显示
-        }
+    void getInput(final GameInput input, String title,String message){
+        final EditText edit=new EditText(getActivity());
+        //增加一个中间的按钮,并增加点击事件
+        new AlertDialog.Builder(getActivity()).setTitle(title).setMessage(message).setView(edit)
+                .setPositiveButton("确定", (dialogInterface, i) -> input.finish(edit.getText().toString()))
+                .setNegativeButton("取消", (dialogInterface, i) -> input.finish(null)).create().show();
     }
-    void hideInputMethod(){
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(surfaceview.getWindowToken(), 0);//InputMethodManager.HIDE_NOT_ALWAYS
+    Bitmap[] CutPic(Bitmap raw,int w,int h,int x,int y){
+        Bitmap[] result=new Bitmap[x*y];
+        int i=0,j=0;
+        for(j=0;j<y;j++) {
+            for (i = 0; i < x; i++) {
+                result[y*x+x]=Bitmap.createBitmap(raw, x*w, y*h,w, h, null, false);
+            }
         }
+        return result;
     }
     CHCanvasGame(){
 

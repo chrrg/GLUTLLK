@@ -175,7 +175,7 @@ private void addGameReturnMenu(){
             game.getActivity().getApplicationContext().startActivity(send);
         });
 
-        CreateLister("NextBarrierTest", this::ReCreateChessboard);
+//        CreateLister("NextBarrierTest", this::ReCreateChessboard);
         CreateLister("ExitGame",()->{
             System.exit(0);//正常退出
         });
@@ -322,7 +322,7 @@ CreateLister("LoggedIn",()->{});
         setDisplay("gameBarrier", true);//显示游戏关卡
         setDisplay("gamePauseMaskLayer", false);//不显示暂停层
         setDisplay("currentBarrier",true);//显示关卡层
-        setText("currentBarrier","当前关卡第1关");
+        setText("currentBarrier","1");
         //生成游戏方块矩阵：
         List<Integer> EmptyColumn = Arrays.asList(4, 3);//从一开始
         GenerateChessboard.GenerateGameBlock(game,getObjectById("gameBarrier").getChildren().get(0),8,6,EmptyColumn,false,true,1, myobserver);//重复模式

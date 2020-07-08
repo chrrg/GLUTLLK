@@ -1,57 +1,59 @@
-<box id="gameBlock" w="100vw" h="80vh" t="10vh" text="游戏区域" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;">
-<!--    游戏物体对象 行列-->
-    <box id="Column0" w="15vw" h="60vh" l="+5vw" t="20vh"  text="00" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFF00;">
-        <box id="block00" w="15vw" h="15vw" l="+0vw" t="+0vw" text="00" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block10" w="15vw" h="15vw" l="+0vw" t="+15vw" text="10" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block20" w="15vw" h="15vw" l="+0vw" t="+30vw" text="20" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block30" w="15vw" h="15vw" l="+0vw" t="+45vw" text="30" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block40" w="15vw" h="15vw" l="+0vw" t="+60vw" text="40" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block50" w="15vw" h="15vw" l="+0vw" t="+75vw" text="50" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block60" w="15vw" h="15vw" l="+0vw" t="+90vw" text="60" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-    </box>
-    <box id="Column1" w="15vw" h="60vh" l="+20vw" t="20vh"  text="01" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCFFFF00;" >
-        <box id="block01" w="15vw" h="15vw" l="+0vw" t="+0vw" text="01" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block11" w="15vw" h="15vw" l="+0vw" t="+15vw" text="11" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block21" w="15vw" h="15vw" l="+0vw" t="+30vw" text="21" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block31" w="15vw" h="15vw" l="+0vw" t="+45vw" text="31" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block41" w="15vw" h="15vw" l="+0vw" t="+60vw" text="41" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block51" w="15vw" h="15vw" l="+0vw" t="+75vw" text="51" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block61" w="15vw" h="15vw" l="+0vw" t="+90vw" text="61" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-    </box>
-    <box id="Column2" w="15vw" h="60vh" l="+35vw" t="20vh"  text="02" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFF00;">
-        <box id="block02" w="15vw" h="15vw" l="+0vw" t="+0vw" text="02" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block12" w="15vw" h="15vw" l="+0vw" t="+15vw" text="12" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block22" w="15vw" h="15vw" l="+0vw" t="+30vw" text="22" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block32" w="15vw" h="15vw" l="+0vw" t="+45vw" text="32" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block42" w="15vw" h="15vw" l="+0vw" t="+60vw" text="42" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block52" w="15vw" h="15vw" l="+0vw" t="+75vw" text="52" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block62" w="15vw" h="15vw" l="+0vw" t="+90vw" text="62" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-    </box>
-    <box id="Column3" w="15vw" h="60vh" l="+50vw" t="20vh"  text="03" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCFFFF00;">
-        <box id="block013" w="15vw" h="15vw" l="+0vw" t="+0vw" text="03" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block13" w="15vw" h="15vw" l="+0vw" t="+15vw" text="13" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block23" w="15vw" h="15vw" l="+0vw" t="+30vw" text="23" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block33" w="15vw" h="15vw" l="+0vw" t="+45vw" text="33" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block43" w="15vw" h="15vw" l="+0vw" t="+60vw" text="43" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block53" w="15vw" h="15vw" l="+0vw" t="+75vw" text="53" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block63" w="15vw" h="15vw" l="+0vw" t="+90vw" text="63" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-    </box>
-    <box id="Column4" w="15vw" h="60vh" l="+65vw" t="20vh"  text="04" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFF00;">
-        <box id="block04" w="15vw" h="15vw" l="+0vw" t="+0vw" text="04" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block14" w="15vw" h="15vw" l="+0vw" t="+15vw" text="14" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block24" w="15vw" h="15vw" l="+0vw" t="+30vw" text="24" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block34" w="15vw" h="15vw" l="+0vw" t="+45vw" text="34" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block44" w="15vw" h="15vw" l="+0vw" t="+60vw" text="44" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block54" w="15vw" h="15vw" l="+0vw" t="+75vw" text="54" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block64" w="15vw" h="15vw" l="+0vw" t="+90vw" text="64" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-    </box>
-    <box id="Column5" w="15vw" h="60vh" l="+80vw" t="20vh"  text="05" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCFFFF00;">
-        <box id="block05" w="15vw" h="15vw" l="+0vw" t="+0vw" text="05" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block15" w="15vw" h="15vw" l="+0vw" t="+15vw" text="15" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block25" w="15vw" h="15vw" l="+0vw" t="+30vw" text="25" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block35" w="15vw" h="15vw" l="+0vw" t="+45vw" text="35" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block45" w="15vw" h="15vw" l="+0vw" t="+60vw" text="45" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-        <box id="block55" w="15vw" h="15vw" l="+0vw" t="+75vw" text="55" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>
-        <box id="block65" w="15vw" h="15vw" l="+0vw" t="+90vw" text="65" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>
-    </box>
-</box>
+<!--<box id="gameBlock" w="100vw" h="80vh" t="10vh" text="游戏区域" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#CC0000FF;">-->
+<!--&lt;!&ndash;    游戏物体对象 行列&ndash;&gt;-->
+<!--    <box id="Column0" w="15vw" h="60vh" l="+5vw" t="20vh"  text="00" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFF00;">-->
+<!--        <box id="block00" w="15vw" h="15vw" l="+0vw" t="+0vw" text="00" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block10" w="15vw" h="15vw" l="+0vw" t="+15vw" text="10" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block20" w="15vw" h="15vw" l="+0vw" t="+30vw" text="20" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block30" w="15vw" h="15vw" l="+0vw" t="+45vw" text="30" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block40" w="15vw" h="15vw" l="+0vw" t="+60vw" text="40" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block50" w="15vw" h="15vw" l="+0vw" t="+75vw" text="50" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block60" w="15vw" h="15vw" l="+0vw" t="+90vw" text="60" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--    </box>-->
+<!--    <box id="Column1" w="15vw" h="60vh" l="+20vw" t="20vh"  text="01" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCFFFF00;" >-->
+<!--        <box id="block01" w="15vw" h="15vw" l="+0vw" t="+0vw" text="01" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block11" w="15vw" h="15vw" l="+0vw" t="+15vw" text="11" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block21" w="15vw" h="15vw" l="+0vw" t="+30vw" text="21" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block31" w="15vw" h="15vw" l="+0vw" t="+45vw" text="31" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block41" w="15vw" h="15vw" l="+0vw" t="+60vw" text="41" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block51" w="15vw" h="15vw" l="+0vw" t="+75vw" text="51" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block61" w="15vw" h="15vw" l="+0vw" t="+90vw" text="61" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--    </box>-->
+<!--    <box id="Column2" w="15vw" h="60vh" l="+35vw" t="20vh"  text="02" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFF00;">-->
+<!--        <box id="block02" w="15vw" h="15vw" l="+0vw" t="+0vw" text="02" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block12" w="15vw" h="15vw" l="+0vw" t="+15vw" text="12" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block22" w="15vw" h="15vw" l="+0vw" t="+30vw" text="22" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block32" w="15vw" h="15vw" l="+0vw" t="+45vw" text="32" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block42" w="15vw" h="15vw" l="+0vw" t="+60vw" text="42" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block52" w="15vw" h="15vw" l="+0vw" t="+75vw" text="52" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block62" w="15vw" h="15vw" l="+0vw" t="+90vw" text="62" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--    </box>-->
+<!--    <box id="Column3" w="15vw" h="60vh" l="+50vw" t="20vh"  text="03" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCFFFF00;">-->
+<!--        <box id="block013" w="15vw" h="15vw" l="+0vw" t="+0vw" text="03" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block13" w="15vw" h="15vw" l="+0vw" t="+15vw" text="13" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block23" w="15vw" h="15vw" l="+0vw" t="+30vw" text="23" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block33" w="15vw" h="15vw" l="+0vw" t="+45vw" text="33" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block43" w="15vw" h="15vw" l="+0vw" t="+60vw" text="43" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block53" w="15vw" h="15vw" l="+0vw" t="+75vw" text="53" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block63" w="15vw" h="15vw" l="+0vw" t="+90vw" text="63" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--    </box>-->
+<!--    <box id="Column4" w="15vw" h="60vh" l="+65vw" t="20vh"  text="04" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC7FFF00;">-->
+<!--        <box id="block04" w="15vw" h="15vw" l="+0vw" t="+0vw" text="04" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block14" w="15vw" h="15vw" l="+0vw" t="+15vw" text="14" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block24" w="15vw" h="15vw" l="+0vw" t="+30vw" text="24" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block34" w="15vw" h="15vw" l="+0vw" t="+45vw" text="34" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block44" w="15vw" h="15vw" l="+0vw" t="+60vw" text="44" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block54" w="15vw" h="15vw" l="+0vw" t="+75vw" text="54" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block64" w="15vw" h="15vw" l="+0vw" t="+90vw" text="64" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--    </box>-->
+<!--    <box id="Column5" w="15vw" h="60vh" l="+80vw" t="20vh"  text="05" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCFFFF00;">-->
+<!--        <box id="block05" w="15vw" h="15vw" l="+0vw" t="+0vw" text="05" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block15" w="15vw" h="15vw" l="+0vw" t="+15vw" text="15" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block25" w="15vw" h="15vw" l="+0vw" t="+30vw" text="25" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block35" w="15vw" h="15vw" l="+0vw" t="+45vw" text="35" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block45" w="15vw" h="15vw" l="+0vw" t="+60vw" text="45" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--        <box id="block55" w="15vw" h="15vw" l="+0vw" t="+75vw" text="55" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CCD2691E;"/>-->
+<!--        <box id="block65" w="15vw" h="15vw" l="+0vw" t="+90vw" text="65" style="fontSize:1vh;color:#FFFAFA;textY:bottom;backColor:#CC556B2F;"/>-->
+<!--    </box>-->
+<!--</box>-->
+
+<box l="90vw" w="8vw" h="2vh"  id="fps" style="fontSize:1vh;color:#218081;text:center;"/>

@@ -1,4 +1,4 @@
-<box id="gameBarrier" w="100vw" h="100vh" text="关卡一" style="fontSize:5vh;color:#FFFAFA;textY:bottom;backColor:#33FFFFFF;">
+<box id="gameBarrier" w="100vw" h="100vh"  style="backColor:#33FFFFFF;">
     <box id="gameBarrierMenu">
         <!--    顶部菜单-->
         <box id="ProgressBar" l="+22vw" h="6vh"  t="3vh" r="+19vw"  style="backColor:#1296DB;"/>
@@ -9,12 +9,12 @@
             <box id="gameTime" l="+20vw" h="6vh"  t="3vh" r="+17vw" text="时间" style="fontSize:2vh;color:#FFFAFA;text:center;"/>
             <box id="gameExit" w="15%" h="6vh" x="+85vw" t="3vh" r="+2vw"  style="image:stretch;" src="退出.png"/>
         </box>
-        <box id="currentBarrier" l="30vw" w="100vw" h="6vh" t="12vh" r="30vw" text="当前关卡" style="fontSize:2vh;color:#FFFAFA;text:center;backColor:#008080;"/>
+        <box id="currentBarrier" l="35vw" w="30vw" h="8vh" t="12vh" r="35vw" text="1" style="fontSize:3vh;color:#000000;text:center;image:stretch;" src="关卡.png"/>
         <!--底部菜单-->
-        <box id="gameBottomMenu"  w="100vw" h="10vh"  y="90vh" b="2vh" style="image:stretch;" src="木板一号.png">
-            <box id="NextBarrierTest" w="20vw" x="+2vw"  y="90vh" b="2vh" text="next level" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
-            <box id="gameScore" w="42vw" x="+29vw"  y="90vh" b="2vh" text="积分" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
-            <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;textY:bottom;backColor:#33CD853F;"/>
+        <box id="gameBottomMenu"  w="100vw" h="10vh"  y="90vh" b="2vh" style="image:stretch;" src="底部.png">
+<!--            <box id="NextBarrierTest" w="20vw" x="+2vw"  y="90vh" b="2vh" text="next level" style="fontSize:2vh;color:#FFFAFA;textY:bottom;"/>-->
+            <box id="gameScore" w="42vw" x="+29vw"  y="90vh" b="2vh" text="0" style="fontSize:3vh;color:#000000;text:center;"/>
+<!--            <box id="gameBtn4" w="20vw"  x="+79vw" y="90vh" b="2vh" text="其它" style="fontSize:2vh;color:#FFFAFA;text:center;"/>-->
         </box>
     </box>
     <box id="MaskBlock" w="40vw" h="10vh" style="image:stretch;" src="blockMask.png"/>

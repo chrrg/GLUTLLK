@@ -27,6 +27,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
 
         game.getGameObject().appendChild(game.getGameObjectFromXML("2.xml"));
         game.getGameObject().appendChild(game.getGameObjectFromXML("3.xml"));
+        game.getGameObject().appendChild(game.getGameObjectFromXML("4.xml"));
 
 
 //        game.getGameObject().setDisplay(false);
@@ -213,7 +214,7 @@ class LLKGame extends TimerTask implements  GameInit {//桂工连连看 源码
     }
     @Override
     public void run() {//定时器 对象向下移动
-//        game.getGameObject().getElementById("fps").setText("Time: "+game.getTime()+" FPS: "+game.getFPS());
+        game.getGameObject().getElementById("fps").setText("FPS:"+game.getFPS());
 //        InputMethodManager imm = (InputMethodManager) game.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 //        if(!imm.isActive())imm.showSoftInput(game.getContentView(),0);
 //        Log.e("asdasd",""+imm.isActive());
@@ -229,7 +230,7 @@ public class MainActivity extends Activity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){Window window = getWindow();window.setStatusBarColor(Color.WHITE);}
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        if(game==null) game = new CHCanvasGame(this, new cn.edu.glut.llk.LLKGame());//初始化游戏引擎
+        if(game==null) game = new CHCanvasGame(this, new LLKGame());//初始化游戏引擎
         setContentView(game.getContentView());
     }
     @Override

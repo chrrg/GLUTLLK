@@ -39,8 +39,9 @@ public static Bitmap[] bitLine2;
     }
 
     public void setProgressBar(int progressBarTime, int gameTime) {
-        getObjectById("ProgressBar").setW(getObjectById("gameTime").getW()*gameTime/progressBarTime);
         getObjectById("ProgressBar2").setW(getObjectById("gameTime").getW()*gameTime/progressBarTime);
+        getObjectById("ProgressBar").setX(getObjectById("ProgressBar2").getW()+getObjectById("ProgressBar2").getX());
+
     }
 
     public void writeScore() {

@@ -1,11 +1,12 @@
 <box id="gameBarrier" w="100vw" h="100vh"  style="backColor:#33FFFFFF;">
     <box id="gameBarrierMenu">
         <!--    顶部菜单-->
-        <box id="ProgressBar" l="+22vw" h="6vh"  t="3vh" r="+19vw"  style="backColor:#1296DB;"/>
         <box id="gameTopMenu" w="100vw" h="10vh"  style="image:stretch;" src="木板三号.png">
             <box id="gamePause" w="13%" h="6vh" x="+2vw" t="3vh"  style="image:stretch;" src="pause.png"/>
-            <box id="ProgressBar3" l="+22vw" h="6vh"  t="3vh" r="+16vw"  style="image:stretch;" src="progressbarGray.png" />
-            <box id="ProgressBar2" l="+22vw" h="6vh"  t="3vh" r="+19vw"  style="image:stretch;" src="progressbar1.png" />
+            <box id="ProgressBar3" l="+22vw" h="3vh"  t="3vh" r="+16vw"  style="image:stretch;" src="ProgressBarBack.png"/>
+            <box id="ProgressBar2" l="+22vw" h="3vh"  t="3vh" r="+19vw"  style="image:stretch;" src="ProgressBar.png"/>
+<!--            <box id="ProgressBar" x="75vw" w="8vw" h="4vh"  style="image:stretch;" src="消息框.png"/>-->
+            <box id="ProgressBar" x="75vw" w="8vw" h="4vh"  />
             <box id="gameTime" l="+20vw" h="6vh"  t="3vh" r="+17vw" text="时间" style="fontSize:2vh;color:#FFFAFA;text:center;"/>
             <box id="gameExit" w="15%" h="6vh" x="+85vw" t="3vh" r="+2vw"  style="image:stretch;" src="退出.png"/>
         </box>

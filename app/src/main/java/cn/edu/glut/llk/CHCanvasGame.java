@@ -484,12 +484,12 @@ class GameObject{
         return pic;
     }
 
-    public int getPicSpeed() {
+    public int getPicDelay() {
         return picDelay;
     }
 
-    public void setPicSpeed(int picSpeed) {
-        this.picDelay = picSpeed;
+    public void setPicDelay(int picDelay) {
+        this.picDelay = picDelay;
     }
 }
 class GameCamera{

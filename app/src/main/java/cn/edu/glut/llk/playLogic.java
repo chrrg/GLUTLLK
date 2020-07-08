@@ -380,31 +380,31 @@ class Myobserver {
        switch (dir){
            case 1:
            {//横右
-               LINE.setW(Math.abs(point.y - srcJ) * Column1W +WH/2);
+               LINE.setW(Math.abs(point.y - srcJ) * Column1W);
                LINE.setX((int) ( game.getWidth() * 0.025)+srcJ * Column1W +WH);//直线结束端点在右,默认在 结束端点加长一点1/4
 
-               LINE.setY(Column1Y +  (point.x-1) * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
+               LINE.setY(Column1Y + (point.x-1) * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
                break;
            }
            case 2:{
                //横左
-               LINE.setW(WH/2+Math.abs(point.y - srcJ) * Column1W);
-               LINE.setX((int) (game.getWidth() * 0.025+point.y * Column1W+WH/2));//直线结束端点在左
+               LINE.setW(Math.abs(point.y - srcJ) * Column1W);
+               LINE.setX((int) (game.getWidth() * 0.025+point.y * Column1W+WH));//直线结束端点在左
 
                LINE.setY(Column1Y +  (point.x-1) * Column1W+Column1W/4);//是加，横的时候，y 是不用拉伸的
                break;
            }
            case 3:{
                //纵 上
-               LINE.setH(WH+Math.abs( (point.x-1) - srcI) * Column1W);
-               LINE.setY(Column1Y+ (point.x-1) * Column1W +WH/2);//直线结束端点在上
+               LINE.setH(Math.abs( (point.x-1) - srcI) * Column1W);
+               LINE.setY(Column1Y+ (point.x-1) * Column1W +WH);//直线结束端点在上
 
                LINE.setX((int) (game.getWidth() * 0.025+ point.y * Column1W +Column1W/4));
                break;
            }
            case 4:{
                //纵下
-               LINE.setH(Math.abs( (point.x-1) - srcI) * Column1W+WH/2);
+               LINE.setH(Math.abs( (point.x-1) - srcI) * Column1W);
                LINE.setY( Column1Y+srcI * Column1W +WH);//直线结束端点在下
 
                LINE.setX((int) (game.getWidth() * 0.025+ point.y * Column1W +Column1W/4));
@@ -432,7 +432,7 @@ class Myobserver {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);//显示效果,不要让主线程睡眠，current之类的
+                    Thread.sleep(400);//显示效果,不要让主线程睡眠，current之类的
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

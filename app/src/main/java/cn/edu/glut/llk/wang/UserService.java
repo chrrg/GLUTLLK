@@ -51,7 +51,6 @@ public class UserService {
     }
     public LinkedHashMap<String,String> getdata(){
         LinkedHashMap<String,String> result = new LinkedHashMap<>();
-        int i=0;
         SQLiteDatabase sdb=dbHelper.getReadableDatabase();
         String sql="select * from user order by maxscore desc";
         Cursor cursor = sdb.rawQuery(sql, null);

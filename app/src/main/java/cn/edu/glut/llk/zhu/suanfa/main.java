@@ -17,14 +17,14 @@ public class main {//算法静态化，不用实例化
         if(bitmaps==null ) {//单例
 
            Log.e("one","只运行一次");
-            String[] pathName={"blocks","FlowerPattern","tree"};
+            String[] pathName={"mushroom","blocks","FlowerPattern","tree"};
             Vector<ArrayList<Bitmap>> vbs=new Vector<>();
 
             for(int x=0;x<pathName.length;x++){
                 ArrayList<Bitmap>   bs = new ArrayList<>();
                 String[] files = game.getActivity().getAssets().list(pathName[x]);
                 assert files != null;
-                Log.e("bitmap"+"得到长度之前","/Perf: Fail to get file list cn.edu.glut.llk");
+                Log.e("bitmap"+"得到长度之前","不会/Perf: Fail to get file list cn.edu.glut.llk");
                 Log.e("图片个数","长度为"+files.length);
                 for (int i = 0; i < files.length; i++) {
                     Bitmap bitmap = BitmapFactory.decodeStream(game.getActivity().getAssets().open(pathName[x] + "/" + files[i]));

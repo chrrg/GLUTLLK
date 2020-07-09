@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import cn.edu.glut.llk.Myobserver;
-import cn.edu.glut.llk.zhu.Controller;
+
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import cn.edu.glut.llk.Myobserver;
+import cn.edu.glut.llk.zhu.Controller;
 
 public class MainLogical {
     private final Controller MyController;
@@ -22,11 +22,11 @@ public class MainLogical {
     Bitmap SoundOff;
     CHCanvasGame game;
     private Controller.MyHandler myHandler;
-    private cn.edu.glut.llk.Myobserver myobserver;
+    private Myobserver myobserver;
     private String Username;
     private String Password;
-public static Bitmap[] bitLine;
-public static Bitmap[] bitLine2;
+    public static Bitmap[] bitLine;
+    public static Bitmap[] bitLine2;
     MainLogical(CHCanvasGame game) {
         this.myobserver =new Myobserver();
         this.game=game;

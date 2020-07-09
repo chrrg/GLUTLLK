@@ -42,7 +42,7 @@ class User{
     }
 }
  class Demo26 {
-    ArrayList<User> users=new ArrayList();
+    ArrayList<User> users=new ArrayList<>();
     public  void main(String[] args) {
         // TODO Auto-generated method stub
         long testid = 123456;

@@ -10,9 +10,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioAttributes;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+import android.media.SoundPool;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,9 +32,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -729,6 +737,123 @@ public class CHCanvasGame {
         }
         return null;
     }
+//    private static AudioTrack at;
+//    byte[] getWav(String filename){
+//        AssetManager am=activity.getAssets();
+//        try {
+//            ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
+//            byte[] buff = new byte[1024]; //buff用于存放循环读取的临时数据
+//            int rc;
+//            InputStream open = am.open(filename);
+//            while ((rc = open.read(buff, 0, 1024)) > 0) {
+//                swapStream.write(buff, 0, rc);
+//            }
+//            return swapStream.toByteArray();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+    AudioTrack at;
+    void initSound(){
+        if(at==null){
+            int SAMPLE_RATE = 44100;
+            int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+            int CHANNEL = AudioFormat.CHANNEL_OUT_STEREO;
+            int mBufferSizeInBytes = AudioTrack.getMinBufferSize(SAMPLE_RATE, CHANNEL, AUDIO_FORMAT);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                at = new AudioTrack.Builder()
+                        .setAudioAttributes(new AudioAttributes.Builder()
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+                                .build())
+                        .setAudioFormat(new AudioFormat.Builder()
+                                .setEncoding(AUDIO_FORMAT)
+                                .setSampleRate(SAMPLE_RATE)
+                                .setChannelMask(CHANNEL)
+                                .build())
+                        .setTransferMode(AudioTrack.MODE_STREAM)
+                        .setBufferSizeInBytes(mBufferSizeInBytes)
+                        .build();
+            } else return;
+        }
+    }
+    InputStream getWav(String filename){
+        AssetManager am = activity.getAssets();
+        try {
+            return am.open(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    void playWav(InputStream open){
+        initSound();
+        byte[] aByteBuffer = new byte[10240];
+        try {
+            at.play();
+            while (open.read(aByteBuffer) >= 0) {
+                at.write(aByteBuffer, 0, aByteBuffer.length);
+            }
+            at.stop();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+//    void playWav(String filename){
+//        new Thread(new Runnable() {
+//            public void run() {
+//                AssetManager am = activity.getAssets();
+//                try {
+//                    ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
+//                    byte[] buff = new byte[1024]; //buff用于存放循环读取的临时数据
+//                    int rc;
+//                    InputStream open = am.open(filename);
+//                    while ((rc = open.read(buff, 0, 1024)) > 0) {
+//                        swapStream.write(buff, 0, rc);
+//                    }
+//                    byte[] buffer = swapStream.toByteArray();
+//                    int CHANNEL = buffer[0x17];
+//                    CHANNEL = CHANNEL * 256 + buffer[0x16];
+//                    //            int bits=buffer[0x23];
+//                    //            bits=bits*256+buffer[0x22];
+//                    int pcmlen = 0;
+//                    pcmlen += buffer[0x2b];
+//                    pcmlen = pcmlen * 256 + buffer[0x2a];
+//                    pcmlen = pcmlen * 256 + buffer[0x29];
+//                    pcmlen = pcmlen * 256 + buffer[0x28];
+//                    AudioTrack at;
+//                    int SAMPLE_RATE = 44100;
+//                    int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+//                    int mBufferSizeInBytes;
+//                    mBufferSizeInBytes = pcmlen;
+//                    //            mBufferSizeInBytes = AudioTrack.getMinBufferSize(SAMPLE_RATE, CHANNEL, AUDIO_FORMAT);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        at = new AudioTrack.Builder()
+//                                .setAudioAttributes(new AudioAttributes.Builder()
+//                                        .setUsage(AudioAttributes.USAGE_MEDIA)
+//                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                                        .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+//                                        .build())
+//                                .setAudioFormat(new AudioFormat.Builder()
+//                                        .setEncoding(AUDIO_FORMAT)
+//                                        .setSampleRate(SAMPLE_RATE)
+//                                        .setChannelMask(CHANNEL)
+//                                        .build())
+//                                .setTransferMode(AudioTrack.MODE_STREAM)
+//                                .setBufferSizeInBytes(mBufferSizeInBytes)
+//                                .build();
+//                    }else return;
+//                    at.write(buffer, 0x2C, mBufferSizeInBytes);
+//                    at.play();
+//                    //            at.release();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//    }
     Bitmap[] getGif(String filename){
         AssetManager am=activity.getAssets();
         try {

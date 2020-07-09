@@ -122,6 +122,8 @@ class Myobserver {
         this.item=items;//持有一个引用 ,
         this.repeat=repeat;
       if(!repeat) {currentBarrier=1; Controller.RecordScore=0;}// 不是重复模式 则重置分数
+        if(currentBarrier==1){Controller.RecordScore=0;
+        game.getGameObject().getElementById("gameScore").setText("0");}//当是第一关卡的时候清零
         this.remaining=data.size();// 剩余的数量
 
         Column1W= game.getGameObject().getElementById("Column1").getW();

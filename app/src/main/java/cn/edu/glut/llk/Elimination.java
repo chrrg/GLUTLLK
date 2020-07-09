@@ -49,6 +49,7 @@ public class Elimination{
            } else {
                //逻辑判断
                if (TellAlgorithsMatrixRemoveBlock(OneObj, b, Endless)) {
+                   if(MainLogical.SoundSwicth) game.playWav(game.getWav("消除.wav"));//消除音效
                    OneObj.setDisplay(false);// 平不平移false就行了。平移的后面会重新true的。
                    b.setDisplay(false);
                    sendNoHold(OneObj); //成功关闭效果

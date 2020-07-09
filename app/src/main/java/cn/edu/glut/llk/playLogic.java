@@ -131,6 +131,7 @@ class Myobserver {
         LeftMargin = (int) (game.getWidth() * 0.025);
     }
     public void BlockOnclick(CHCanvasGame game, GameObject b){
+        if(MainLogical.SoundSwicth) game.playWav(game.getWav("点击.wav"));//点击音效
 //        game.getGameObject().getElementById("gameScore").setText("ClickBlock"+b.getId());//测试用
         boolean  isEliminate= elimination.click(b,Endless);//告诉它有物体被click了,由它来显示效果,返回结果，告诉我是否能消掉
 
@@ -140,6 +141,7 @@ class Myobserver {
             game.getGameObject().getElementById("CurrentScore").setText("当前分数：" + Controller.RecordScore);
             remaining-=2;//偶数减
             if(remaining==0 && !repeat) {//不是无尽模式下 才结束
+                if(MainLogical.SoundSwicth) game.playWav(game.getWav("闯关成功.wav"));
                 Controller.RecordScore +=(Controller.MyHandler.GameTime*500)/(1000*60) ;//300分的奖励分
                 Controller.MyHandler.GameTime=0;//触发 gameOver事件函数方法
                 game.getGameObject().getElementById("CurrentScore").setText("win ! 分数：" + Controller.RecordScore);
@@ -157,6 +159,7 @@ class Myobserver {
         if(Endless==true && isEliminate) PingYi(game);//测试用 无尽模式并且两个物体可以消 则平移 ,
     }
     public  void BlockTouch(CHCanvasGame game, GameObject b){
+
 //        game.getGameObject().getElementById("gameScore").setText("TouchBlock"+b.getId());//测试用
         //调用Elimination 进行效果显示，因为涉及到释放 两个
     }

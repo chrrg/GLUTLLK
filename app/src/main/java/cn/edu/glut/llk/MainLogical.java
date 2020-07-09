@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import cn.edu.glut.llk.Myobserver;
 import cn.edu.glut.llk.zhu.Controller;
 
 public class MainLogical {
@@ -21,6 +20,7 @@ public class MainLogical {
     Bitmap SoundOn;
     Bitmap SoundOff;
     CHCanvasGame game;
+    static boolean  SoundSwicth=true;
     private Controller.MyHandler myHandler;
     private Myobserver myobserver;
     private String Username;
@@ -109,7 +109,7 @@ private  void addGameRestartGame(){
         if(myHandler.EndlessTime)
         myHandler.starGameTimeCount(1000*60*2,true);//重新计时
         else       myHandler.starGameTimeCount(1000*60,true);//重新计时
-
+        clickSound();
     });
 }
 private void addGameReturnMenu(){
@@ -118,6 +118,7 @@ private void addGameReturnMenu(){
         setDisplay("gameBarrier",false);
         setDisplay("menu",true);//回主菜单
         removeGameBlockChessboard();//移动游戏块
+        clickSound();
     });
 }
 
@@ -126,6 +127,7 @@ private void addGameReturnMenu(){
             setDisplay("gamePauseMaskLayer", false);
             setCanTouch("gameBarrierMenu", true);//激活可选种顶部和底部菜单
             myHandler.ContinueGame();//继续倒计时。
+            clickSound();
         });
     }
 
@@ -137,6 +139,7 @@ private void addGameReturnMenu(){
             else setDisplay("gameContinue",false);
             setCanTouch("gameBarrierMenu", false);//顶部和底部菜单不能被选中
             myHandler.PauseGameCountDown();//暂停倒计时
+            clickSound();
         });
 
     }
@@ -146,6 +149,7 @@ private void addGameReturnMenu(){
             setDisplay("gameBarrier",false);
             setDisplay("menu",true);//回主菜单
            removeGameBlockChessboard();//移动游戏块
+            clickSound();
         });
     }
 
@@ -154,10 +158,12 @@ private void addGameReturnMenu(){
         CreateLister("startGame", () -> {
             setDisplay("menu", false);// 关闭menu菜单
             startGame(game);//开始游戏
+            clickSound();
         });
         CreateLister("EndlessMenu",()->{
             setDisplay("menu", false);// 关闭menu菜单
             startGame2(game);
+            clickSound();
         });
 //        CreateLister("FullCell",()->{
 //            setDisplay("menu", false);// 关闭menu菜单
@@ -165,12 +171,14 @@ private void addGameReturnMenu(){
 
 //        });
         CreateLister("About",()->{
+            clickSound();
               Uri uri = Uri.parse("https://www.baidu.com");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             game.getActivity().getApplicationContext().startActivity(intent);
         });
         CreateLister("Share",()->{
+            clickSound();
             Intent textIntent = new Intent(Intent.ACTION_SEND);
             textIntent.setType("text/plain");
             textIntent.putExtra(Intent.EXTRA_TEXT, "快点开链接，来玩桂工连连看！");
@@ -200,6 +208,7 @@ private void addGameReturnMenu(){
     private void addRankListerLogic() {
         //排行start
         CreateLister("Rank", () -> {
+            clickSound();
 //            AnimateLib.PopUpAnimate(game, "RankPage", true, 400, 400);//添加弹窗效果
             MyController.sortRank();
             setDisplay("RankPage", true);// 显示排行
@@ -229,6 +238,7 @@ private void addGameReturnMenu(){
         });//遮罩层关闭，同时作为拦截响应
 CreateLister("LoggedIn",()->{});
         CreateLister("Account", () -> {
+            clickSound();
             if(MyController.CurrentUser!=null&&!MyController.CurrentUser.equals("")){
                 setDisplay("inputFrame", true);
                 setDisplay("NoLoggedIn",false);
@@ -246,6 +256,7 @@ CreateLister("LoggedIn",()->{});
             }
         });//显示输入框
         CreateLister("logout",()->{
+            clickSound();
             MyController.logout();
             setDisplay("inputFrame",false);
             setCanTouch("menu0", true);
@@ -253,6 +264,7 @@ CreateLister("LoggedIn",()->{});
         });
         getObjectById("inputUsername").onTouchStart(event -> {
             Log.e("账号点击了！", "2");
+            clickSound();
             game.getInput(inputText -> {
                 if (inputText == null || inputText.equals("") ) Log.i("输入框", "没有输入内容");
                 else {
@@ -264,6 +276,7 @@ CreateLister("LoggedIn",()->{});
         });
         getObjectById("inputPass").onTouchStart(event -> {
             Log.e("点击了密码框", "2");
+            clickSound();
             game.getInput(inputText -> {
                 if (inputText == null || inputText.equals("")) Log.i("输入框", "没有输入内容");
                 else {
@@ -275,6 +288,7 @@ CreateLister("LoggedIn",()->{});
             },"密码","字母，数字");
         });
         CreateLister("Cancel", () -> {
+            clickSound();
             setDisplay("inputFrame", false);
             setCanTouch("menu0",true);
             setCanTouch("BottomButton",true);//激活底部
@@ -282,6 +296,7 @@ CreateLister("LoggedIn",()->{});
         });//不登录
         CreateLister("Submit", () -> {
             Log.i("提交登录", "登录判断待TODO");
+            clickSound();
             if (MyController.Login(this.Username,this.Password)) {
 //                Log.i("登录成功", UsernameTest + PasswordTest);
                 setDisplay("inputFrame", false);//登录判断，成功则关闭登录框
@@ -300,10 +315,12 @@ CreateLister("LoggedIn",()->{});
                 setText("Sound","声音开");
                 Sound = 0;
                 getObjectById("Sound").setPic(SoundOn);
+                MainLogical.SoundSwicth=true;
             } else {
                 setText("Sound","声音关");
                 Sound = 1;
                 getObjectById("Sound").setPic(SoundOff);
+                MainLogical.SoundSwicth=false;
             }
         });
     }
@@ -348,6 +365,10 @@ CreateLister("LoggedIn",()->{});
         gameBlock.Destory();
 //        getObjectById("gameBlock").parentNode.removeChild(getObjectById("gameBlock"));//移除gameBlock
 //    }
+  }
+  private void clickSound(){
+        if(MainLogical.SoundSwicth)
+      game.playWav(game.getWav("点击.wav"));
   }
 
 }

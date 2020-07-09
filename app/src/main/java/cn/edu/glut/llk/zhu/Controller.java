@@ -191,6 +191,7 @@ public void rememberMe(String RememberUser){
                 mainLogical.setText("gameTime", "GameOver");
                 mainLogical.GameOver();//通知结束
                mainLogical.writeScore();//记录分数
+                RecordScore=0;//无论是哪个关卡，时间到。清零。后清0
             }
         }
     }

@@ -328,10 +328,12 @@ class GameObject{
     GameObject getElementById(String id){
         GameObject res;
         if(id.equals(this.id))return this;
-        for(GameObject ob:children){
-            res=ob.getElementById(id);
-            if(res!=null)return res;
-        }
+      synchronized (children) {
+          for (GameObject ob : children) {
+              res = ob.getElementById(id);
+              if (res != null) return res;
+          }
+      }
         return null;
     }
     private void picStretch(){
